@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Plus, Briefcase, LogOut } from "lucide-react";
+import { Plus, Briefcase } from "lucide-react";
 import { useStore } from "./store/store";
 import { supabase, JobApplication } from "./lib/supabase";
 import { useAuth } from "./contexts/AuthContext";
+import { Header } from "./components/Header";
 import JobApplicationForm from "./components/JobApplicationForm";
 import JobApplicationCard from "./components/JobApplicationCard";
 import { Loading } from "./components/Loading";
@@ -87,37 +88,7 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-blue-600 rounded-lg">
-                <Briefcase className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  Job Application Tracker
-                </h1>
-                <p className="text-gray-600">
-                  Manage and track your job applications
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setShowForm(true)}
-                className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
-              >
-                <Plus className="w-5 h-5" />
-                Add Application
-              </button>
-              <button
-                onClick={signOut}
-                className="flex items-center gap-2 px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors shadow-md hover:shadow-lg"
-                title="Sign Out"
-              >
-                <LogOut className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
+          <Header setShowForm={setShowForm} signOut={signOut} />
 
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
             {statuses.map((status) => (
