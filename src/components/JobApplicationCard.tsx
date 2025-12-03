@@ -10,7 +10,6 @@ import {
   Edit,
   ExternalLink,
 } from "lucide-react";
-import JobApplicationForm from "./JobApplicationForm";
 import { useStore } from "../store/store";
 import { JobApplication, supabase } from "../lib/supabase";
 
@@ -32,9 +31,7 @@ export default function JobApplicationCard({
   application,
   onUpdate,
 }: JobApplicationCardProps) {
-  const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  // const [showForm, setShowForm] = useState(false);
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this application?")) return;
@@ -55,16 +52,13 @@ export default function JobApplicationCard({
     }
   };
 
-  const isEdit = useStore((state) => state.isEditing);
   const toggleEditing = useStore((state) => state.toggleEditing);
   const updateJobInEdit = useStore((state) => state.updateJobInEdit);
 
   const handleEdit = async () => {
     console.log("Edit functionality to be implemented");
-    // console.log("state before:", state);
     toggleEditing();
     updateJobInEdit(application);
-    // console.log("state after:", state);
   };
 
   const handleStatusChange = async (newStatus: JobApplication["status"]) => {
