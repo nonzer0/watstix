@@ -3,7 +3,7 @@ import { Plus, Briefcase } from "lucide-react";
 import { useStore } from "./store/store";
 import { supabase, JobApplication } from "./lib/supabase";
 import { useAuth } from "./contexts/AuthContext";
-import { Header } from "./components/Header";
+import { Header } from "./components/Header/Header";
 import JobApplicationForm from "./components/JobApplicationForm";
 import JobApplicationCard from "./components/JobApplicationCard";
 import { Loading } from "./components/Loading";
