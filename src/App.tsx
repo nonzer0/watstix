@@ -22,6 +22,7 @@ function App() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
   const isEditing = useStore((state) => state.isEditing);
+  const toggleEditing = useStore((state) => state.toggleEditing);
 
   const fetchApplications = async () => {
     try {
@@ -158,7 +159,12 @@ function App() {
       {displayForm && (
         <JobApplicationForm
           onSuccess={handleFormSuccess}
-          onCancel={() => setShowForm(false)}
+          onCancel={() => {
+            setShowForm(false);
+            if (isEditing) {
+              toggleEditing();
+            }
+          }}
         />
       )}
     </div>

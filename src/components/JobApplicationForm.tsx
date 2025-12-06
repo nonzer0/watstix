@@ -127,7 +127,7 @@ export default function JobApplicationForm({
                 htmlFor="position_title"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Position Title *
+                Position *
               </label>
               <input
                 type="text"
