@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Plus, Briefcase } from "lucide-react";
-import { useStore } from "./store/store";
 import { supabase, JobApplication } from "./lib/supabase";
 import { useAuth } from "./contexts/AuthContext";
 import { Header } from "./components/Header/Header";
@@ -18,10 +17,8 @@ function App() {
     JobApplication[]
   >([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
+  const [editingJob, setEditingJob] = useState<JobApplication | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-
-  const isEditing = useStore((state) => state.isEditing);
 
   const fetchApplications = async () => {
     try {
@@ -64,11 +61,11 @@ function App() {
   }
 
   const handleFormSuccess = () => {
-    setShowForm(false);
+    setEditingJob(null);
     fetchApplications();
   };
 
-  const displayForm = showForm || isEditing;
+  const displayForm = editingJob !== null;
 
   const getStatusCount = (status: JobApplication["status"]) => {
     return applications.filter((app) => app.status === status).length;
@@ -88,7 +85,10 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <Header setShowForm={setShowForm} signOut={signOut} />
+          <Header
+            setShowForm={() => setEditingJob({} as JobApplication)}
+            signOut={signOut}
+          />
 
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
             {statuses.map((status) => (
@@ -134,7 +134,7 @@ function App() {
             </p>
             {statusFilter === "all" && (
               <button
-                onClick={() => setShowForm(true)}
+                onClick={() => setEditingJob({} as JobApplication)}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <Plus className="w-5 h-5" />
@@ -149,6 +149,7 @@ function App() {
                 key={application.id}
                 application={application}
                 onUpdate={fetchApplications}
+                onEdit={(job) => setEditingJob(job)}
               />
             ))}
           </div>
@@ -157,8 +158,9 @@ function App() {
 
       {displayForm && (
         <JobApplicationForm
+          jobToEdit={editingJob}
           onSuccess={handleFormSuccess}
-          onCancel={() => setShowForm(false)}
+          onCancel={() => setEditingJob(null)}
         />
       )}
     </div>

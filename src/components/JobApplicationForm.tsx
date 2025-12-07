@@ -1,21 +1,21 @@
 import { useState } from "react";
-import { useStore } from "../store/store";
-import { supabase } from "../lib/supabase";
+import { supabase, JobApplication } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
 import { X } from "lucide-react";
 
 interface JobApplicationFormProps {
+  jobToEdit: JobApplication | null;
   onSuccess: () => void;
   onCancel: () => void;
 }
 
 export default function JobApplicationForm({
+  jobToEdit,
   onSuccess,
   onCancel,
 }: JobApplicationFormProps) {
   const { user } = useAuth();
-  const jobApp = useStore((state) => state.jobInEdit);
-  const toggleEditing = useStore((state) => state.toggleEditing);
+  const jobApp = jobToEdit?.id ? jobToEdit : undefined;
 
   const [formData, setFormData] = useState({
     company_name: jobApp?.company_name || "",
@@ -65,7 +65,6 @@ export default function JobApplicationForm({
       );
     } finally {
       setIsSubmitting(false);
-      toggleEditing();
     }
   };
 
@@ -127,7 +126,7 @@ export default function JobApplicationForm({
                 htmlFor="position_title"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Position Title *
+                Position *
               </label>
               <input
                 type="text"

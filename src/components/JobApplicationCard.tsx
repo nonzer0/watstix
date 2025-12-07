@@ -10,12 +10,12 @@ import {
   Edit,
   ExternalLink,
 } from "lucide-react";
-import { useStore } from "../store/store";
 import { JobApplication, supabase } from "../lib/supabase";
 
 interface JobApplicationCardProps {
   application: JobApplication;
   onUpdate: () => void;
+  onEdit: (job: JobApplication) => void;
 }
 
 const statusColors = {
@@ -30,6 +30,7 @@ const statusColors = {
 export default function JobApplicationCard({
   application,
   onUpdate,
+  onEdit,
 }: JobApplicationCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -50,15 +51,6 @@ export default function JobApplicationCard({
     } finally {
       setIsDeleting(false);
     }
-  };
-
-  const toggleEditing = useStore((state) => state.toggleEditing);
-  const updateJobInEdit = useStore((state) => state.updateJobInEdit);
-
-  const handleEdit = async () => {
-    console.log("Edit functionality to be implemented");
-    toggleEditing();
-    updateJobInEdit(application);
   };
 
   const handleStatusChange = async (newStatus: JobApplication["status"]) => {
@@ -104,7 +96,7 @@ export default function JobApplicationCard({
             <Trash2 className="w-5 h-5" />
           </button>
           <button
-            onClick={handleEdit}
+            onClick={() => onEdit(application)}
             className="text-gray-400 hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50"
             title="Edit application"
           >
