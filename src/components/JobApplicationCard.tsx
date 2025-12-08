@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Briefcase,
   MapPin,
   DollarSign,
   Calendar,
@@ -123,7 +122,7 @@ export default function JobApplicationCard({
         <div className="flex items-center gap-2 text-gray-600">
           <Calendar className="w-4 h-4" />
           <span className="text-sm">
-            Applied on {formatDate(application.application_date)}
+            Applied {formatDate(application.application_date)}
           </span>
         </div>
 
