@@ -5,3 +5,7 @@
 .input-label {
   @apply block text-sm font-medium text-gray-700 mb-1;
 }
+
+.subtle-btn {
+  @apply text-gray-400 transition-colors p-2 rounded-lg;
+}
