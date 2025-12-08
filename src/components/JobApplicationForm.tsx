@@ -104,10 +104,7 @@ export default function JobApplicationForm({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label
-                htmlFor="company_name"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="company_name" className="input-label">
                 Company Name *
               </label>
               <input
@@ -117,15 +114,12 @@ export default function JobApplicationForm({
                 required
                 value={formData.company_name}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
 
             <div>
-              <label
-                htmlFor="position_title"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="position_title" className="input-label">
                 Position *
               </label>
               <input
@@ -135,15 +129,12 @@ export default function JobApplicationForm({
                 required
                 value={formData.position_title}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
 
             <div>
-              <label
-                htmlFor="location"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="location" className="input-label">
                 Location
               </label>
               <input
@@ -153,15 +144,12 @@ export default function JobApplicationForm({
                 value={formData.location}
                 onChange={handleChange}
                 placeholder="e.g., San Francisco, CA"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
 
             <div>
-              <label
-                htmlFor="salary_range"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="salary_range" className="input-label">
                 Salary Range
               </label>
               <input
@@ -171,15 +159,12 @@ export default function JobApplicationForm({
                 value={formData.salary_range}
                 onChange={handleChange}
                 placeholder="e.g., $80k - $120k"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
 
             <div>
-              <label
-                htmlFor="application_date"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="application_date" className="input-label">
                 Application Date *
               </label>
               <input
@@ -189,15 +174,12 @@ export default function JobApplicationForm({
                 required
                 value={formData.application_date}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
 
             <div>
-              <label
-                htmlFor="status"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="status" className="input-label">
                 Status *
               </label>
               <select
@@ -206,7 +188,7 @@ export default function JobApplicationForm({
                 required
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="input-field"
               >
                 <option value="applied">Applied</option>
                 <option value="interviewing">Interviewing</option>
@@ -218,10 +200,7 @@ export default function JobApplicationForm({
             </div>
 
             <div>
-              <label
-                htmlFor="contact_person"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="contact_person" className="input-label">
                 Contact Person
               </label>
               <input
@@ -231,15 +210,12 @@ export default function JobApplicationForm({
                 value={formData.contact_person}
                 onChange={handleChange}
                 placeholder="Recruiter name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
 
             <div>
-              <label
-                htmlFor="contact_email"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="contact_email" className="input-label">
                 Contact Email
               </label>
               <input
@@ -249,16 +225,13 @@ export default function JobApplicationForm({
                 value={formData.contact_email}
                 onChange={handleChange}
                 placeholder="recruiter@company.com"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
           </div>
 
           <div>
-            <label
-              htmlFor="job_posting_link"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="job_posting_link" className="input-label">
               Job Posting Link
             </label>
             <input
@@ -268,14 +241,11 @@ export default function JobApplicationForm({
               value={formData.job_posting_link}
               onChange={handleChange}
               placeholder="https://company.com/job-posting"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="input-field"
             />
           </div>
           <div>
-            <label
-              htmlFor="job_description"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="job_description" className="input-label">
               Job Description
             </label>
             <textarea
@@ -285,15 +255,12 @@ export default function JobApplicationForm({
               onChange={handleChange}
               rows={4}
               placeholder="Key responsibilities, requirements, etc."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="input-field"
             />
           </div>
 
           <div>
-            <label
-              htmlFor="notes"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="notes" className="input-label">
               Notes
             </label>
             <textarea
@@ -303,7 +270,7 @@ export default function JobApplicationForm({
               onChange={handleChange}
               rows={3}
               placeholder="Additional notes, follow-up actions, etc."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="input-field"
             />
           </div>
 
