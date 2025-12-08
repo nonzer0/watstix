@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Plus, Briefcase } from "lucide-react";
-import { supabase, JobApplication } from "./lib/supabase";
+import { JobApplication, StatusFilter, StatusType } from "./types/types";
+import { supabase } from "./lib/supabase";
 import { useAuth } from "./contexts/AuthContext";
-import { Header } from "./components/Header/Header";
+import { Header } from "./components/Header";
 import JobApplicationForm from "./components/JobApplicationForm";
 import JobApplicationCard from "./components/JobApplicationCard";
 import { Loading } from "./components/Loading";
 import AuthForm from "./components/AuthForm";
-
-type StatusFilter = "all" | JobApplication["status"];
+import { JobStatusBtn } from "./components/JobStatusBtn";
 
 function App() {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -67,11 +67,7 @@ function App() {
 
   const displayForm = editingJob !== null;
 
-  const getStatusCount = (status: JobApplication["status"]) => {
-    return applications.filter((app) => app.status === status).length;
-  };
-
-  const statuses: { value: StatusFilter; label: string; color: string }[] = [
+  const statuses: StatusType[] = [
     { value: "all", label: "All", color: "bg-gray-600" },
     { value: "applied", label: "Applied", color: "bg-blue-600" },
     { value: "interviewing", label: "Interviewing", color: "bg-yellow-600" },
@@ -89,29 +85,18 @@ function App() {
             setShowForm={() => setEditingJob({} as JobApplication)}
             signOut={signOut}
           />
-
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
             {statuses.map((status) => (
-              <button
+              <JobStatusBtn
                 key={status.value}
-                onClick={() => setStatusFilter(status.value)}
-                className={`px-4 py-3 rounded-lg border-2 transition-all ${
-                  statusFilter === status.value
-                    ? `${status.color} text-white border-transparent shadow-md`
-                    : "bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:shadow"
-                }`}
-              >
-                <div className="text-sm font-medium">{status.label}</div>
-                <div className="text-xl font-bold">
-                  {status.value === "all"
-                    ? applications.length
-                    : getStatusCount(status.value as JobApplication["status"])}
-                </div>
-              </button>
+                status={status}
+                statusFilter={statusFilter}
+                setStatusFilter={setStatusFilter}
+                applications={applications}
+              />
             ))}
           </div>
         </div>
-
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <div className="text-center">
