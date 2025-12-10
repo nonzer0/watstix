@@ -1,4 +1,4 @@
-import { Plus, Briefcase, LogOut } from "lucide-react";
+import { Briefcase, LogOut } from "lucide-react";
 
 interface HeaderProps {
   setShowForm: (show: boolean) => void;
@@ -14,7 +14,7 @@ export function Header({ setShowForm, signOut }: HeaderProps) {
         </div>
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
-            Job Application Tracker
+            Application Tracker
           </h1>
           <p className="text-gray-600">
             Manage and track your job applications
@@ -26,7 +26,6 @@ export function Header({ setShowForm, signOut }: HeaderProps) {
           onClick={() => setShowForm(true)}
           className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
         >
-          <Plus className="w-5 h-5" />
           Add Application
         </button>
         <button
