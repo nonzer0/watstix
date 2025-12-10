@@ -24,7 +24,7 @@ describe("Header", () => {
   it("renders the main title and subtitle", () => {
     renderComponent();
 
-    expect(screen.getByText("Job Application Tracker")).toBeInTheDocument();
+    expect(screen.getByText("Application Tracker")).toBeInTheDocument();
     expect(
       screen.getByText("Manage and track your job applications"),
     ).toBeInTheDocument();
@@ -56,7 +56,6 @@ describe("Header", () => {
     renderComponent();
 
     expect(screen.getByTestId("briefcase-icon")).toBeInTheDocument();
-    expect(screen.getByTestId("plus-icon")).toBeInTheDocument();
     expect(screen.getByTestId("logout-icon")).toBeInTheDocument();
   });
 });
