@@ -25,7 +25,7 @@ export function JobStatusBtn({
       className={`px-4 py-3 rounded-lg border-2 transition-all ${
         statusFilter === status.value
           ? `${status.color} text-white border-transparent shadow-md`
-          : "bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:shadow"
+          : "bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:shadow-sm"
       }`}
     >
       <div className="text-sm font-medium">{status.label}</div>
