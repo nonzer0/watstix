@@ -52,10 +52,10 @@ export default function AuthForm() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center p-4 bg-blue-600 rounded-2xl mb-4">
+          <div className="inline-flex items-center justify-center p-4 primary-bg-color rounded-2xl mb-4">
             <Briefcase className="w-12 h-12 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold primary-text-color mb-2">
             Job Application Tracker
           </h1>
           <p className="text-gray-600">
@@ -72,7 +72,7 @@ export default function AuthForm() {
               }}
               className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
                 !isSignUp
-                  ? "bg-blue-600 text-white"
+                  ? "primary-bg-color text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
@@ -85,7 +85,7 @@ export default function AuthForm() {
               }}
               className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
                 isSignUp
-                  ? "bg-blue-600 text-white"
+                  ? "primary-bg-color text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
@@ -159,7 +159,7 @@ export default function AuthForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 primary-bg-color text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
               {loading ? (
                 <>

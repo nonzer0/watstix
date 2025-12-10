@@ -6,6 +6,34 @@
   @apply block text-sm font-medium text-gray-700 mb-1;
 }
 
+.primary-bg-color {
+  @apply bg-blue-600;
+}
+
+.secondary-bg-color {
+  @apply bg-gray-600;
+}
+
+.hover-primary-bg-color {
+  @apply hover:bg-blue-700;
+}
+
+.hover-secondary-bg-color {
+  @apply hover:bg-gray-700;
+}
+
+.primary-text-color {
+  @apply text-gray-900;
+}
+
+.secondary-text-color {
+  @apply text-gray-600;
+}
+
+.btn {
+  @apply flex items-center gap-2 px-6 py-3  text-white rounded-lg hover-primary-bg-color transition-colors shadow-md hover:shadow-lg;
+}
+
 .subtle-btn {
   @apply text-gray-400 transition-colors p-2 rounded-lg;
 }
