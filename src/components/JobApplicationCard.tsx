@@ -8,7 +8,6 @@ import {
   Trash2,
   Edit,
   ExternalLink,
-  LucideIcon,
 } from "lucide-react";
 import { JobApplication, supabase } from "../lib/supabase";
 
@@ -75,16 +74,6 @@ export default function JobApplicationCard({
     });
   };
 
-  function renderJobField(value: string, Icon: LucideIcon) {
-    if (!value) return null;
-    return (
-      <div className="flex items-center gap-2 text-gray-600">
-        <Icon className="w-4 h-4" />
-        <span className="text-sm">{value}</span>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-start justify-between mb-4">
@@ -100,14 +89,14 @@ export default function JobApplicationCard({
           <button
             onClick={handleDelete}
             disabled={isDeleting}
-            className="subtle-btn hover:text-red-600 hover:bg-red-50"
+            className="text-gray-400 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50"
             title="Delete application"
           >
             <Trash2 className="w-5 h-5" />
           </button>
           <button
             onClick={() => onEdit(application)}
-            className="subtle-btn hover:text-blue-600 hover:bg-blue-50"
+            className="text-gray-400 hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50"
             title="Edit application"
           >
             <Edit className="w-5 h-5" />
@@ -116,18 +105,40 @@ export default function JobApplicationCard({
       </div>
 
       <div className="space-y-3 mb-4">
-        {application.location && renderJobField(application.location, MapPin)}
+        {application.location && (
+          <div className="flex items-center gap-2 text-gray-600">
+            <MapPin className="w-4 h-4" />
+            <span className="text-sm">{application.location}</span>
+          </div>
+        )}
 
-        {application.salary_range &&
-          renderJobField(application.salary_range, DollarSign)}
+        {application.salary_range && (
+          <div className="flex items-center gap-2 text-gray-600">
+            <DollarSign className="w-4 h-4" />
+            <span className="text-sm">{application.salary_range}</span>
+          </div>
+        )}
 
-        {renderJobField(application.application_date, Calendar)}
+        <div className="flex items-center gap-2 text-gray-600">
+          <Calendar className="w-4 h-4" />
+          <span className="text-sm">
+            Applied {formatDate(application.application_date)}
+          </span>
+        </div>
 
-        {application.contact_person &&
-          renderJobField(application.contact_person, User)}
+        {application.contact_person && (
+          <div className="flex items-center gap-2 text-gray-600">
+            <User className="w-4 h-4" />
+            <span className="text-sm">{application.contact_person}</span>
+          </div>
+        )}
 
-        {application.contact_email &&
-          renderJobField(application.contact_email, Mail)}
+        {application.contact_email && (
+          <div className="flex items-center gap-2 text-gray-600">
+            <Mail className="w-4 h-4" />
+            <span className="text-sm">{application.contact_email}</span>
+          </div>
+        )}
       </div>
 
       {application.job_posting_link && (
