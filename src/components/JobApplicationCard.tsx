@@ -175,7 +175,7 @@ export default function JobApplicationCard({
           onChange={(e) =>
             handleStatusChange(e.target.value as JobApplication["status"])
           }
-          className={`px-3 py-1.5 rounded-full text-sm font-medium border ${statusColors[application.status]} cursor-pointer focus:ring-2 focus:ring-blue-500 focus:outline-none`}
+          className={`px-3 py-1.5 rounded-full text-sm font-medium border ${statusColors[application.status]} cursor-pointer focus:ring-2 focus:ring-blue-500 focus:outline-hidden`}
         >
           <option value="applied">Applied</option>
           <option value="interviewing">Interviewing</option>
