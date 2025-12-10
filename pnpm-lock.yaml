@@ -10,6 +10,12 @@ importers:
       "@supabase/supabase-js":
         specifier: ^2.57.4
         version: 2.76.1
+      "@tailwindcss/vite":
+        specifier: ^4.1.17
+        version: 4.1.17(vite@7.2.6(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1))
+      daisyui:
+        specifier: ^5.5.8
+        version: 5.5.8
       lucide-react:
         specifier: ^0.344.0
         version: 0.344.0(react@18.3.1)
@@ -1102,6 +1108,14 @@ packages:
         integrity: sha512-+nKl9N9mN5uJ+M7dBOOCzINw94MPstNR/GtIhz1fpZysxL/4a+No64jCBD6CPN+bIHWFx3KWuu8XJRrj/572Dw==,
       }
 
+  "@tailwindcss/vite@4.1.17":
+    resolution:
+      {
+        integrity: sha512-4+9w8ZHOiGnpcGI6z1TVVfWaX/koK7fKeSYF3qlYg2xpBtbteP2ddBxiarL+HVgfSJGeK5RIxRQmKm4rTJJAwA==,
+      }
+    peerDependencies:
+      vite: ^5.2.0 || ^6 || ^7
+
   "@testing-library/dom@10.4.1":
     resolution:
       {
@@ -1620,6 +1634,12 @@ packages:
     resolution:
       {
         integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==,
+      }
+
+  daisyui@5.5.8:
+    resolution:
+      {
+        integrity: sha512-6psL9jIEOFOw68V10j/BKCWcRgx8dh81mmNxShr+g7HDM6UHNoPharlp9zq/PQkHNuGU1ZQsajR3HgpvavbRKQ==,
       }
 
   data-urls@6.0.0:
@@ -3700,6 +3720,13 @@ snapshots:
       postcss: 8.5.6
       tailwindcss: 4.1.17
 
+  "@tailwindcss/vite@4.1.17(vite@7.2.6(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1))":
+    dependencies:
+      "@tailwindcss/node": 4.1.17
+      "@tailwindcss/oxide": 4.1.17
+      tailwindcss: 4.1.17
+      vite: 7.2.6(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1)
+
   "@testing-library/dom@10.4.1":
     dependencies:
       "@babel/code-frame": 7.27.1
@@ -4051,6 +4078,8 @@ snapshots:
       css-tree: 3.1.0
 
   csstype@3.1.3: {}
+
+  daisyui@5.5.8: {}
 
   data-urls@6.0.0:
     dependencies:
