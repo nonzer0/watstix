@@ -13,16 +13,25 @@ const dirname =
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    include: ["vitest-browser-react"],
+    // include: ["vitest-browser-react"],
   },
   test: {
     globals: true,
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
-    // browser: {
-    // ... your config
-    // },
     projects: [
+      // Unit tests project
+      {
+        test: {
+          name: "unit",
+          globals: true,
+          environment: "jsdom",
+          setupFiles: ["./src/test/setup.ts"],
+          include: ["**/*.{test,spec}.{ts,tsx}"],
+          exclude: ["**/node_modules/**", "**/dist/**", "**/stories/**"],
+        },
+      },
+      // Storybook tests project
       {
         extends: true,
         plugins: [
