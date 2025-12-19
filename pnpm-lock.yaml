@@ -41,9 +41,6 @@ importers:
       "@storybook/addon-docs":
         specifier: 10.1.9
         version: 10.1.9(@types/react@18.3.26)(esbuild@0.25.12)(rollup@4.52.5)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(vite@7.2.6(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1))
-      "@storybook/addon-onboarding":
-        specifier: 10.1.9
-        version: 10.1.9(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       "@storybook/addon-vitest":
         specifier: 10.1.9
         version: 10.1.9(@vitest/browser-playwright@4.0.16)(@vitest/browser@4.0.16(vite@7.2.6(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1))(vitest@4.0.16))(@vitest/runner@4.0.16)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(vitest@4.0.16)
@@ -1055,14 +1052,6 @@ packages:
     resolution:
       {
         integrity: sha512-SvwEZ32lyk5p3PRmE3pmfAhs4HMiVo5zxjTBVmK9kgz9zGgWCTlikb56tJ998hVe52CFyCvt3I9rkHeYMCKPww==,
-      }
-    peerDependencies:
-      storybook: ^10.1.9
-
-  "@storybook/addon-onboarding@10.1.9":
-    resolution:
-      {
-        integrity: sha512-9f0F5DBA01jZSZXrOzhiuubMdQrej8C15mrIcXoPFNPNbvx9IBYsAiVWv3Tj76mF1IuvVy0J7vzNtGT+kMvKzg==,
       }
     peerDependencies:
       storybook: ^10.1.9
@@ -4592,10 +4581,6 @@ snapshots:
       - rollup
       - vite
       - webpack
-
-  "@storybook/addon-onboarding@10.1.9(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))":
-    dependencies:
-      storybook: 10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   "@storybook/addon-vitest@10.1.9(@vitest/browser-playwright@4.0.16)(@vitest/browser@4.0.16(vite@7.2.6(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.1))(vitest@4.0.16))(@vitest/runner@4.0.16)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(vitest@4.0.16)":
     dependencies:
