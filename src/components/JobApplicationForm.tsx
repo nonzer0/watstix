@@ -83,7 +83,7 @@ export default function JobApplicationForm({
   const submitLabel = jobApp ? "Update" : "Add Application";
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">{formLabel}</h2>
@@ -104,221 +104,189 @@ export default function JobApplicationForm({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label
-                htmlFor="company_name"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Company Name *
-              </label>
-              <input
-                type="text"
-                id="company_name"
-                name="company_name"
-                required
-                value={formData.company_name}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <fieldset className="fieldset">
+                <legend className="legend">Company Name *</legend>
+                <input
+                  type="text"
+                  id="company_name"
+                  name="company_name"
+                  required
+                  value={formData.company_name}
+                  onChange={handleChange}
+                  className="input input-neutral"
+                />
+              </fieldset>
             </div>
 
             <div>
-              <label
-                htmlFor="position_title"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Position *
-              </label>
-              <input
-                type="text"
-                id="position_title"
-                name="position_title"
-                required
-                value={formData.position_title}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <fieldset className="fieldset">
+                <legend className="legend">Position *</legend>
+                <input
+                  type="text"
+                  id="position_title"
+                  name="position_title"
+                  required
+                  value={formData.position_title}
+                  onChange={handleChange}
+                  className="input input-neutral"
+                />
+              </fieldset>
             </div>
 
             <div>
-              <label
-                htmlFor="location"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Location
-              </label>
-              <input
-                type="text"
-                id="location"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                placeholder="e.g., San Francisco, CA"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <fieldset className="fieldset">
+                <legend className="legend">Location</legend>
+                <input
+                  type="text"
+                  id="location"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  placeholder="e.g., San Francisco, CA"
+                  className="input input-neutral"
+                />
+              </fieldset>
             </div>
 
             <div>
-              <label
-                htmlFor="salary_range"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Salary Range
-              </label>
-              <input
-                type="text"
-                id="salary_range"
-                name="salary_range"
-                value={formData.salary_range}
-                onChange={handleChange}
-                placeholder="e.g., $80k - $120k"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <fieldset className="fieldset">
+                <legend className="legend">Salary Range</legend>
+                <input
+                  type="text"
+                  id="salary_range"
+                  name="salary_range"
+                  value={formData.salary_range}
+                  onChange={handleChange}
+                  placeholder="e.g., $80k - $120k"
+                  className="input input-neutral"
+                />
+              </fieldset>
             </div>
 
             <div>
-              <label
-                htmlFor="application_date"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Application Date *
-              </label>
-              <input
-                type="date"
-                id="application_date"
-                name="application_date"
-                required
-                value={formData.application_date}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <fieldset className="fieldset">
+                <legend className="legend">Application Date *</legend>
+                <input
+                  type="date"
+                  id="application_date"
+                  name="application_date"
+                  required
+                  value={formData.application_date}
+                  onChange={handleChange}
+                  className="input input-neutral"
+                />
+              </fieldset>
             </div>
 
             <div>
-              <label
-                htmlFor="status"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Status *
-              </label>
-              <select
-                id="status"
-                name="status"
-                required
-                value={formData.status}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="applied">Applied</option>
-                <option value="interviewing">Interviewing</option>
-                <option value="offered">Offered</option>
-                <option value="rejected">Rejected</option>
-                <option value="accepted">Accepted</option>
-                <option value="withdrawn">Withdrawn</option>
-              </select>
+              <fieldset className="fieldset">
+                <legend className="legend">Status *</legend>
+                <select
+                  id="status"
+                  name="status"
+                  required
+                  value={formData.status}
+                  onChange={handleChange}
+                  className="input input-neutral"
+                >
+                  <option value="applied">Applied</option>
+                  <option value="interviewing">Interviewing</option>
+                  <option value="offered">Offered</option>
+                  <option value="rejected">Rejected</option>
+                  <option value="accepted">Accepted</option>
+                  <option value="withdrawn">Withdrawn</option>
+                </select>
+              </fieldset>
             </div>
 
             <div>
-              <label
-                htmlFor="contact_person"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Contact Person
-              </label>
-              <input
-                type="text"
-                id="contact_person"
-                name="contact_person"
-                value={formData.contact_person}
-                onChange={handleChange}
-                placeholder="Recruiter name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <fieldset className="fieldset">
+                <legend className="legend">Contact Person</legend>
+                <input
+                  type="text"
+                  id="contact_person"
+                  name="contact_person"
+                  value={formData.contact_person}
+                  onChange={handleChange}
+                  placeholder="Recruiter name"
+                  className="input input-neutral"
+                />
+              </fieldset>
             </div>
 
             <div>
-              <label
-                htmlFor="contact_email"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Contact Email
-              </label>
-              <input
-                type="email"
-                id="contact_email"
-                name="contact_email"
-                value={formData.contact_email}
-                onChange={handleChange}
-                placeholder="recruiter@company.com"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <fieldset className="fieldset">
+                <legend className="legend">Contact Email</legend>
+                <input
+                  type="email"
+                  id="contact_email"
+                  name="contact_email"
+                  value={formData.contact_email}
+                  onChange={handleChange}
+                  placeholder="recruiter@company.com"
+                  className="input input-neutral"
+                />
+              </fieldset>
             </div>
           </div>
 
           <div>
-            <label
-              htmlFor="job_posting_link"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Job Posting Link
-            </label>
-            <input
-              type="url"
-              id="job_posting_link"
-              name="job_posting_link"
-              value={formData.job_posting_link}
-              onChange={handleChange}
-              placeholder="https://company.com/job-posting"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="job_description"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Job Description
-            </label>
-            <textarea
-              id="job_description"
-              name="job_description"
-              value={formData.job_description}
-              onChange={handleChange}
-              rows={4}
-              placeholder="Key responsibilities, requirements, etc."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <fieldset className="fieldset">
+              <legend className="legend">Job Posting Link</legend>
+              <input
+                type="url"
+                id="job_posting_link"
+                name="job_posting_link"
+                value={formData.job_posting_link}
+                onChange={handleChange}
+                placeholder="https://company.com/job-posting"
+                className="input input-neutral w-full"
+              />
+            </fieldset>
           </div>
 
           <div>
-            <label
-              htmlFor="notes"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Notes
-            </label>
-            <textarea
-              id="notes"
-              name="notes"
-              value={formData.notes}
-              onChange={handleChange}
-              rows={3}
-              placeholder="Additional notes, follow-up actions, etc."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <fieldset className="fieldset">
+              <legend className="legend">Job Description</legend>
+              <textarea
+                id="job_description"
+                name="job_description"
+                value={formData.job_description}
+                onChange={handleChange}
+                rows={4}
+                placeholder="Key responsibilities, requirements, etc."
+                className="textarea textarea-neutral w-full"
+              />
+            </fieldset>
+          </div>
+
+          <div>
+            <fieldset className="fieldset">
+              <legend className="legend">Notes</legend>
+              <textarea
+                id="notes"
+                name="notes"
+                value={formData.notes}
+                onChange={handleChange}
+                rows={3}
+                placeholder="Additional notes, follow-up actions, etc."
+                className="textarea textarea-neutral w-full"
+              />
+            </fieldset>
           </div>
 
           <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              className="btn btn-secondary btn-lg px-4"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-primary btn-lg px-4"
             >
               {isSubmitting ? "Adding..." : submitLabel}
             </button>
