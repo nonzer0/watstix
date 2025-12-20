@@ -78,7 +78,7 @@ function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-base-100">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
           <Header
@@ -105,7 +105,7 @@ function App() {
             </div>
           </div>
         ) : filteredApplications.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-lg shadow-md border border-gray-200">
+          <div className="text-center py-20 bg-base-200 rounded-lg shadow-md border border-gray-200">
             <Briefcase className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
               {statusFilter === "all"
@@ -120,7 +120,7 @@ function App() {
             {statusFilter === "all" && (
               <button
                 onClick={() => setEditingJob({} as JobApplication)}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <Plus className="w-5 h-5" />
                 Add Your First Application

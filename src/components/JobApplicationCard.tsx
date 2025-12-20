@@ -10,6 +10,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { JobApplication, supabase } from "../lib/supabase";
+import { jobService } from "../services/jobService";
 
 interface JobApplicationCardProps {
   application: JobApplication;
@@ -37,19 +38,7 @@ export default function JobApplicationCard({
     if (!confirm("Are you sure you want to delete this application?")) return;
 
     setIsDeleting(true);
-    try {
-      const { error } = await supabase
-        .from("job_applications")
-        .delete()
-        .eq("id", application.id);
-
-      if (error) throw error;
-      onUpdate();
-    } catch (err) {
-      alert("Failed to delete application");
-    } finally {
-      setIsDeleting(false);
-    }
+    await jobService.deleteJobById(application.id);
   };
 
   const handleStatusChange = async (newStatus: JobApplication["status"]) => {

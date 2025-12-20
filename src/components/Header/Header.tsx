@@ -9,14 +9,14 @@ export function Header({ setShowForm, signOut }: HeaderProps) {
   return (
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-center gap-3">
-        <div className="p-3 bg-blue-600 rounded-lg">
-          <Briefcase className="w-8 h-8 text-white" />
+        <div className="bg-primary text-primary-content p-3 rounded-full">
+          <Briefcase className="w-6 h-6 text-white bg-primary" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-primary">
             Application Tracker
           </h1>
-          <p className="text-gray-600">
+          <p className="text-secondary">
             Manage and track your job applications
           </p>
         </div>
@@ -24,16 +24,16 @@ export function Header({ setShowForm, signOut }: HeaderProps) {
       <div className="flex items-center gap-3">
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
+          className="btn btn-primary btn-lg"
         >
           Add Application
         </button>
         <button
           onClick={signOut}
-          className="flex items-center gap-2 px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors shadow-md hover:shadow-lg"
+          className="btn btn-primary btn-lg px-4"
           title="Sign Out"
         >
-          <LogOut className="w-5 h-5" />
+          <LogOut className="w-6 h-6" />
         </button>
       </div>
     </div>
