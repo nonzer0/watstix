@@ -37,7 +37,23 @@ const getJobById = async (id: string): Promise<JobApplication | null> => {
   }
 };
 
+const deleteJobById = async (id: string): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from("job_applications")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
+    return true;
+  } catch (err) {
+    console.error("Failed to delete application by ID:", err);
+    return false;
+  }
+};
+
 export const jobService = {
   getJobs,
   getJobById,
+  deleteJobById,
 };

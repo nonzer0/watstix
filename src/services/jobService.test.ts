@@ -110,5 +110,41 @@ describe("jobService", () => {
         mockError,
       );
     });
+
+    describe("deleteJobById", () => {
+      it("should return true when deletion is successful", async () => {
+        const mockFrom = vi.fn().mockReturnValue({
+          delete: vi.fn().mockReturnValue({
+            eq: vi.fn().mockResolvedValue({ error: null }),
+          }),
+        });
+
+        (supabase.from as any) = mockFrom;
+
+        const result = await jobService.deleteJobById("1");
+
+        expect(result).toBe(true);
+        expect(mockFrom).toHaveBeenCalledWith("job_applications");
+      });
+
+      it("should return false and log error when deletion fails", async () => {
+        const mockError = new Error("Delete failed");
+        const mockFrom = vi.fn().mockReturnValue({
+          delete: vi.fn().mockReturnValue({
+            eq: vi.fn().mockResolvedValue({ error: mockError }),
+          }),
+        });
+
+        (supabase.from as any) = mockFrom;
+
+        const result = await jobService.deleteJobById("1");
+
+        expect(result).toBe(false);
+        expect(console.error).toHaveBeenCalledWith(
+          "Failed to delete application by ID:",
+          mockError,
+        );
+      });
+    });
   });
 });
