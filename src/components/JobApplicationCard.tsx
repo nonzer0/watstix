@@ -9,6 +9,7 @@ import {
   Edit,
   ExternalLink,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { JobApplication, supabase } from "../lib/supabase";
 import { jobService } from "../services/jobService";
 
@@ -63,14 +64,24 @@ export default function JobApplicationCard({
     });
   };
 
+  function renderJobValue(val: string | null, Icon: LucideIcon) {
+    if (!val) return null;
+    return (
+      <div className="flex items-center gap-2 text-color-neutral">
+        <Icon className="w-4 h-4" />
+        <span className="text-sm">{val}</span>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+    <div className="bg-base-400 rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
-          <h3 className="text-xl font-bold text-gray-900 mb-1">
+          <h3 className="text-xl font-bold text-color-neutral mb-1">
             {application.position_title}
           </h3>
-          <p className="text-lg text-gray-700 font-medium">
+          <p className="text-lg text-color-neutral font-medium">
             {application.company_name}
           </p>
         </div>
@@ -94,40 +105,11 @@ export default function JobApplicationCard({
       </div>
 
       <div className="space-y-3 mb-4">
-        {application.location && (
-          <div className="flex items-center gap-2 text-gray-600">
-            <MapPin className="w-4 h-4" />
-            <span className="text-sm">{application.location}</span>
-          </div>
-        )}
-
-        {application.salary_range && (
-          <div className="flex items-center gap-2 text-gray-600">
-            <DollarSign className="w-4 h-4" />
-            <span className="text-sm">{application.salary_range}</span>
-          </div>
-        )}
-
-        <div className="flex items-center gap-2 text-gray-600">
-          <Calendar className="w-4 h-4" />
-          <span className="text-sm">
-            Applied {formatDate(application.application_date)}
-          </span>
-        </div>
-
-        {application.contact_person && (
-          <div className="flex items-center gap-2 text-gray-600">
-            <User className="w-4 h-4" />
-            <span className="text-sm">{application.contact_person}</span>
-          </div>
-        )}
-
-        {application.contact_email && (
-          <div className="flex items-center gap-2 text-gray-600">
-            <Mail className="w-4 h-4" />
-            <span className="text-sm">{application.contact_email}</span>
-          </div>
-        )}
+        {renderJobValue(application.location, MapPin)}
+        {renderJobValue(application.salary_range, DollarSign)}
+        {renderJobValue(application.application_date, Calendar)}
+        {renderJobValue(application.contact_person, User)}
+        {renderJobValue(application.contact_email, Mail)}
       </div>
 
       {application.job_posting_link && (
@@ -145,16 +127,16 @@ export default function JobApplicationCard({
       )}
 
       {application.job_description && (
-        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-700 line-clamp-3">
+        <div className="mb-4 p-3 bg-accent/70 rounded-lg">
+          <p className="text-sm text-accent-content line-clamp-3">
             {application.job_description}
           </p>
         </div>
       )}
 
       {application.notes && (
-        <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
-          <p className="text-sm text-gray-700">{application.notes}</p>
+        <div className="mb-4 p-3 bg-info/70 rounded-lg border border-blue-100">
+          <p className="text-sm text-info-content">{application.notes}</p>
         </div>
       )}
 
@@ -174,7 +156,7 @@ export default function JobApplicationCard({
           <option value="withdrawn">Withdrawn</option>
         </select>
 
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-color-neutral">
           Updated {formatDate(application.updated_at)}
         </span>
       </div>
