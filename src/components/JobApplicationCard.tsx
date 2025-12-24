@@ -67,7 +67,7 @@ export default function JobApplicationCard({
     });
   };
 
-  function renderJobValue(val: string | null, Icon: LucideIcon) {
+  function renderJobValue(val: string | null | undefined, Icon: LucideIcon) {
     if (!val) return null;
     return (
       <div className="flex items-center gap-2 text-color-neutral">
