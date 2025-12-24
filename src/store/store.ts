@@ -1,6 +1,6 @@
 import { create, StoreApi, UseBoundStore } from "zustand";
 import { combine } from "zustand/middleware";
-import type { JobApplication } from "../types/types";
+import type { JobApplication } from "../lib/supabase";
 
 // interface StoreState {
 //     jobs: JobApplication[];
