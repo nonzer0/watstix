@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Plus, Briefcase } from "lucide-react";
 import { JobApplication, StatusFilter, StatusType } from "./types/types";
 import { supabase } from "./lib/supabase";
@@ -24,7 +24,7 @@ function App() {
   const [editingJob, setEditingJob] = useState<JobApplication | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
-  const fetchApplications = async () => {
+  const fetchApplications = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("job_applications")
@@ -38,13 +38,13 @@ function App() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [setJobs]);
 
   useEffect(() => {
     if (user) {
       fetchApplications();
     }
-  }, [user]);
+  }, [user, fetchApplications]);
 
   useEffect(() => {
     if (statusFilter === "all") {
