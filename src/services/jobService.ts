@@ -12,13 +12,10 @@ const getJobs = async (): Promise<JobApplication[]> => {
       jobs.push(...data);
     }
     if (error) throw error;
-    //   setApplications(data || []);
   } catch (err) {
     console.error("Failed to fetch applications:", err);
-  } finally {
-    return jobs;
-    //   setIsLoading(false);
   }
+  return jobs;
 };
 
 const getJobById = async (id: string): Promise<JobApplication | null> => {

@@ -12,6 +12,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { JobApplication, supabase } from "../lib/supabase";
 import { jobService } from "../services/jobService";
+import { useStore } from "../store";
 
 interface JobApplicationCardProps {
   application: JobApplication;
@@ -30,16 +31,18 @@ const statusColors = {
 
 export default function JobApplicationCard({
   application,
-  onUpdate,
   onEdit,
 }: JobApplicationCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const deleteJob = useStore.use.deleteJob();
+  const updateJob = useStore.use.updateJob();
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this application?")) return;
 
     setIsDeleting(true);
     await jobService.deleteJobById(application.id);
+    deleteJob(application.id);
   };
 
   const handleStatusChange = async (newStatus: JobApplication["status"]) => {
@@ -50,9 +53,9 @@ export default function JobApplicationCard({
         .eq("id", application.id);
 
       if (error) throw error;
-      onUpdate();
+      updateJob(application.id, { status: newStatus });
     } catch (err) {
-      alert("Failed to update status");
+      alert(`Failed to update status ${err}`);
     }
   };
 
