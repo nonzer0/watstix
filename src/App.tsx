@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Plus, Briefcase } from "lucide-react";
 import { JobApplication, StatusFilter, StatusType } from "./types/types";
 import { supabase } from "./lib/supabase";
@@ -9,10 +9,14 @@ import JobApplicationCard from "./components/JobApplicationCard";
 import { Loading } from "./components/Loading";
 import AuthForm from "./components/AuthForm";
 import { JobStatusBtn } from "./components/JobStatusBtn";
+import { useStore } from "./store";
 
 function App() {
   const { user, loading: authLoading, signOut } = useAuth();
-  const [applications, setApplications] = useState<JobApplication[]>([]);
+
+  const jobs = useStore.use.jobs();
+  const setJobs = useStore.use.setJobs();
+
   const [filteredApplications, setFilteredApplications] = useState<
     JobApplication[]
   >([]);
@@ -20,7 +24,7 @@ function App() {
   const [editingJob, setEditingJob] = useState<JobApplication | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
-  const fetchApplications = async () => {
+  const fetchApplications = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("job_applications")
@@ -28,29 +32,29 @@ function App() {
         .order("application_date", { ascending: false });
 
       if (error) throw error;
-      setApplications(data || []);
+      setJobs(data || []);
     } catch (err) {
       console.error("Failed to fetch applications:", err);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [setJobs]);
 
   useEffect(() => {
     if (user) {
       fetchApplications();
     }
-  }, [user]);
+  }, [user, fetchApplications]);
 
   useEffect(() => {
     if (statusFilter === "all") {
-      setFilteredApplications(applications);
+      setFilteredApplications(jobs);
     } else {
       setFilteredApplications(
-        applications.filter((app) => app.status === statusFilter),
+        jobs.filter((app) => app.status === statusFilter),
       );
     }
-  }, [applications, statusFilter]);
+  }, [jobs, statusFilter]);
 
   if (authLoading) {
     return <Loading />;
@@ -92,7 +96,7 @@ function App() {
                 status={status}
                 statusFilter={statusFilter}
                 setStatusFilter={setStatusFilter}
-                applications={applications}
+                applications={jobs}
               />
             ))}
           </div>
