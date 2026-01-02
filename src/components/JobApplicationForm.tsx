@@ -84,12 +84,12 @@ export default function JobApplicationForm({
 
   return (
     <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">{formLabel}</h2>
+      <div className="bg-base-200 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-base-200 border-b border-base-200 px-6 py-4 flex items-center justify-between z-10">
+          <h2 className="text-2xl font-bold text-color-neutral">{formLabel}</h2>
           <button
             onClick={onCancel}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-color-neutral hover:text-gray-600 transition-colors"
           >
             <X className="w-6 h-6" />
           </button>
