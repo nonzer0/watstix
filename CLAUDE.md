@@ -224,18 +224,27 @@ export const jobService = {
 ### Component Structure
 
 **Organization**:
-- Complex components get their own folder with `index.ts`, component file, test file, and optional stories
-- Simple components can be single files
-- Always export from `index.ts` for clean imports
+- **Avoid separate folders for components** - Keep components as single files in `src/components/`
+- **Do NOT use barrel files** (`index.ts`) - Import components directly from their files
+- Only use folders when a component has multiple related files that are tightly coupled
+- Co-locate test files next to components with matching names
 
-**Example** (`src/components/Header/`):
+**Example** (`src/components/`):
 ```
-Header/
-├── index.ts              # Re-exports Header
-├── Header.tsx            # Component implementation
-├── Header.spec.tsx       # Unit tests
-└── Header.stories.tsx    # Storybook stories (in src/stories/)
+components/
+├── AuthForm.tsx          # Component
+├── Loading.tsx           # Component
+├── Header.tsx            # Component (legacy - has folder due to existing structure)
+├── Header.spec.tsx       # Test file
+└── JobApplicationCard.tsx
 ```
+
+**Why avoid folders and barrel files?**
+- Simpler file structure and navigation
+- Reduces boilerplate and maintenance overhead
+- Direct imports are more explicit and easier to trace
+- Eliminates issues with circular dependencies
+- Faster builds (no extra re-export layers)
 
 **Component patterns**:
 - Use function components with TypeScript
@@ -359,6 +368,11 @@ export function MyComponent({ prop1, prop2 }: Props) {
 ### Unit Tests (Vitest)
 
 **Location**: `*.test.ts` or `*.spec.tsx` files
+
+**Naming Convention**:
+- Use `.test.ts` for pure TypeScript/logic tests (services, utilities, stores)
+- Use `.spec.tsx` for React component tests
+- This convention helps distinguish between unit tests and component tests at a glance
 
 **Configuration**: `vitest.config.ts`
 - Project: "unit"
@@ -507,6 +521,84 @@ Columns:
 
 ---
 
+## Security Considerations
+
+Security is a **critical priority** for this application. All code changes must consider security implications.
+
+### Key Security Principles
+
+1. **Input Validation & Sanitization**
+   - Validate all user inputs on the client side
+   - Never trust client-side validation alone (Supabase RLS provides server-side protection)
+   - Sanitize data before displaying to prevent XSS attacks
+   - Use TypeScript types to enforce data structure, but don't rely on them for security
+
+2. **Authentication & Authorization**
+   - Always check user authentication status before displaying sensitive data
+   - Use Supabase Auth for all authentication operations
+   - Never store sensitive tokens in localStorage (Supabase handles this securely)
+   - Verify user session on protected routes/operations
+
+3. **Row Level Security (RLS)**
+   - **Critical**: All database tables MUST have RLS policies enabled
+   - Users should only access their own data (enforced via `user_id` in RLS policies)
+   - Review RLS policies when adding new tables or columns
+   - Test RLS policies with multiple user accounts
+
+4. **SQL Injection Prevention**
+   - Use Supabase client methods (never build raw SQL queries)
+   - Supabase automatically parameterizes queries to prevent SQL injection
+   - When filtering/querying, use the Supabase query builder methods (`.eq()`, `.filter()`, etc.)
+
+5. **Cross-Site Scripting (XSS) Prevention**
+   - React automatically escapes values in JSX, but be cautious with:
+     - `dangerouslySetInnerHTML` (avoid unless absolutely necessary)
+     - User-generated URLs (validate/sanitize before using in `href`)
+     - Direct DOM manipulation
+   - Sanitize user inputs that might be rendered as HTML
+
+6. **Environment Variables & Secrets**
+   - **NEVER commit `.env` files** to version control
+   - Only use `VITE_` prefix for public environment variables
+   - Keep `SUPABASE_ANON_KEY` public-safe (it's designed to be public)
+   - Never expose service role keys or private API keys in client code
+   - Rotate keys if accidentally exposed
+
+7. **Dependency Security**
+   - Keep dependencies up to date with `pnpm update`
+   - Review security advisories with `pnpm audit`
+   - Only install packages from trusted sources
+   - Review package permissions and access
+
+8. **Common Vulnerabilities to Avoid**
+   - **Open Redirects**: Validate redirect URLs before using
+   - **CSRF**: Supabase Auth handles CSRF protection
+   - **Clickjacking**: Consider X-Frame-Options headers (if embedding)
+   - **Information Disclosure**: Don't expose stack traces or detailed errors to users
+   - **Insecure Direct Object References**: Always verify user owns the resource
+
+### Security Checklist for Changes
+
+Before committing code, verify:
+- [ ] All user inputs are validated
+- [ ] No sensitive data is logged to console in production
+- [ ] Database queries use parameterized methods (Supabase client)
+- [ ] RLS policies protect new tables/columns
+- [ ] Authentication is checked for protected operations
+- [ ] No secrets or API keys are hardcoded
+- [ ] Dependencies are from trusted sources
+- [ ] Error messages don't leak sensitive information
+
+### Reporting Security Issues
+
+If you discover a security vulnerability:
+1. Do NOT commit the fix to a public branch immediately
+2. Document the issue privately
+3. Notify the project maintainers
+4. Wait for coordinated disclosure before making public
+
+---
+
 ## AI Assistant Guidelines
 
 ### When Making Changes
@@ -515,23 +607,31 @@ Columns:
    - Use `Read` tool to understand current implementation
    - Check related files for patterns and conventions
 
-2. **Type safety first**
+2. **Security first**
+   - Review the Security Considerations section before making changes
+   - Validate all user inputs
+   - Ensure RLS policies protect new database operations
+   - Never commit secrets or API keys
+   - Consider security implications of every change
+
+3. **Type safety**
    - Run `pnpm typecheck` after changes
    - Ensure all types are properly defined
    - Don't use `any` unless absolutely necessary
 
-3. **Test your changes**
+4. **Test your changes**
    - Add/update tests for new functionality
    - Run `pnpm test --run` to verify all tests pass
    - Consider adding Storybook stories for new components
+   - Use `.test.ts` for logic tests, `.spec.tsx` for component tests
 
-4. **Follow existing patterns**
-   - Component structure: Use folder structure for complex components
+5. **Follow existing patterns**
+   - Component structure: Single file components, avoid folders and barrel files
    - State management: Use Zustand store with selectors
    - Services: Keep Supabase calls in service layer
    - Styling: Use Tailwind classes, maintain responsive design
 
-5. **Formatting & linting**
+6. **Formatting & linting**
    - Pre-commit hook handles Prettier formatting automatically
    - Run `pnpm lint` to check for ESLint issues
    - Fix any linting errors before committing
@@ -540,10 +640,10 @@ Columns:
 
 #### Adding a new component
 
-1. Create folder in `src/components/ComponentName/`
-2. Create `ComponentName.tsx` with TypeScript types
-3. Create `index.ts` to re-export component
-4. Create `ComponentName.spec.tsx` for tests
+1. Create `ComponentName.tsx` in `src/components/`
+2. Add TypeScript types and implement component with named export
+3. Create `ComponentName.spec.tsx` for component tests (in same directory)
+4. Import component directly: `import { ComponentName } from './components/ComponentName'`
 5. (Optional) Create story in `src/stories/`
 
 #### Adding a new service method
@@ -594,19 +694,21 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 1. **Supabase client**: Always import from `src/lib/supabase.ts`, not directly from package
 2. **Environment variables**: Prefix with `VITE_` for client-side access
 3. **Zustand selectors**: Use `useStore.use.propertyName()` pattern for granular subscriptions
-4. **Component exports**: Export from `index.ts` for clean imports
+4. **Barrel files**: Don't create `index.ts` files - import components directly from their source files
 5. **Type definitions**: Keep `JobApplication` type in sync between `types.ts` and `lib/supabase.ts`
+6. **Security**: Always validate inputs and check authentication before operations
 
 ### Best Practices
 
-- **Components**: Keep them focused and single-responsibility
+- **Security**: Always consider security implications (see Security Considerations section)
+- **Components**: Keep them focused and single-responsibility; avoid unnecessary folders
 - **Hooks**: Extract reusable logic into custom hooks
-- **Error handling**: Always handle errors gracefully, log to console
+- **Error handling**: Always handle errors gracefully, log to console (but not sensitive data)
 - **Loading states**: Show loading UI during async operations
 - **Accessibility**: Consider keyboard navigation and screen readers
 - **Responsive design**: Test on multiple screen sizes
 - **Performance**: Use `useCallback` and `useMemo` when appropriate
-- **Code organization**: Group related functionality together
+- **Code organization**: Group related functionality together, but keep it simple
 
 ---
 
@@ -648,5 +750,9 @@ export function MyComponent({ prop }: { prop: string }) { }
 
 ---
 
+---
+
 **Last Updated**: January 3, 2026
 **Project Version**: 0.0.0 (as per package.json)
+
+**Key Principles**: Security First • Simplicity Over Complexity • Type Safety • Test Coverage
