@@ -251,6 +251,7 @@ components/
 - Props interfaces defined inline or at top of file
 - Destructure props in function signature
 - Use named exports for components
+- Keep components focused on UI - extract business logic to separate `.ts` files
 
 ### Context Pattern (Authentication)
 
@@ -302,10 +303,43 @@ interface StatusGridProps {
 
 ### React Patterns
 
+**Separation of Concerns**:
+- **Extract non-trivial logic from component files** - Move business logic to separate `.ts` files
+- Keep components focused on presentation and user interaction
+- Complex calculations, data transformations, and utilities belong in plain TypeScript files
+- This improves testability, reusability, and maintainability
+
+**Examples**:
+```typescript
+// ❌ Bad: Complex logic inline in component
+export function JobList({ jobs }: Props) {
+  const filtered = jobs.filter(j => j.status !== 'rejected')
+    .map(j => ({ ...j, formatted: `${j.company_name} - ${j.position_title}` }))
+    .sort((a, b) => new Date(b.application_date).getTime() - new Date(a.application_date).getTime());
+  // ...
+}
+
+// ✅ Good: Logic extracted to utility file
+// utils/jobHelpers.ts
+export function filterAndFormatJobs(jobs: JobApplication[]) {
+  return jobs
+    .filter(j => j.status !== 'rejected')
+    .map(formatJobDisplay)
+    .sort(sortByApplicationDate);
+}
+
+// JobList.tsx
+export function JobList({ jobs }: Props) {
+  const displayJobs = filterAndFormatJobs(jobs);
+  // ...
+}
+```
+
 **Hooks**:
 - Use `useCallback` for functions passed to child components or used in dependencies
 - Use `useEffect` for side effects (data fetching, subscriptions)
 - Custom hooks start with `use` (e.g., `useAuth`)
+- Extract complex logic into custom hooks when it involves React state/effects
 
 **Component organization**:
 ```typescript
@@ -701,6 +735,7 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ### Best Practices
 
 - **Security**: Always consider security implications (see Security Considerations section)
+- **Separation of concerns**: Extract non-trivial logic from component files to plain `.ts` files
 - **Components**: Keep them focused and single-responsibility; avoid unnecessary folders
 - **Hooks**: Extract reusable logic into custom hooks
 - **Error handling**: Always handle errors gracefully, log to console (but not sensitive data)
