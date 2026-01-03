@@ -62,11 +62,11 @@ watstix/
 │       └── 20251128225142_add_job_posting_link_to_job_applications.sql
 ├── src/
 │   ├── components/              # React components
-│   │   ├── Header/
+│   │   ├── Header/              # Legacy: has folder (being phased out)
 │   │   │   ├── Header.tsx
 │   │   │   ├── Header.spec.tsx
 │   │   │   └── index.ts
-│   │   ├── JobStatusBtn/
+│   │   ├── JobStatusBtn/        # Legacy: has folder (being phased out)
 │   │   │   ├── JobStatusBtn.tsx
 │   │   │   ├── JobStatusBtn.spec.tsx
 │   │   │   └── index.ts
@@ -225,9 +225,10 @@ export const jobService = {
 
 **Organization**:
 - **Avoid separate folders for components** - Keep components as single files in `src/components/`
-- **Do NOT use barrel files** (`index.ts`) - Import components directly from their files
+- **Do NOT use barrel files** (`index.ts`) for components - Import components directly from their files
 - Only use folders when a component has multiple related files that are tightly coupled
 - Co-locate test files next to components with matching names
+- **Note**: Services (`src/services/`) and stores (`src/store/`) may use barrel files for cleaner exports
 
 **Example** (`src/components/`):
 ```
@@ -307,6 +308,7 @@ interface StatusGridProps {
 - **Extract non-trivial logic from component files** - Move business logic to separate `.ts` files
 - Keep components focused on presentation and user interaction
 - Complex calculations, data transformations, and utilities belong in plain TypeScript files
+- Place utility functions in `src/utils/` directory (create if needed)
 - This improves testability, reusability, and maintainability
 
 **Examples**:
@@ -320,7 +322,7 @@ export function JobList({ jobs }: Props) {
 }
 
 // ✅ Good: Logic extracted to utility file
-// utils/jobHelpers.ts
+// src/utils/jobHelpers.ts
 export function filterAndFormatJobs(jobs: JobApplication[]) {
   return jobs
     .filter(j => j.status !== 'rejected')
@@ -329,6 +331,8 @@ export function filterAndFormatJobs(jobs: JobApplication[]) {
 }
 
 // JobList.tsx
+import { filterAndFormatJobs } from '../utils/jobHelpers';
+
 export function JobList({ jobs }: Props) {
   const displayJobs = filterAndFormatJobs(jobs);
   // ...
@@ -449,9 +453,13 @@ it('renders header', () => {
 ### Storybook Tests
 
 **Configuration**: `.storybook/main.ts`
-- Project: "storybook"
+- Framework: React + Vite
 - Browser testing with Playwright
-- Addons: Vitest, A11y, Docs, Chromatic
+- Addons:
+  - Vitest - Test integration
+  - A11y - Accessibility checking
+  - Docs - Auto-generated documentation
+  - Chromatic - Visual regression testing
 
 **Running Storybook**:
 ```bash
@@ -524,7 +532,7 @@ Columns:
 **Key migrations**:
 1. `20251022233209_create_job_applications_table.sql` - Initial table creation
 2. `20251022233830_update_rls_policies_for_auth.sql` - Row Level Security policies
-3. `20251128225142_add_job_posting_link_to_job_applications.sql` - Added job_posting_link column
+3. `20251128225142_add_job_posting_link_to_job_applications.sql` - Added `job_posting_link` column
 
 **RLS Policies**: User can only access their own job applications (filtered by `user_id`)
 
@@ -680,6 +688,14 @@ If you discover a security vulnerability:
 4. Import component directly: `import { ComponentName } from './components/ComponentName'`
 5. (Optional) Create story in `src/stories/`
 
+#### Adding utility functions
+
+1. Create or use existing file in `src/utils/`
+2. Export pure functions with clear names
+3. Add TypeScript types for parameters and return values
+4. Write unit tests in corresponding `.test.ts` file
+5. Import directly: `import { helperFunction } from '../utils/helpers'`
+
 #### Adding a new service method
 
 1. Add method to appropriate service (e.g., `jobService.ts`)
@@ -782,8 +798,6 @@ const jobs = await jobService.getJobs();
 // Component with types
 export function MyComponent({ prop }: { prop: string }) { }
 ```
-
----
 
 ---
 
