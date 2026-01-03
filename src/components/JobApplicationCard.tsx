@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   MapPin,
   DollarSign,
@@ -33,16 +34,27 @@ export default function JobApplicationCard({
   application,
   onEdit,
 }: JobApplicationCardProps) {
+  const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
   const deleteJob = useStore.use.deleteJob();
   const updateJob = useStore.use.updateJob();
 
-  const handleDelete = async () => {
+  const handleCardClick = () => {
+    navigate(`/job/${application.id}`);
+  };
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!confirm("Are you sure you want to delete this application?")) return;
 
     setIsDeleting(true);
     await jobService.deleteJobById(application.id);
     deleteJob(application.id);
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onEdit(application);
   };
 
   const handleStatusChange = async (newStatus: JobApplication["status"]) => {
@@ -78,7 +90,10 @@ export default function JobApplicationCard({
   }
 
   return (
-    <div className="bg-base-400 rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+    <div
+      onClick={handleCardClick}
+      className="bg-base-400 rounded-lg shadow-md border border-base-400 p-6 hover:shadow-lg transition-shadow cursor-pointer"
+    >
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <h3 className="text-xl font-bold text-color-neutral mb-1">
@@ -98,7 +113,7 @@ export default function JobApplicationCard({
             <Trash2 className="w-5 h-5" />
           </button>
           <button
-            onClick={() => onEdit(application)}
+            onClick={handleEdit}
             className="text-gray-400 hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50"
             title="Edit application"
           >

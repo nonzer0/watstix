@@ -1,6 +1,6 @@
 import { create, StoreApi, UseBoundStore } from "zustand";
 import { combine } from "zustand/middleware";
-import type { JobApplication } from "../lib/supabase";
+import type { JobApplication, InterviewPhase } from "../lib/supabase";
 
 // interface StoreState {
 //     jobs: JobApplication[];
@@ -11,6 +11,7 @@ const useStoreBase = create(
   combine(
     {
       jobs: [] as JobApplication[],
+      interviewPhases: [] as InterviewPhase[],
     },
     (set) => {
       return {
@@ -36,6 +37,42 @@ const useStoreBase = create(
             return {
               jobs: state.jobs.map((job) =>
                 job.id === id ? { ...job, ...updates } : job,
+              ),
+            };
+          }),
+        setInterviewPhases: (phases: InterviewPhase[]) =>
+          set({ interviewPhases: phases }),
+        addInterviewPhase: (phase: InterviewPhase) =>
+          set((state) => ({
+            interviewPhases: [...state.interviewPhases, phase],
+          })),
+        updateInterviewPhase: (id: string, updates: Partial<InterviewPhase>) =>
+          set((state) => {
+            const phaseExists = state.interviewPhases.some(
+              (phase) => phase.id === id,
+            );
+            if (!phaseExists) {
+              console.warn(`Cannot update: Phase with id ${id} not found`);
+              return state;
+            }
+            return {
+              interviewPhases: state.interviewPhases.map((phase) =>
+                phase.id === id ? { ...phase, ...updates } : phase,
+              ),
+            };
+          }),
+        deleteInterviewPhase: (id: string) =>
+          set((state) => {
+            const phaseExists = state.interviewPhases.some(
+              (phase) => phase.id === id,
+            );
+            if (!phaseExists) {
+              console.warn(`Cannot delete: Phase with id ${id} not found`);
+              return state;
+            }
+            return {
+              interviewPhases: state.interviewPhases.filter(
+                (phase) => phase.id !== id,
               ),
             };
           }),
