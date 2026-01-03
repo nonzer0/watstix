@@ -31,3 +31,18 @@ export interface StatusType {
   label: string;
   color: string;
 }
+
+export type InterviewPhase = {
+  id: string;
+  user_id: string;
+  job_application_id: string;
+  title: string;
+  description?: string;
+  interview_date?: string;
+  interviewer_names: string[];
+  notes?: string;
+  outcome?: string;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
