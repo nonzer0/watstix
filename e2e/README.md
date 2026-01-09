@@ -2,7 +2,12 @@
 
 This directory contains end-to-end tests for the Watstix application using Playwright.
 
-**Note:** These tests require downloading Chromium from Playwright's CDN. In restricted environments where the CDN is blocked, you'll see a 403 error when installing browsers. The tests are properly configured and will run successfully in local development or CI/CD environments with CDN access.
+## Important Notes
+
+- **🏠 Local Development Only:** These tests are designed for local development and require Supabase credentials
+- **🔒 Not Run in CI:** E2E tests are **skipped in CI by default** to avoid exposing credentials
+- **🌐 Browser Requirements:** Tests require Chromium from Playwright's CDN (may fail in restricted networks)
+- **📦 Test Isolation:** Each test creates a unique user and test data for complete isolation
 
 ## Running Tests
 
@@ -186,11 +191,37 @@ pnpm exec playwright show-trace trace.zip
 
 ## CI/CD Integration
 
-The tests are configured to run in CI with:
+### Default Behavior
 
-- Retries on failure
+**E2E tests are skipped in CI by default** because they require Supabase credentials. Only unit tests run in CI.
+
+### Optional: Enable E2E Tests in CI
+
+If you want to run E2E tests in CI, you have two options:
+
+#### Option 1: Use GitHub Secrets (Recommended)
+
+1. Create a **separate Supabase project for testing** (recommended for isolation)
+2. Add GitHub Secrets to your repository:
+   - Go to Settings → Secrets and variables → Actions
+   - Add `VITE_SUPABASE_URL`
+   - Add `VITE_SUPABASE_ANON_KEY`
+3. Uncomment the E2E test steps in `.github/workflows/main-ci.yml`
+
+**Note:** The `SUPABASE_ANON_KEY` is safe to expose - it's used in your frontend. Security comes from Row Level Security (RLS) policies.
+
+#### Option 2: Mock Supabase in Tests
+
+Update tests to use `page.route()` to mock Supabase API calls instead of hitting a real backend.
+
+### CI Configuration
+
+When enabled, E2E tests run with:
+
+- Retries on failure (2x)
 - Sequential execution
 - HTML report generation
+- Screenshot/video capture on failures
 
 See `playwright.config.ts` for CI-specific settings.
 

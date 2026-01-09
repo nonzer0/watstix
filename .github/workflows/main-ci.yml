@@ -1,9 +1,9 @@
-name: "watstix ci"
+name: 'watstix ci'
 
 on:
   pull_request:
     branches:
-      - "*"
+      - '*'
   push:
     branches:
       - main
@@ -16,17 +16,26 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version-file: ".node-version"
-          cache: "pnpm"
+          node-version-file: '.node-version'
+          cache: 'pnpm'
 
       - name: Installing deps
         run: pnpm install
 
-      - name: Install playwright
-        run: pnpm exec playwright install chromium
-
       - name: Building
         run: pnpm run build
 
-      - name: Testing & Coverage
+      - name: Unit Tests & Coverage
         run: pnpm run test --run
+
+      # E2E tests are skipped in CI by default (require Supabase credentials)
+      # To enable, add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY as GitHub secrets
+      # - name: Install Playwright Browsers
+      #   run: pnpm exec playwright install chromium
+      #
+      # - name: Run E2E Tests
+      #   if: ${{ secrets.VITE_SUPABASE_URL != '' }}
+      #   env:
+      #     VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      #     VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      #   run: pnpm test:e2e
