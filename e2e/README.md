@@ -8,17 +8,34 @@ This directory contains end-to-end tests for the Watstix application using Playw
 
 ### Prerequisites
 
-1. Install dependencies:
+1. **Install dependencies:**
 
 ```bash
 pnpm install
 ```
 
-2. Install Playwright browsers:
+2. **Install Playwright browsers:**
 
 ```bash
 pnpm exec playwright install chromium
 ```
+
+3. **Set up environment variables:**
+
+Create a `.env` file in the project root with your Supabase credentials:
+
+```bash
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+4. **Ensure Supabase backend is running:**
+
+The tests interact with a real Supabase backend. Make sure:
+
+- Your Supabase project is active
+- Row Level Security (RLS) policies allow test user operations
+- The database schema includes `job_applications` and `interview_phases` tables
 
 ### Running Tests
 
@@ -64,8 +81,19 @@ pnpm exec playwright show-report
 
 ### Files
 
-- **example.spec.ts** - Basic smoke tests to verify app loads
+- **helpers.ts** - Test setup helpers (authentication, test data creation)
 - **interview-phases.spec.ts** - Comprehensive tests for interview phases feature
+
+### Test Setup
+
+Each test follows this setup flow:
+
+1. **Authentication**: Creates a new test user with a unique timestamp-based email
+2. **Test Data**: Creates a test job application through the UI
+3. **Navigation**: Navigates to the job detail page
+4. **Test Execution**: Runs the actual test scenarios
+
+This ensures each test runs in isolation with fresh data.
 
 ### Test Organization
 

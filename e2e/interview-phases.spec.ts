@@ -1,42 +1,36 @@
 import { test, expect } from '@playwright/test';
+import { signUpUser, createTestJob, TEST_USER, TEST_JOB } from './helpers';
 
 /**
  * E2E Tests for Interview Phases Feature
  *
  * These tests cover the full user flow for managing interview phases,
  * including form submission, async operations, and state management.
+ *
+ * PREREQUISITES:
+ * - Supabase backend must be running
+ * - Environment variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) must be set
+ * - App dev server must be running (handled by playwright.config.ts webServer)
  */
-
-// Test data
-const TEST_USER = {
-  email: 'test@example.com',
-  password: 'testpassword123',
-};
-
-const TEST_JOB = {
-  company: 'Test Company',
-  position: 'Software Engineer',
-  location: 'Remote',
-};
 
 test.describe('Interview Phases', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to the app
-    await page.goto('/');
+    // Sign up a new test user (using timestamp to ensure unique email)
+    await signUpUser(page, TEST_USER.email, TEST_USER.password);
 
-    // Note: In a real app, you'd need to:
-    // 1. Sign up/log in with test user
-    // 2. Create a test job application
-    // For now, we'll assume auth is handled or mocked
+    // Create a test job application
+    await createTestJob(page, TEST_JOB);
+
+    // Navigate to the job detail page
+    await page.click(
+      `[data-testid="job-card"]:has-text("${TEST_JOB.company}")`
+    );
   });
 
   test.describe('Creating Interview Phases', () => {
     test('should create a new interview phase successfully', async ({
       page,
     }) => {
-      // Navigate to job detail page (adjust selector based on actual app)
-      await page.click('[data-testid="job-card"]:first-child');
-
       // Click "Add Interview Phase" button
       await page.click(
         'button:has-text("Add First Phase"), button:has-text("Add Interview Phase")'
@@ -67,7 +61,6 @@ test.describe('Interview Phases', () => {
     test('should parse comma-separated interviewer names correctly', async ({
       page,
     }) => {
-      await page.click('[data-testid="job-card"]:first-child');
       await page.click(
         'button:has-text("Add First Phase"), button:has-text("Add Interview Phase")'
       );
@@ -88,7 +81,6 @@ test.describe('Interview Phases', () => {
     });
 
     test('should handle empty optional fields gracefully', async ({ page }) => {
-      await page.click('[data-testid="job-card"]:first-child');
       await page.click(
         'button:has-text("Add First Phase"), button:has-text("Add Interview Phase")'
       );
@@ -103,7 +95,6 @@ test.describe('Interview Phases', () => {
     });
 
     test('should require title field', async ({ page }) => {
-      await page.click('[data-testid="job-card"]:first-child');
       await page.click(
         'button:has-text("Add First Phase"), button:has-text("Add Interview Phase")'
       );
@@ -119,7 +110,6 @@ test.describe('Interview Phases', () => {
     });
 
     test('should default outcome to pending', async ({ page }) => {
-      await page.click('[data-testid="job-card"]:first-child');
       await page.click(
         'button:has-text("Add First Phase"), button:has-text("Add Interview Phase")'
       );
@@ -132,8 +122,6 @@ test.describe('Interview Phases', () => {
     test('should calculate correct sort_order for multiple phases', async ({
       page,
     }) => {
-      await page.click('[data-testid="job-card"]:first-child');
-
       // Create first phase
       await page.click('button:has-text("Add First Phase")');
       await page.fill('input[name="title"]', 'Phone Screen');
@@ -170,8 +158,6 @@ test.describe('Interview Phases', () => {
 
   test.describe('Updating Interview Phases', () => {
     test('should update an existing interview phase', async ({ page }) => {
-      await page.click('[data-testid="job-card"]:first-child');
-
       // Create a phase first
       await page.click('button:has-text("Add First Phase")');
       await page.fill('input[name="title"]', 'Phone Screen');
@@ -193,8 +179,6 @@ test.describe('Interview Phases', () => {
     });
 
     test('should populate form fields when editing', async ({ page }) => {
-      await page.click('[data-testid="job-card"]:first-child');
-
       // Create a phase with all fields
       await page.click('button:has-text("Add First Phase")');
       await page.fill('input[name="title"]', 'Technical Interview');
@@ -228,8 +212,6 @@ test.describe('Interview Phases', () => {
 
   test.describe('Deleting Interview Phases', () => {
     test('should delete an interview phase', async ({ page }) => {
-      await page.click('[data-testid="job-card"]:first-child');
-
       // Create a phase
       await page.click('button:has-text("Add First Phase")');
       await page.fill('input[name="title"]', 'Phone Screen');
@@ -247,7 +229,6 @@ test.describe('Interview Phases', () => {
 
   test.describe('Form Interactions', () => {
     test('should cancel form without saving', async ({ page }) => {
-      await page.click('[data-testid="job-card"]:first-child');
       await page.click('button:has-text("Add First Phase")');
 
       // Fill in some data
@@ -262,7 +243,6 @@ test.describe('Interview Phases', () => {
     });
 
     test('should close form with X button', async ({ page }) => {
-      await page.click('[data-testid="job-card"]:first-child');
       await page.click('button:has-text("Add First Phase")');
 
       // Click X button (find by class or aria-label if available)
@@ -275,7 +255,6 @@ test.describe('Interview Phases', () => {
     });
 
     test('should show all outcome options', async ({ page }) => {
-      await page.click('[data-testid="job-card"]:first-child');
       await page.click('button:has-text("Add First Phase")');
 
       // Get all options from the select
@@ -290,7 +269,6 @@ test.describe('Interview Phases', () => {
     });
 
     test('should disable submit button while submitting', async ({ page }) => {
-      await page.click('[data-testid="job-card"]:first-child');
       await page.click('button:has-text("Add First Phase")');
 
       await page.fill('input[name="title"]', 'Test Phase');
@@ -328,7 +306,6 @@ test.describe('Interview Phases', () => {
         route.abort('failed');
       });
 
-      await page.click('[data-testid="job-card"]:first-child');
       await page.click('button:has-text("Add First Phase")');
       await page.fill('input[name="title"]', 'Test Phase');
       await page.click('button:has-text("Add Phase")');
@@ -338,8 +315,6 @@ test.describe('Interview Phases', () => {
     });
 
     test('should display error message when update fails', async ({ page }) => {
-      await page.click('[data-testid="job-card"]:first-child');
-
       // Create phase first (without network error)
       await page.click('button:has-text("Add First Phase")');
       await page.fill('input[name="title"]', 'Original Phase');
@@ -368,8 +343,6 @@ test.describe('Interview Phases', () => {
     test('should display correct styling for each outcome', async ({
       page,
     }) => {
-      await page.click('[data-testid="job-card"]:first-child');
-
       const outcomes = [
         { value: 'pending', color: 'bg-gray-100' },
         { value: 'passed', color: 'bg-green-100' },
@@ -397,8 +370,6 @@ test.describe('Interview Phases', () => {
 
   test.describe('Timeline Display', () => {
     test('should show empty state when no phases exist', async ({ page }) => {
-      await page.click('[data-testid="job-card"]:first-child');
-
       // Should show empty state
       await expect(page.locator('text=No Interview Phases Yet')).toBeVisible();
       await expect(
@@ -410,8 +381,6 @@ test.describe('Interview Phases', () => {
     });
 
     test('should display phases in correct sort order', async ({ page }) => {
-      await page.click('[data-testid="job-card"]:first-child');
-
       // Create phases in order
       const phases = ['First', 'Second', 'Third'];
 
