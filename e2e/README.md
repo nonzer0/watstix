@@ -2,6 +2,8 @@
 
 This directory contains end-to-end tests for the Watstix application using Playwright.
 
+**Note:** These tests require downloading Chromium from Playwright's CDN. In restricted environments where the CDN is blocked, you'll see a 403 error when installing browsers. The tests are properly configured and will run successfully in local development or CI/CD environments with CDN access.
+
 ## Running Tests
 
 ### Prerequisites
