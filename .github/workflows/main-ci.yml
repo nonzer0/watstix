@@ -1,9 +1,9 @@
-name: "watstix ci"
+name: 'watstix ci'
 
 on:
   pull_request:
     branches:
-      - "*"
+      - '*'
   push:
     branches:
       - main
@@ -16,8 +16,8 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version-file: ".node-version"
-          cache: "pnpm"
+          node-version-file: '.node-version'
+          cache: 'pnpm'
 
       - name: Installing deps
         run: pnpm install
@@ -25,8 +25,21 @@ jobs:
       - name: Install playwright
         run: pnpm exec playwright install chromium
 
+      - name: Linting
+        run: pnpm run lint
+
+      - name: Type checking
+        run: pnpm run typecheck
+
       - name: Building
         run: pnpm run build
 
       - name: Testing & Coverage
         run: pnpm run test --run
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: ./coverage/coverage-final.json
+          fail_ci_if_error: false
