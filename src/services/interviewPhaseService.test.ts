@@ -43,7 +43,7 @@ describe('interviewPhaseService', () => {
         select: mockSelect,
         eq: mockEq,
         order: mockOrder,
-      } as any);
+      } as unknown as ReturnType<typeof supabase.from>);
 
       const result = await interviewPhaseService.getPhasesByJobId('job-1');
 
@@ -66,7 +66,7 @@ describe('interviewPhaseService', () => {
         select: mockSelect,
         eq: mockEq,
         order: mockOrder,
-      } as any);
+      } as unknown as ReturnType<typeof supabase.from>);
 
       const consoleErrorSpy = vi
         .spyOn(console, 'error')
@@ -104,7 +104,7 @@ describe('interviewPhaseService', () => {
         insert: mockInsert,
         select: mockSelect,
         single: mockSingle,
-      } as any);
+      } as unknown as ReturnType<typeof supabase.from>);
 
       const result = await interviewPhaseService.createPhase(newPhaseData);
 
@@ -127,7 +127,7 @@ describe('interviewPhaseService', () => {
         insert: mockInsert,
         select: mockSelect,
         single: mockSingle,
-      } as any);
+      } as unknown as ReturnType<typeof supabase.from>);
 
       const consoleErrorSpy = vi
         .spyOn(console, 'error')
@@ -157,7 +157,7 @@ describe('interviewPhaseService', () => {
       vi.mocked(supabase.from).mockReturnValue({
         update: mockUpdate,
         eq: mockEq,
-      } as any);
+      } as unknown as ReturnType<typeof supabase.from>);
 
       const result = await interviewPhaseService.updatePhase('123', updates);
 
@@ -177,7 +177,7 @@ describe('interviewPhaseService', () => {
       vi.mocked(supabase.from).mockReturnValue({
         update: mockUpdate,
         eq: mockEq,
-      } as any);
+      } as unknown as ReturnType<typeof supabase.from>);
 
       const consoleErrorSpy = vi
         .spyOn(console, 'error')
@@ -205,7 +205,7 @@ describe('interviewPhaseService', () => {
       vi.mocked(supabase.from).mockReturnValue({
         delete: mockDelete,
         eq: mockEq,
-      } as any);
+      } as unknown as ReturnType<typeof supabase.from>);
 
       const result = await interviewPhaseService.deletePhase('123');
 
@@ -225,7 +225,7 @@ describe('interviewPhaseService', () => {
       vi.mocked(supabase.from).mockReturnValue({
         delete: mockDelete,
         eq: mockEq,
-      } as any);
+      } as unknown as ReturnType<typeof supabase.from>);
 
       const consoleErrorSpy = vi
         .spyOn(console, 'error')
@@ -254,7 +254,7 @@ describe('interviewPhaseService', () => {
       vi.mocked(supabase.from).mockReturnValue({
         update: mockUpdate,
         eq: mockEq1.mockReturnValue({ eq: mockEq2 }),
-      } as any);
+      } as unknown as ReturnType<typeof supabase.from>);
 
       const result = await interviewPhaseService.reorderPhases(
         'job-1',
@@ -285,7 +285,7 @@ describe('interviewPhaseService', () => {
       vi.mocked(supabase.from).mockReturnValue({
         update: mockUpdate,
         eq: mockEq1.mockReturnValue({ eq: mockEq2 }),
-      } as any);
+      } as unknown as ReturnType<typeof supabase.from>);
 
       const consoleErrorSpy = vi
         .spyOn(console, 'error')
