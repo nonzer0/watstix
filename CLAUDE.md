@@ -5,9 +5,12 @@
 **Watstix** is a job application tracking system built with modern web technologies. It allows users to track job applications, manage their status (applied, interviewing, offered, rejected, accepted, withdrawn), and organize their job search process.
 
 ### Key Features
+
 - User authentication via Supabase Auth
-- Job application CRUD operations
-- Status filtering and tracking
+- Job application CRUD operations with detailed tracking
+- Interview phase management (custom phases per job)
+- Status filtering and tracking (applied, interviewing, offered, rejected, accepted, withdrawn)
+- Multi-page routing with React Router
 - Responsive UI with DaisyUI components
 - Real-time data sync with Supabase
 
@@ -16,21 +19,26 @@
 ## Tech Stack
 
 ### Core Technologies
+
 - **React 18.3.1** - UI library
 - **TypeScript 5.5.3** - Type safety
 - **Vite 7.2.6** - Build tool and dev server
 - **pnpm 10.19.0** - Package manager (enforced via preinstall hook)
 
 ### State & Data
+
 - **Zustand 5.0.8** - Global state management
 - **Supabase 2.57.4** - Backend-as-a-Service (PostgreSQL + Auth + Storage)
+- **React Router 7.11.0** - Client-side routing
 
 ### UI & Styling
+
 - **Tailwind CSS 4.1.17** - Utility-first CSS framework
 - **DaisyUI 5.5.8** - Tailwind component library
 - **lucide-react 0.344.0** - Icon library
 
 ### Testing & Quality
+
 - **Vitest 4.0.16** - Unit testing framework
 - **Playwright 1.57.0** - Browser testing
 - **Testing Library** - React component testing
@@ -59,9 +67,10 @@ watstix/
 │   └── migrations/              # Database migrations
 │       ├── 20251022233209_create_job_applications_table.sql
 │       ├── 20251022233830_update_rls_policies_for_auth.sql
-│       └── 20251128225142_add_job_posting_link_to_job_applications.sql
+│       ├── 20251128225142_add_job_posting_link_to_job_applications.sql
+│       └── 20251226230616_create_interview_phases_table.sql
 ├── src/
-│   ├── components/              # React components
+│   ├── components/              # Reusable UI components
 │   │   ├── Header/              # Legacy: has folder (being phased out)
 │   │   │   ├── Header.tsx
 │   │   │   ├── Header.spec.tsx
@@ -71,14 +80,22 @@ watstix/
 │   │   │   ├── JobStatusBtn.spec.tsx
 │   │   │   └── index.ts
 │   │   ├── AuthForm.tsx
+│   │   ├── InterviewPhaseCard.tsx
+│   │   ├── InterviewPhaseForm.tsx
+│   │   ├── InterviewPhaseTimeline.tsx
 │   │   ├── JobApplicationCard.tsx
 │   │   ├── JobApplicationForm.tsx
 │   │   └── Loading.tsx
+│   ├── views/                   # Route/page components
+│   │   ├── Dashboard.tsx        # Main dashboard (/ route)
+│   │   └── JobDetail.tsx        # Job detail page (/job/:id route)
 │   ├── contexts/                # React contexts
 │   │   └── AuthContext.tsx      # Authentication context & hooks
 │   ├── lib/                     # External library integrations
 │   │   └── supabase.ts          # Supabase client setup
 │   ├── services/                # Business logic & API calls
+│   │   ├── interviewPhaseService.ts
+│   │   ├── interviewPhaseService.test.ts
 │   │   ├── jobService.ts
 │   │   ├── jobService.test.ts
 │   │   └── index.ts
@@ -92,7 +109,7 @@ watstix/
 │   │   └── setup.ts
 │   ├── types/                   # TypeScript type definitions
 │   │   └── types.ts
-│   ├── App.tsx                  # Main application component
+│   ├── App.tsx                  # Router configuration
 │   ├── main.tsx                 # Application entry point
 │   └── vite-env.d.ts
 ├── eslint.config.js             # ESLint configuration (flat config)
@@ -168,6 +185,41 @@ pnpm build-storybook
 
 ## Architecture Patterns
 
+### Routing (React Router)
+
+**Location**: `src/App.tsx`, `src/main.tsx`, `src/views/`
+
+The app uses React Router for client-side navigation:
+
+```typescript
+// main.tsx - Wrap app with BrowserRouter
+<BrowserRouter>
+  <App />
+</BrowserRouter>
+
+// App.tsx - Define routes
+<Routes>
+  <Route path="/" element={<Dashboard />} />
+  <Route path="/job/:id" element={<JobDetail />} />
+</Routes>
+
+// Navigation from components
+const navigate = useNavigate();
+navigate(`/job/${jobId}`);
+```
+
+**Routes**:
+
+- `/` - Dashboard with job cards and filtering
+- `/job/:id` - Job detail page with interview phases
+
+**Key principles**:
+
+- Route components live in `src/views/` folder
+- Reusable UI components live in `src/components/`
+- Use `useNavigate()` for programmatic navigation
+- Use `useParams()` to access route parameters
+
 ### State Management (Zustand)
 
 **Location**: `src/store/store.ts`
@@ -178,11 +230,21 @@ The app uses Zustand with a custom selector pattern for optimal re-renders:
 // Store definition with combine middleware
 const useStoreBase = create(
   combine(
-    { jobs: [] as JobApplication[] },
+    {
+      jobs: [] as JobApplication[],
+      interviewPhases: [] as InterviewPhase[]
+    },
     (set) => ({
+      // Job actions
       setJobs: (jobs) => set({ jobs }),
       deleteJob: (id) => set((state) => ({ jobs: state.jobs.filter(...) })),
       updateJob: (id, updates) => set((state) => ({ jobs: state.jobs.map(...) })),
+
+      // Interview phase actions
+      setInterviewPhases: (phases) => set({ interviewPhases: phases }),
+      addInterviewPhase: (phase) => set((state) => ({ interviewPhases: [...state.interviewPhases, phase] })),
+      updateInterviewPhase: (id, updates) => set((state) => ({ interviewPhases: state.interviewPhases.map(...) })),
+      deleteInterviewPhase: (id) => set((state) => ({ interviewPhases: state.interviewPhases.filter(...) })),
     })
   )
 );
@@ -192,13 +254,16 @@ export const useStore = createSelectors(useStoreBase);
 
 // Usage in components
 const jobs = useStore.use.jobs(); // Only re-renders when jobs change
+const phases = useStore.use.interviewPhases();
 const setJobs = useStore.use.setJobs();
 ```
 
 **Key principles**:
+
 - State is centralized in Zustand store
 - Selectors auto-generated via `createSelectors` utility
-- Store actions handle validation (warn if job doesn't exist before update/delete)
+- Store actions handle validation (warn if entity doesn't exist before update/delete)
+- Separate state for jobs and interview phases
 
 ### Service Layer
 
@@ -207,40 +272,85 @@ const setJobs = useStore.use.setJobs();
 Services encapsulate all Supabase API calls and business logic:
 
 ```typescript
-// Example: jobService.ts
+// jobService.ts
 export const jobService = {
-  getJobs: async (): Promise<JobApplication[]> => { /* ... */ },
-  getJobById: async (id: string): Promise<JobApplication | null> => { /* ... */ },
-  deleteJobById: async (id: string): Promise<boolean> => { /* ... */ },
+  getJobs: async (): Promise<JobApplication[]> => {
+    /* ... */
+  },
+  getJobById: async (id: string): Promise<JobApplication | null> => {
+    /* ... */
+  },
+  deleteJobById: async (id: string): Promise<boolean> => {
+    /* ... */
+  },
+};
+
+// interviewPhaseService.ts
+export const interviewPhaseService = {
+  getPhasesByJobId: async (jobId: string): Promise<InterviewPhase[]> => {
+    /* ... */
+  },
+  createPhase: async (
+    phase: Partial<InterviewPhase>
+  ): Promise<InterviewPhase | null> => {
+    /* ... */
+  },
+  updatePhase: async (
+    id: string,
+    updates: Partial<InterviewPhase>
+  ): Promise<boolean> => {
+    /* ... */
+  },
+  deletePhase: async (id: string): Promise<boolean> => {
+    /* ... */
+  },
+  reorderPhases: async (
+    jobId: string,
+    phaseIds: string[]
+  ): Promise<boolean> => {
+    /* ... */
+  },
 };
 ```
 
 **Guidelines**:
+
 - Keep Supabase calls isolated in services
 - Return typed promises
 - Handle errors gracefully with try/catch
 - Log errors to console
+- Use `.select().single()` pattern when inserting to get back the created record with auto-generated fields
 
 ### Component Structure
 
 **Organization**:
-- **Avoid separate folders for components** - Keep components as single files in `src/components/`
+
+- **Route components** go in `src/views/` folder (Dashboard.tsx, JobDetail.tsx)
+- **Reusable UI components** go in `src/components/` folder
+- **Avoid separate folders for components** - Keep components as single files
 - **Do NOT use barrel files** (`index.ts`) for components - Import components directly from their files
 - Only use folders when a component has multiple related files that are tightly coupled
 - Co-locate test files next to components with matching names
 - **Note**: Services (`src/services/`) and stores (`src/store/`) may use barrel files for cleaner exports
 
 **Example** (`src/components/`):
+
 ```
 components/
-├── AuthForm.tsx          # Component
-├── Loading.tsx           # Component
-├── Header.tsx            # Component (legacy - has folder due to existing structure)
-├── Header.spec.tsx       # Test file
-└── JobApplicationCard.tsx
+├── AuthForm.tsx                # Component
+├── Loading.tsx                 # Component
+├── JobApplicationCard.tsx      # Component
+├── InterviewPhaseCard.tsx      # Component
+├── InterviewPhaseForm.tsx      # Component
+└── InterviewPhaseTimeline.tsx  # Component
+
+views/
+├── Dashboard.tsx               # Route component (/)
+└── JobDetail.tsx               # Route component (/job/:id)
 ```
 
 **Why avoid folders and barrel files?**
+
 - Simpler file structure and navigation
 - Reduces boilerplate and maintenance overhead
 - Direct imports are more explicit and easier to trace
@@ -248,6 +358,7 @@ components/
 - Faster builds (no extra re-export layers)
 
 **Component patterns**:
+
 - Use function components with TypeScript
 - Props interfaces defined inline or at top of file
 - Destructure props in function signature
@@ -290,10 +401,33 @@ export function useAuth() {
 - **Export types alongside code** for component-specific types
 
 **Type definitions**:
+
 ```typescript
 // Central types (src/types/types.ts)
-export type Status = "applied" | "interviewing" | "offered" | "rejected" | "accepted" | "withdrawn";
-export type JobApplication = { /* ... */ };
+export type Status =
+  | 'applied'
+  | 'interviewing'
+  | 'offered'
+  | 'rejected'
+  | 'accepted'
+  | 'withdrawn';
+export type JobApplication = {
+  /* ... */
+};
+export type InterviewPhase = {
+  id: string;
+  user_id: string;
+  job_application_id: string;
+  title: string;
+  description?: string;
+  interview_date?: string;
+  interviewer_names: string[];
+  notes?: string;
+  outcome?: string;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
 
 // Component-local types
 interface StatusGridProps {
@@ -305,6 +439,7 @@ interface StatusGridProps {
 ### React Patterns
 
 **Separation of Concerns**:
+
 - **Extract non-trivial logic from component files** - Move business logic to separate `.ts` files
 - Keep components focused on presentation and user interaction
 - Complex calculations, data transformations, and utilities belong in plain TypeScript files
@@ -312,12 +447,21 @@ interface StatusGridProps {
 - This improves testability, reusability, and maintainability
 
 **Examples**:
+
 ```typescript
 // ❌ Bad: Complex logic inline in component
 export function JobList({ jobs }: Props) {
-  const filtered = jobs.filter(j => j.status !== 'rejected')
-    .map(j => ({ ...j, formatted: `${j.company_name} - ${j.position_title}` }))
-    .sort((a, b) => new Date(b.application_date).getTime() - new Date(a.application_date).getTime());
+  const filtered = jobs
+    .filter((j) => j.status !== 'rejected')
+    .map((j) => ({
+      ...j,
+      formatted: `${j.company_name} - ${j.position_title}`,
+    }))
+    .sort(
+      (a, b) =>
+        new Date(b.application_date).getTime() -
+        new Date(a.application_date).getTime()
+    );
   // ...
 }
 
@@ -325,7 +469,7 @@ export function JobList({ jobs }: Props) {
 // src/utils/jobHelpers.ts
 export function filterAndFormatJobs(jobs: JobApplication[]) {
   return jobs
-    .filter(j => j.status !== 'rejected')
+    .filter((j) => j.status !== 'rejected')
     .map(formatJobDisplay)
     .sort(sortByApplicationDate);
 }
@@ -340,12 +484,14 @@ export function JobList({ jobs }: Props) {
 ```
 
 **Hooks**:
+
 - Use `useCallback` for functions passed to child components or used in dependencies
 - Use `useEffect` for side effects (data fetching, subscriptions)
 - Custom hooks start with `use` (e.g., `useAuth`)
 - Extract complex logic into custom hooks when it involves React state/effects
 
 **Component organization**:
+
 ```typescript
 // 1. Imports
 import { useCallback, useState } from "react";
@@ -388,6 +534,7 @@ export function MyComponent({ prop1, prop2 }: Props) {
 ### ESLint & Prettier
 
 **ESLint config** (`eslint.config.js`):
+
 - Flat config format (ESLint 9+)
 - TypeScript ESLint integration
 - React hooks rules enforced
@@ -395,6 +542,7 @@ export function MyComponent({ prop1, prop2 }: Props) {
 - Storybook plugin enabled
 
 **Prettier**:
+
 - Default configuration (empty `.prettierrc`)
 - Runs automatically on pre-commit via lint-staged
 - Formats all file types (see `lint-staged` in `package.json`)
@@ -408,22 +556,26 @@ export function MyComponent({ prop1, prop2 }: Props) {
 **Location**: `*.test.ts` or `*.spec.tsx` files
 
 **Naming Convention**:
+
 - Use `.test.ts` for pure TypeScript/logic tests (services, utilities, stores)
 - Use `.spec.tsx` for React component tests
 - This convention helps distinguish between unit tests and component tests at a glance
 
 **Configuration**: `vitest.config.ts`
+
 - Project: "unit"
 - Environment: jsdom
 - Setup: `src/test/setup.ts` (imports `@testing-library/jest-dom/vitest`)
 
 **Running tests**:
+
 ```bash
 pnpm test              # Watch mode
 pnpm test --run        # Run once (CI)
 ```
 
 **Example** (`src/store/store.test.ts`):
+
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { useStore } from './store';
@@ -440,6 +592,7 @@ describe('Store', () => {
 ### Component Tests (Testing Library)
 
 **Example** (`src/components/Header/Header.spec.tsx`):
+
 ```typescript
 import { render, screen } from '@testing-library/react';
 import { Header } from './Header';
@@ -453,6 +606,7 @@ it('renders header', () => {
 ### Storybook Tests
 
 **Configuration**: `.storybook/main.ts`
+
 - Framework: React + Vite
 - Browser testing with Playwright
 - Addons:
@@ -462,12 +616,14 @@ it('renders header', () => {
   - Chromatic - Visual regression testing
 
 **Running Storybook**:
+
 ```bash
 pnpm storybook         # Dev mode
 pnpm build-storybook   # Build static
 ```
 
 **Stories pattern** (`src/stories/Header.stories.tsx`):
+
 ```typescript
 import type { Meta, StoryObj } from '@storybook/react';
 import { Header } from '../components/Header';
@@ -495,6 +651,7 @@ export const Default: Story = {
 ### Setup
 
 **Client initialization** (`src/lib/supabase.ts`):
+
 ```typescript
 import { createClient } from '@supabase/supabase-js';
 
@@ -509,6 +666,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 **Table**: `job_applications`
 
 Columns:
+
 - `id` (uuid, primary key)
 - `user_id` (uuid, references auth.users)
 - `company_name` (text)
@@ -525,16 +683,44 @@ Columns:
 - `created_at` (timestamp)
 - `updated_at` (timestamp)
 
+**Table**: `interview_phases`
+
+Columns:
+
+- `id` (uuid, primary key)
+- `user_id` (uuid, references auth.users, CASCADE delete)
+- `job_application_id` (uuid, references job_applications, CASCADE delete)
+- `title` (text, required) - Name/title of the interview phase
+- `description` (text, optional) - Additional details about the phase
+- `interview_date` (timestamptz, optional) - When the interview happened or is scheduled
+- `interviewer_names` (text[], array) - Array of interviewer names
+- `notes` (text, optional) - Notes and feedback from the interview
+- `outcome` (text, optional) - Result: pending, passed, failed, cancelled, etc.
+- `sort_order` (integer, required) - Order of phases within a job application
+- `created_at` (timestamp)
+- `updated_at` (timestamp)
+
+**Relationships**:
+
+- `interview_phases.job_application_id` → `job_applications.id` (CASCADE delete)
+- When a job application is deleted, all its interview phases are automatically deleted
+
 ### Migrations
 
 **Location**: `supabase/migrations/`
 
 **Key migrations**:
+
 1. `20251022233209_create_job_applications_table.sql` - Initial table creation
 2. `20251022233830_update_rls_policies_for_auth.sql` - Row Level Security policies
 3. `20251128225142_add_job_posting_link_to_job_applications.sql` - Added `job_posting_link` column
+4. `20251226230616_create_interview_phases_table.sql` - Created interview_phases table with RLS
 
-**RLS Policies**: User can only access their own job applications (filtered by `user_id`)
+**RLS Policies**:
+
+- Users can only access their own job applications (filtered by `user_id`)
+- Users can only access their own interview phases (filtered by `user_id`)
+- Both tables use the same RLS pattern: SELECT, INSERT, UPDATE, DELETE policies for authenticated users
 
 ---
 
@@ -543,10 +729,12 @@ Columns:
 **File**: `.github/workflows/main-ci.yml`
 
 **Triggers**:
+
 - Push to `main` branch
 - Pull requests to any branch
 
 **Jobs**:
+
 1. **Checkout code**
 2. **Setup pnpm** (action-setup@v4)
 3. **Setup Node.js** (from `.node-version` file)
@@ -556,6 +744,7 @@ Columns:
 7. **Test & Coverage** (`pnpm run test --run`)
 
 **Requirements for PRs**:
+
 - All CI checks must pass
 - Build must succeed
 - Tests must pass
@@ -622,6 +811,7 @@ Security is a **critical priority** for this application. All code changes must 
 ### Security Checklist for Changes
 
 Before committing code, verify:
+
 - [ ] All user inputs are validated
 - [ ] No sensitive data is logged to console in production
 - [ ] Database queries use parameterized methods (Supabase client)
@@ -634,6 +824,7 @@ Before committing code, verify:
 ### Reporting Security Issues
 
 If you discover a security vulnerability:
+
 1. Do NOT commit the fix to a public branch immediately
 2. Document the issue privately
 3. Notify the project maintainers
@@ -680,12 +871,23 @@ If you discover a security vulnerability:
 
 ### Common Tasks
 
+#### Adding a new route/view
+
+1. Create `ViewName.tsx` in `src/views/`
+2. Add TypeScript types and implement component with default export
+3. Add route in `src/App.tsx`:
+   ```typescript
+   <Route path="/your-route" element={<ViewName />} />
+   ```
+4. Navigate to it: `navigate('/your-route')`
+5. (Optional) Add tests
+
 #### Adding a new component
 
 1. Create `ComponentName.tsx` in `src/components/`
-2. Add TypeScript types and implement component with named export
+2. Add TypeScript types and implement component with default export
 3. Create `ComponentName.spec.tsx` for component tests (in same directory)
-4. Import component directly: `import { ComponentName } from './components/ComponentName'`
+4. Import component directly: `import ComponentName from './components/ComponentName'`
 5. (Optional) Create story in `src/stories/`
 
 #### Adding utility functions
@@ -720,12 +922,14 @@ If you discover a security vulnerability:
 ### File References
 
 When referencing code locations, use the format `file_path:line_number`:
+
 - Example: `src/App.tsx:27` (the fetchApplications function)
 - Example: `src/store/store.ts:18` (the deleteJob action)
 
 ### Environment Variables
 
 Required environment variables (create `.env` file):
+
 ```bash
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -744,9 +948,11 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 1. **Supabase client**: Always import from `src/lib/supabase.ts`, not directly from package
 2. **Environment variables**: Prefix with `VITE_` for client-side access
 3. **Zustand selectors**: Use `useStore.use.propertyName()` pattern for granular subscriptions
-4. **Barrel files**: Don't create `index.ts` files - import components directly from their source files
-5. **Type definitions**: Keep `JobApplication` type in sync between `types.ts` and `lib/supabase.ts`
+4. **Barrel files**: Don't create `index.ts` files for components - import directly from source files
+5. **Type definitions**: Keep `JobApplication` and `InterviewPhase` types in sync between `types.ts` and `lib/supabase.ts`
 6. **Security**: Always validate inputs and check authentication before operations
+7. **Routing**: Use `e.stopPropagation()` on button click handlers inside clickable cards to prevent navigation
+8. **Insert operations**: Use `.select().single()` after insert to get the created record with auto-generated fields
 
 ### Best Practices
 
@@ -766,6 +972,7 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ## Quick Reference
 
 ### Project Commands
+
 ```bash
 pnpm dev           # Start dev server
 pnpm build         # Production build
@@ -776,32 +983,61 @@ pnpm storybook     # Start Storybook
 ```
 
 ### Key Files
-- `src/App.tsx` - Main application component
+
+- `src/App.tsx` - Router configuration
+- `src/views/Dashboard.tsx` - Main dashboard page
+- `src/views/JobDetail.tsx` - Job detail page
 - `src/store/store.ts` - Zustand state management
 - `src/lib/supabase.ts` - Supabase client
 - `src/types/types.ts` - Shared TypeScript types
 - `src/contexts/AuthContext.tsx` - Authentication
+- `src/services/jobService.ts` - Job CRUD operations
+- `src/services/interviewPhaseService.ts` - Interview phase CRUD operations
 - `eslint.config.js` - Linting rules
 - `vitest.config.ts` - Test configuration
 
 ### Useful Patterns
+
 ```typescript
-// Zustand selector
+// Routing
+import { useNavigate, useParams } from 'react-router-dom';
+const navigate = useNavigate();
+navigate('/job/123');
+const { id } = useParams<{ id: string }>();
+
+// Zustand selectors
 const jobs = useStore.use.jobs();
+const phases = useStore.use.interviewPhases();
+const setJobs = useStore.use.setJobs();
 
 // Auth hook
 const { user, signIn, signOut } = useAuth();
 
-// Service call
+// Service calls
 const jobs = await jobService.getJobs();
+const phases = await interviewPhaseService.getPhasesByJobId(jobId);
+const newPhase = await interviewPhaseService.createPhase(phaseData);
 
 // Component with types
-export function MyComponent({ prop }: { prop: string }) { }
+export default function MyComponent({ prop }: { prop: string }) { }
+
+// Clickable card with stopPropagation on buttons
+<div onClick={() => navigate(`/job/${id}`)}>
+  <button onClick={(e) => { e.stopPropagation(); handleDelete(); }}>
+    Delete
+  </button>
+</div>
 ```
 
 ---
 
-**Last Updated**: January 3, 2026
+**Last Updated**: January 15, 2026
 **Project Version**: 0.0.0 (as per package.json)
+
+**Recent Major Changes**:
+
+- Added React Router for multi-page navigation (January 2026)
+- Implemented interview phase tracking feature (January 2026)
+- Created `views/` folder structure for route components (January 2026)
 
 **Key Principles**: Security First • Simplicity Over Complexity • Type Safety • Test Coverage

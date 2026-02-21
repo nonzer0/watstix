@@ -1,53 +1,55 @@
-import { useCallback, useEffect, useState } from "react";
-import { Plus, Briefcase } from "lucide-react";
-import { JobApplication, StatusFilter, StatusType } from "../types/types";
-import { supabase } from "../lib/supabase";
-import { Header } from "../components/Header";
-import JobApplicationForm from "../components/JobApplicationForm";
-import JobApplicationCard from "../components/JobApplicationCard";
-import { JobStatusBtn } from "../components/JobStatusBtn";
-import { useStore } from "../store";
-import { useAuth } from "../contexts/AuthContext";
+import { useCallback, useEffect, useState } from 'react';
+import { Plus, Briefcase } from 'lucide-react';
+import { JobApplication, StatusFilter, StatusType } from '../types/types';
+import { interviewPhaseService } from '../services/interviewPhaseService';
+import { jobService } from '../services/jobService';
+import { Header } from '../components/Header';
+import JobApplicationForm from '../components/JobApplicationForm';
+import JobApplicationCard from '../components/JobApplicationCard';
+import { JobStatusBtn } from '../components/JobStatusBtn';
+import { useStore } from '../store';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Dashboard() {
   const { signOut } = useAuth();
 
   const jobs = useStore.use.jobs();
   const setJobs = useStore.use.setJobs();
+  const setInterviewPhases = useStore.use.setInterviewPhases();
 
   const [filteredApplications, setFilteredApplications] = useState<
     JobApplication[]
   >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingJob, setEditingJob] = useState<JobApplication | null>(null);
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
 
   const fetchApplications = useCallback(async () => {
     try {
-      const { data, error } = await supabase
-        .from("job_applications")
-        .select("*")
-        .order("application_date", { ascending: false });
+      const [jobsResp, phasesResp] = await Promise.all([
+        jobService.getJobs(),
+        interviewPhaseService.getAllPhases(),
+      ]);
 
-      if (error) throw error;
-      setJobs(data || []);
+      setJobs(jobsResp);
+      setInterviewPhases(phasesResp);
     } catch (err) {
-      console.error("Failed to fetch applications:", err);
+      console.error('Failed to fetch applications:', err);
     } finally {
       setIsLoading(false);
     }
-  }, [setJobs]);
+  }, [setJobs, setInterviewPhases]);
 
   useEffect(() => {
     fetchApplications();
   }, [fetchApplications]);
 
   useEffect(() => {
-    if (statusFilter === "all") {
+    if (statusFilter === 'all') {
       setFilteredApplications(jobs);
     } else {
       setFilteredApplications(
-        jobs.filter((app) => app.status === statusFilter),
+        jobs.filter((app) => app.status === statusFilter)
       );
     }
   }, [jobs, statusFilter]);
@@ -60,13 +62,13 @@ export default function Dashboard() {
   const displayForm = editingJob !== null;
 
   const statuses: StatusType[] = [
-    { value: "all", label: "All", color: "bg-gray-600" },
-    { value: "applied", label: "Applied", color: "bg-blue-600" },
-    { value: "interviewing", label: "Interviewing", color: "bg-yellow-600" },
-    { value: "offered", label: "Offered", color: "bg-green-600" },
-    { value: "rejected", label: "Rejected", color: "bg-red-600" },
-    { value: "accepted", label: "Accepted", color: "bg-emerald-600" },
-    { value: "withdrawn", label: "Withdrawn", color: "bg-gray-500" },
+    { value: 'all', label: 'All', color: 'bg-gray-600' },
+    { value: 'applied', label: 'Applied', color: 'bg-blue-600' },
+    { value: 'interviewing', label: 'Interviewing', color: 'bg-yellow-600' },
+    { value: 'offered', label: 'Offered', color: 'bg-green-600' },
+    { value: 'rejected', label: 'Rejected', color: 'bg-red-600' },
+    { value: 'accepted', label: 'Accepted', color: 'bg-emerald-600' },
+    { value: 'withdrawn', label: 'Withdrawn', color: 'bg-gray-500' },
   ];
 
   return (
@@ -100,16 +102,16 @@ export default function Dashboard() {
           <div className="text-center py-20 bg-base-200 rounded-lg shadow-md border border-gray-200">
             <Briefcase className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {statusFilter === "all"
-                ? "No Applications Yet"
+              {statusFilter === 'all'
+                ? 'No Applications Yet'
                 : `No ${statusFilter} Applications`}
             </h3>
             <p className="text-gray-600 mb-6">
-              {statusFilter === "all"
-                ? "Start tracking your job applications by adding your first one"
-                : "Try selecting a different filter or add a new application"}
+              {statusFilter === 'all'
+                ? 'Start tracking your job applications by adding your first one'
+                : 'Try selecting a different filter or add a new application'}
             </p>
-            {statusFilter === "all" && (
+            {statusFilter === 'all' && (
               <button
                 onClick={() => setEditingJob({} as JobApplication)}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors"

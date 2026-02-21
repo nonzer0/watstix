@@ -1,13 +1,6 @@
-import {
-  Calendar,
-  Users,
-  FileText,
-  CheckCircle,
-  Trash2,
-  Edit,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import type { InterviewPhase } from "../lib/supabase";
+import { Calendar, Users, FileText, Trash2, Edit } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import type { InterviewPhase } from '../lib/supabase';
 
 interface InterviewPhaseCardProps {
   phase: InterviewPhase;
@@ -16,10 +9,10 @@ interface InterviewPhaseCardProps {
 }
 
 const outcomeColors = {
-  pending: "bg-gray-100 text-gray-800 border-gray-200",
-  passed: "bg-green-100 text-green-800 border-green-200",
-  failed: "bg-red-100 text-red-800 border-red-200",
-  cancelled: "bg-yellow-100 text-yellow-800 border-yellow-200",
+  pending: 'bg-gray-100 text-gray-800 border-gray-200',
+  passed: 'bg-green-100 text-green-800 border-green-200',
+  failed: 'bg-red-100 text-red-800 border-red-200',
+  cancelled: 'bg-yellow-100 text-yellow-800 border-yellow-200',
 };
 
 export default function InterviewPhaseCard({
@@ -29,12 +22,12 @@ export default function InterviewPhaseCard({
 }: InterviewPhaseCardProps) {
   const formatDateTime = (dateString: string | undefined) => {
     if (!dateString) return null;
-    return new Date(dateString).toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
+    return new Date(dateString).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
     });
   };
 
@@ -88,7 +81,7 @@ export default function InterviewPhaseCard({
       <div className="space-y-3 mb-4">
         {renderPhaseValue(formatDateTime(phase.interview_date), Calendar)}
         {phase.interviewer_names.length > 0 &&
-          renderPhaseValue(phase.interviewer_names.join(", "), Users)}
+          renderPhaseValue(phase.interviewer_names.join(', '), Users)}
         {renderPhaseValue(phase.notes, FileText)}
       </div>
 

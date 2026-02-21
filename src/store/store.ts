@@ -1,11 +1,6 @@
-import { create, StoreApi, UseBoundStore } from "zustand";
-import { combine } from "zustand/middleware";
-import type { JobApplication, InterviewPhase } from "../lib/supabase";
-
-// interface StoreState {
-//     jobs: JobApplication[];
-//     setJobs: (jobs: JobApplication[]) => void;
-// }
+import { create, StoreApi, UseBoundStore } from 'zustand';
+import { combine } from 'zustand/middleware';
+import type { JobApplication, InterviewPhase } from '../lib/supabase';
 
 const useStoreBase = create(
   combine(
@@ -36,7 +31,7 @@ const useStoreBase = create(
             }
             return {
               jobs: state.jobs.map((job) =>
-                job.id === id ? { ...job, ...updates } : job,
+                job.id === id ? { ...job, ...updates } : job
               ),
             };
           }),
@@ -49,7 +44,7 @@ const useStoreBase = create(
         updateInterviewPhase: (id: string, updates: Partial<InterviewPhase>) =>
           set((state) => {
             const phaseExists = state.interviewPhases.some(
-              (phase) => phase.id === id,
+              (phase) => phase.id === id
             );
             if (!phaseExists) {
               console.warn(`Cannot update: Phase with id ${id} not found`);
@@ -57,14 +52,14 @@ const useStoreBase = create(
             }
             return {
               interviewPhases: state.interviewPhases.map((phase) =>
-                phase.id === id ? { ...phase, ...updates } : phase,
+                phase.id === id ? { ...phase, ...updates } : phase
               ),
             };
           }),
         deleteInterviewPhase: (id: string) =>
           set((state) => {
             const phaseExists = state.interviewPhases.some(
-              (phase) => phase.id === id,
+              (phase) => phase.id === id
             );
             if (!phaseExists) {
               console.warn(`Cannot delete: Phase with id ${id} not found`);
@@ -72,13 +67,13 @@ const useStoreBase = create(
             }
             return {
               interviewPhases: state.interviewPhases.filter(
-                (phase) => phase.id !== id,
+                (phase) => phase.id !== id
               ),
             };
           }),
       };
-    },
-  ),
+    }
+  )
 );
 
 type WithSelectors<S> = S extends { getState: () => infer T }
@@ -86,11 +81,12 @@ type WithSelectors<S> = S extends { getState: () => infer T }
   : never;
 
 export const createSelectors = <S extends UseBoundStore<StoreApi<object>>>(
-  _store: S,
+  _store: S
 ) => {
   const store = _store as WithSelectors<typeof _store>;
   store.use = {};
   for (const k of Object.keys(store.getState())) {
+    /* eslint-disable-next-line */
     (store.use as any)[k] = () => store((s) => s[k as keyof typeof s]);
   }
 
