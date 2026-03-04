@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   MapPin,
   DollarSign,
@@ -9,11 +9,11 @@ import {
   Trash2,
   Edit,
   ExternalLink,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import { JobApplication, supabase } from "../lib/supabase";
-import { jobService } from "../services/jobService";
-import { useStore } from "../store";
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import { JobApplication, supabase } from '../lib/supabase';
+import { jobService } from '../services/jobService';
+import { useStore } from '../store';
 
 interface JobApplicationCardProps {
   application: JobApplication;
@@ -22,12 +22,12 @@ interface JobApplicationCardProps {
 }
 
 const statusColors = {
-  applied: "bg-blue-100 text-blue-800 border-blue-200",
-  interviewing: "bg-yellow-100 text-yellow-800 border-yellow-200",
-  offered: "bg-green-100 text-green-800 border-green-200",
-  rejected: "bg-red-100 text-red-800 border-red-200",
-  accepted: "bg-emerald-100 text-emerald-800 border-emerald-200",
-  withdrawn: "bg-gray-100 text-gray-800 border-gray-200",
+  applied: 'bg-blue-100 text-blue-800 border-blue-200',
+  interviewing: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+  offered: 'bg-green-100 text-green-800 border-green-200',
+  rejected: 'bg-red-100 text-red-800 border-red-200',
+  accepted: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+  withdrawn: 'bg-gray-100 text-gray-800 border-gray-200',
 };
 
 export default function JobApplicationCard({
@@ -45,7 +45,7 @@ export default function JobApplicationCard({
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm("Are you sure you want to delete this application?")) return;
+    if (!confirm('Are you sure you want to delete this application?')) return;
 
     setIsDeleting(true);
     await jobService.deleteJobById(application.id);
@@ -57,12 +57,16 @@ export default function JobApplicationCard({
     onEdit(application);
   };
 
-  const handleStatusChange = async (newStatus: JobApplication["status"]) => {
+  const handleStatusChange = async (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    e.stopPropagation();
+    const newStatus = e.target.value as JobApplication['status'];
     try {
       const { error } = await supabase
-        .from("job_applications")
+        .from('job_applications')
         .update({ status: newStatus })
-        .eq("id", application.id);
+        .eq('id', application.id);
 
       if (error) throw error;
       updateJob(application.id, { status: newStatus });
@@ -72,10 +76,10 @@ export default function JobApplicationCard({
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
     });
   };
 
@@ -161,9 +165,9 @@ export default function JobApplicationCard({
       <div className="flex items-center justify-between pt-4 border-t border-gray-200">
         <select
           value={application.status}
-          onChange={(e) =>
-            handleStatusChange(e.target.value as JobApplication["status"])
-          }
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          onChange={handleStatusChange}
           className={`px-3 py-1.5 rounded-full text-sm font-medium border ${statusColors[application.status]} cursor-pointer focus:ring-2 focus:ring-blue-500 focus:outline-hidden`}
         >
           <option value="applied">Applied</option>
