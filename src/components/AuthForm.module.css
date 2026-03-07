@@ -1,0 +1,107 @@
+.outer_wrapper {
+  min-height: 100dvh;
+  background: linear-gradient(to bottom right, #eff6ff, #f3f4f6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+
+  .main_section {
+    max-width: var(--layout-med);
+    width: 100%;
+
+    .header {
+      text-align: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-md);
+      background: var(--color-prime);
+      border-radius: var(--space-md);
+      margin-bottom: var(--space-md);
+      & svg {
+        width: var(--icon-xl);
+        height: var(--icon-xl);
+        color: white;
+      }
+    }
+
+    .card {
+      background: var(--color-base-100);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-xl);
+      padding: var(--space-xl);
+
+      .tabList {
+        display: flex;
+        gap: var(--space-sm);
+        margin-bottom: var(--space-lg);
+
+        .tab {
+          flex: 1;
+          padding: var(--space-sm) var(--space-md);
+          border-radius: var(--radius-md);
+          font-weight: var(--font-weight-bold);
+          transition: background 0.2s;
+        }
+
+        .tabActive {
+          background: var(--color-prime);
+          color: white;
+        }
+
+        .tabInactive {
+          background: var(--color-base-200);
+          color: var(--color-text-prime);
+        }
+
+        .tabInactive:hover {
+          background: var(--color-base-300);
+        }
+      }
+    }
+  }
+
+  .forgotPassword {
+    text-align: right;
+    margin-top: var(--space-sm);
+  }
+
+  .submitButton {
+    width: 100%;
+  }
+
+  .spinner {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-bottom-color: white;
+    animation: spin 0.75s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .buttonIcon {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+  }
+
+  .divider {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-base-300);
+  }
+
+  .footer {
+    text-align: center;
+    font-size: var(--font-size-xs);
+  }
+}
