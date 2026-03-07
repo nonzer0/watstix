@@ -3,6 +3,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { Briefcase, LogIn, UserPlus } from 'lucide-react';
 import ForgotPasswordModal from './ForgotPasswordModal';
 
+import styles from './AuthForm.module.css';
+
 export default function AuthForm() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
@@ -51,31 +53,25 @@ export default function AuthForm() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 to-gray-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center p-4 bg-blue-600 rounded-2xl mb-4">
-            <Briefcase className="w-12 h-12 text-white" />
+    <div className={styles.outer_wrapper}>
+      <div className={styles.main_section}>
+        <div className={styles.header}>
+          <div className={styles.icon}>
+            <Briefcase />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Job Application Tracker
-          </h1>
-          <p className="text-gray-600">
-            Track and manage your job applications in one place
-          </p>
+          <h1>Job Application Tracker</h1>
+          <p>Track and manage your job applications in one place</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-xl p-8">
-          <div className="flex gap-2 mb-6">
+        <div className={styles.card}>
+          <div className={styles.tabList}>
             <button
               onClick={() => {
                 setIsSignUp(false);
                 setError(null);
               }}
-              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
-                !isSignUp
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              className={`${styles.tab} ${
+                !isSignUp ? styles.tabActive : styles.tabInactive
               }`}
             >
               Sign In
@@ -85,63 +81,45 @@ export default function AuthForm() {
                 setIsSignUp(true);
                 setError(null);
               }}
-              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
-                isSignUp
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              className={`${styles.tab} ${
+                isSignUp ? styles.tabActive : styles.tabInactive
               }`}
             >
               Sign Up
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                {error}
-              </div>
-            )}
+          <form onSubmit={handleSubmit}>
+            {error && <div className={styles.error}>{error}</div>}
 
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Email
-              </label>
+              <label htmlFor="email">Email</label>
               <input
                 type="email"
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="you@example.com"
               />
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Password
-              </label>
+              <label htmlFor="password">Password</label>
               <input
                 type="password"
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="••••••••"
               />
               {!isSignUp && (
-                <div className="text-right mt-2">
+                <div className={styles.forgotPassword}>
                   <button
                     type="button"
                     onClick={() => setShowForgotPassword(true)}
-                    className="text-sm text-blue-600 hover:underline"
+                    className="link-button"
                   >
                     Forgot Password?
                   </button>
@@ -151,19 +129,13 @@ export default function AuthForm() {
 
             {isSignUp && (
               <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Confirm Password
-                </label>
+                <label htmlFor="confirmPassword">Confirm Password</label>
                 <input
                   type="password"
                   id="confirmPassword"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="••••••••"
                 />
               </div>
@@ -172,19 +144,19 @@ export default function AuthForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              className={`btn-primary ${styles.submitButton}`}
             >
               {loading ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  <div className={styles.spinner}></div>
                   {isSignUp ? 'Creating Account...' : 'Signing In...'}
                 </>
               ) : (
                 <>
                   {isSignUp ? (
-                    <UserPlus className="w-5 h-5" />
+                    <UserPlus className={styles.buttonIcon} />
                   ) : (
-                    <LogIn className="w-5 h-5" />
+                    <LogIn className={styles.buttonIcon} />
                   )}
                   {isSignUp ? 'Create Account' : 'Sign In'}
                 </>
@@ -192,19 +164,23 @@ export default function AuthForm() {
             </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <p className="text-sm text-gray-600 text-center">
-              {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-              <button
-                onClick={() => {
-                  setIsSignUp(!isSignUp);
-                  setError(null);
-                }}
-                className="text-blue-600 hover:text-blue-700 font-medium"
-              >
-                {isSignUp ? 'Sign in' : 'Sign up'}
-              </button>
-            </p>
+          <div className={styles.divider}>
+            <div className={styles.footer}>
+              <p>
+                {isSignUp
+                  ? 'Already have an account?'
+                  : "Don't have an account?"}{' '}
+                <button
+                  onClick={() => {
+                    setIsSignUp(!isSignUp);
+                    setError(null);
+                  }}
+                  className="link-button"
+                >
+                  {isSignUp ? 'Sign in' : 'Sign up'}
+                </button>
+              </p>
+            </div>
           </div>
         </div>
       </div>
