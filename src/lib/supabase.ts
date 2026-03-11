@@ -1,7 +1,9 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl =
+  import.meta.env.VITE_SUPABASE_URL ?? 'http://localhost:54321';
+const supabaseAnonKey =
+  import.meta.env.VITE_SUPABASE_ANON_KEY ?? 'placeholder-anon-key';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -16,12 +18,12 @@ export type JobApplication = {
   salary_range?: string;
   application_date: string;
   status:
-    | "applied"
-    | "interviewing"
-    | "offered"
-    | "rejected"
-    | "accepted"
-    | "withdrawn";
+    | 'applied'
+    | 'interviewing'
+    | 'offered'
+    | 'rejected'
+    | 'accepted'
+    | 'withdrawn';
   contact_person?: string;
   contact_email?: string;
   notes?: string;

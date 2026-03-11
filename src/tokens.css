@@ -1,0 +1,45 @@
+:root {
+  --layout-med: 28rem;
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  /* from daisyui */
+  --color-prime: var(--color-primary);
+  --color-text-primary: var(--color-base-content);
+  --color-text-muted: var(--color-neutral-content);
+  --color-bg-light: var(--color-base-200);
+  --color-bg-muted: var(--color-base-300);
+
+  --icon-xs: 1rem; /* 16px */
+  --icon-sm: 1.25rem;
+  --icon-md: 1.5rem; /* 24px */
+  --icon-lg: 2rem; /* 32px */
+  --icon-xl: 3rem; /* 48px */
+
+  /* typography */
+  --font-size-xs: 0.875rem;
+  --font-size-sm: 1rem;
+  --font-size-md: 1.25rem;
+  --font-size-lg: 1.875rem;
+  --font-size-xl: 2.25rem;
+
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+
+  /* colors */
+  --color-text-primary: #111827;
+  --color-text-muted: #6b7280;
+  --color-bg-light: #eff6ff;
+  --color-bg-muted: #f3f4f6;
+
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}

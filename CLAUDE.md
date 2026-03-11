@@ -70,6 +70,9 @@ watstix/
 │       ├── 20251128225142_add_job_posting_link_to_job_applications.sql
 │       └── 20251226230616_create_interview_phases_table.sql
 ├── src/
+│   ├── index.css                # Tailwind + DaisyUI base styles
+│   ├── tokens.css               # Design tokens (CSS custom properties / vars)
+│   ├── typography.css           # Global element styles & utility classes
 │   ├── components/              # Reusable UI components
 │   │   ├── Header/              # Legacy: has folder (being phased out)
 │   │   │   ├── Header.tsx
@@ -80,6 +83,7 @@ watstix/
 │   │   │   ├── JobStatusBtn.spec.tsx
 │   │   │   └── index.ts
 │   │   ├── AuthForm.tsx
+│   │   ├── AuthForm.module.css  # CSS Module for AuthForm
 │   │   ├── InterviewPhaseCard.tsx
 │   │   ├── InterviewPhaseForm.tsx
 │   │   ├── InterviewPhaseTimeline.tsx
@@ -520,16 +524,36 @@ export function MyComponent({ prop1, prop2 }: Props) {
 
 ### Styling
 
-- **Tailwind utility classes** for all styling
-- **DaisyUI components** for common UI patterns (buttons, cards, etc.)
-- **Responsive design**: Use Tailwind breakpoints (`sm:`, `md:`, `lg:`)
-- **Color scheme**:
-  - Applied: `bg-blue-600`
-  - Interviewing: `bg-yellow-600`
-  - Offered: `bg-green-600`
-  - Rejected: `bg-red-600`
-  - Accepted: `bg-emerald-600`
-  - Withdrawn: `bg-gray-500`
+The project is **migrating away from Tailwind utility classes** toward global CSS files, CSS custom properties (design tokens), and CSS Modules. New components should follow this pattern. Existing components may still use Tailwind during the transition.
+
+**CSS architecture** (`src/main.tsx` imports in order):
+
+1. **`src/index.css`** — Tailwind/DaisyUI base. Imports `tailwindcss` and the DaisyUI plugin. Provides DaisyUI CSS variables (e.g. `--color-primary`, `--color-base-100`, `--color-base-200`, `--color-base-300`, `--color-error`, etc.).
+
+2. **`src/tokens.css`** — Design tokens as CSS custom properties on `:root`. Use these instead of raw values or Tailwind classes:
+   - **Layout**: `--layout-med`
+   - **Spacing**: `--space-xs`, `--space-sm`, `--space-md`, `--space-lg`, `--space-xl`
+   - **Border radius**: `--radius-sm`, `--radius-md`, `--radius-lg`, `--radius-xl`
+   - **Icon sizes**: `--icon-xs`, `--icon-sm`, `--icon-md`, `--icon-lg`, `--icon-xl`
+   - **Font sizes**: `--font-size-xs`, `--font-size-sm`, `--font-size-md`, `--font-size-lg`, `--font-size-xl`
+   - **Font weights**: `--font-weight-normal`, `--font-weight-bold`
+   - **Color aliases** (wrapping DaisyUI vars): `--color-prime` (→ `--color-primary`), `--color-text-primary`, `--color-text-muted`, `--color-bg-light`, `--color-bg-muted`
+   - **Shadows**: `--shadow-xl`
+
+3. **`src/typography.css`** — Global element styles and reusable utility classes:
+   - Styles bare elements: `h1`, `p`, `form`, `label`, `input`
+   - Utility classes: `.btn-primary`, `.link-button`, `.error`
+
+**CSS Modules** — Component-specific styles use `ComponentName.module.css` files co-located with their component. Import as `styles` and apply via `className={styles.className}`. See `src/components/AuthForm.module.css` for the pattern.
+
+**Approach for new components**:
+
+- Use tokens from `tokens.css` for spacing, sizing, color, etc.
+- Use global classes from `typography.css` for common patterns (`btn-primary`, `link-button`, `error`)
+- Put component-specific styles in a `.module.css` file
+- Avoid adding new Tailwind utility classes to components
+
+**DaisyUI** is still available for components not yet migrated and for its CSS variable tokens (e.g. `--color-primary`, `--color-base-100`) which are aliased in `tokens.css`.
 
 ### ESLint & Prettier
 
@@ -993,6 +1017,9 @@ pnpm storybook     # Start Storybook
 - `src/contexts/AuthContext.tsx` - Authentication
 - `src/services/jobService.ts` - Job CRUD operations
 - `src/services/interviewPhaseService.ts` - Interview phase CRUD operations
+- `src/index.css` - Tailwind + DaisyUI base
+- `src/tokens.css` - Design tokens (CSS custom properties)
+- `src/typography.css` - Global element styles & utility classes
 - `eslint.config.js` - Linting rules
 - `vitest.config.ts` - Test configuration
 
@@ -1031,7 +1058,7 @@ export default function MyComponent({ prop }: { prop: string }) { }
 
 ---
 
-**Last Updated**: January 15, 2026
+**Last Updated**: March 10, 2026
 **Project Version**: 0.0.0 (as per package.json)
 
 **Recent Major Changes**:
@@ -1039,5 +1066,6 @@ export default function MyComponent({ prop }: { prop: string }) { }
 - Added React Router for multi-page navigation (January 2026)
 - Implemented interview phase tracking feature (January 2026)
 - Created `views/` folder structure for route components (January 2026)
+- Started migration from Tailwind utility classes to CSS custom properties + CSS Modules (March 2026): added `src/tokens.css`, `src/typography.css`, and `src/components/AuthForm.module.css`
 
 **Key Principles**: Security First • Simplicity Over Complexity • Type Safety • Test Coverage
