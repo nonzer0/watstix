@@ -1,4 +1,5 @@
-import { Briefcase, LogOut } from "lucide-react";
+import { Briefcase, LogOut } from 'lucide-react';
+import styles from './Header.module.css';
 
 interface HeaderProps {
   setShowForm: (show: boolean) => void;
@@ -7,33 +8,22 @@ interface HeaderProps {
 
 export function Header({ setShowForm, signOut }: HeaderProps) {
   return (
-    <div className="flex items-center justify-between mb-4">
-      <div className="flex items-center gap-3">
-        <div className="bg-primary text-primary-content p-3 rounded-full">
-          <Briefcase className="w-6 h-6 text-white bg-primary" />
+    <div className={styles.wrapper}>
+      <div className={styles.brand}>
+        <div className={styles.icon}>
+          <Briefcase />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-primary">
-            Application Tracker
-          </h1>
-          <p className="text-secondary">
-            Manage and track your job applications
-          </p>
+          <h1>Application Tracker</h1>
+          <p>Manage and track your job applications</p>
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => setShowForm(true)}
-          className="btn btn-primary btn-lg"
-        >
+      <div className={styles.actions}>
+        <button onClick={() => setShowForm(true)} className="btn-primary">
           Add Application
         </button>
-        <button
-          onClick={signOut}
-          className="btn btn-primary btn-lg px-4"
-          title="Sign Out"
-        >
-          <LogOut className="w-6 h-6" />
+        <button onClick={signOut} className="btn-primary" title="Sign Out">
+          <LogOut />
         </button>
       </div>
     </div>

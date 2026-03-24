@@ -1,0 +1,31 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+
+    .icon {
+      background: var(--color-prime);
+      color: white;
+      padding: var(--space-md);
+      border-radius: 50%;
+
+      & svg {
+        width: var(--icon-md);
+        height: var(--icon-md);
+        color: white;
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+}
