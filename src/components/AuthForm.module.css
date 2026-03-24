@@ -1,6 +1,10 @@
 .outer_wrapper {
   min-height: 100dvh;
-  background: linear-gradient(to bottom right, #eff6ff, #f3f4f6);
+  background: linear-gradient(
+    to bottom right,
+    var(--color-bg-light),
+    var(--color-bg-muted)
+  );
   display: flex;
   align-items: center;
   justify-content: center;

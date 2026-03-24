@@ -40,6 +40,15 @@
   --color-bg-light: #eff6ff;
   --color-bg-muted: #f3f4f6;
 
+  /* status colors */
+  --color-status-all: #4b5563;
+  --color-status-applied: #2563eb;
+  --color-status-interviewing: #ca8a04;
+  --color-status-offered: #16a34a;
+  --color-status-rejected: #dc2626;
+  --color-status-accepted: #059669;
+  --color-status-withdrawn: #6b7280;
+
   --shadow-xl:
     0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }

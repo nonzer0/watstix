@@ -62,13 +62,37 @@ export default function Dashboard() {
   const displayForm = editingJob !== null;
 
   const statuses: StatusType[] = [
-    { value: 'all', label: 'All', color: 'bg-gray-600' },
-    { value: 'applied', label: 'Applied', color: 'bg-blue-600' },
-    { value: 'interviewing', label: 'Interviewing', color: 'bg-yellow-600' },
-    { value: 'offered', label: 'Offered', color: 'bg-green-600' },
-    { value: 'rejected', label: 'Rejected', color: 'bg-red-600' },
-    { value: 'accepted', label: 'Accepted', color: 'bg-emerald-600' },
-    { value: 'withdrawn', label: 'Withdrawn', color: 'bg-gray-500' },
+    { value: 'all', label: 'All', color: 'var(--color-status-all)' },
+    {
+      value: 'applied',
+      label: 'Applied',
+      color: 'var(--color-status-applied)',
+    },
+    {
+      value: 'interviewing',
+      label: 'Interviewing',
+      color: 'var(--color-status-interviewing)',
+    },
+    {
+      value: 'offered',
+      label: 'Offered',
+      color: 'var(--color-status-offered)',
+    },
+    {
+      value: 'rejected',
+      label: 'Rejected',
+      color: 'var(--color-status-rejected)',
+    },
+    {
+      value: 'accepted',
+      label: 'Accepted',
+      color: 'var(--color-status-accepted)',
+    },
+    {
+      value: 'withdrawn',
+      label: 'Withdrawn',
+      color: 'var(--color-status-withdrawn)',
+    },
   ];
 
   return (
