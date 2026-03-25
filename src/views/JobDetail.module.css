@@ -1,0 +1,169 @@
+.page {
+  min-height: 100dvh;
+  background: var(--color-base-100);
+}
+
+.notFoundPage {
+  min-height: 100dvh;
+  background: var(--color-base-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.content {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md);
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xs);
+  margin-bottom: var(--space-lg);
+  transition: color 0.15s;
+
+  & svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+  }
+}
+
+.backBtn:hover {
+  color: var(--color-prime);
+}
+
+.card {
+  background: var(--color-base-200);
+  border-radius: var(--radius-md);
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.07),
+    0 2px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--color-bg-muted);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-lg);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+}
+
+.jobInfo {
+  flex: 1;
+}
+
+.company {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-md);
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-xl);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  border: 1px solid var(--color-badge-neutral-border);
+  background: var(--color-badge-neutral-bg);
+  color: var(--color-badge-neutral-text);
+}
+
+.statusBadge[data-status='applied'] {
+  background: var(--color-badge-blue-bg);
+  color: var(--color-badge-blue-text);
+  border-color: var(--color-badge-blue-border);
+}
+
+.statusBadge[data-status='interviewing'] {
+  background: var(--color-badge-yellow-bg);
+  color: var(--color-badge-yellow-text);
+  border-color: var(--color-badge-yellow-border);
+}
+
+.statusBadge[data-status='offered'],
+.statusBadge[data-status='accepted'] {
+  background: var(--color-badge-green-bg);
+  color: var(--color-badge-green-text);
+  border-color: var(--color-badge-green-border);
+}
+
+.statusBadge[data-status='rejected'] {
+  background: var(--color-badge-red-bg);
+  color: var(--color-badge-red-text);
+  border-color: var(--color-badge-red-border);
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .detailsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.detail {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+
+  & svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+    flex-shrink: 0;
+  }
+}
+
+.section {
+  margin-bottom: var(--space-lg);
+}
+
+.postingLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-prime);
+  text-decoration: none;
+  font-size: var(--font-size-xs);
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  & svg {
+    width: var(--icon-xs);
+    height: var(--icon-xs);
+  }
+}
+
+.textBlock {
+  padding: var(--space-md);
+  background: var(--color-bg-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  white-space: pre-wrap;
+}
+
+.notesBlock {
+  border: 1px solid var(--color-badge-blue-border);
+}

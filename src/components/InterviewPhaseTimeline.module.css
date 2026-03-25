@@ -1,0 +1,55 @@
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.emptyState {
+  text-align: center;
+  padding: var(--space-xl) var(--space-md);
+  background: var(--color-base-200);
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border);
+
+  & svg {
+    width: var(--icon-xl);
+    height: var(--icon-xl);
+    color: var(--color-text-muted);
+    margin: 0 auto var(--space-sm);
+  }
+}
+
+.phaseList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.addBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-base-200);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-md);
+  border: 2px dashed var(--color-border);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  font-size: var(--font-size-xs);
+
+  & svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+  }
+}
+
+.addBtn:hover {
+  background: var(--color-base-300);
+  border-color: var(--color-prime);
+}

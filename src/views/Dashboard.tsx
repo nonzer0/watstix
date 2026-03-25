@@ -9,6 +9,7 @@ import JobApplicationCard from '../components/JobApplicationCard';
 import { JobStatusBtn } from '../components/JobStatusBtn';
 import { useStore } from '../store';
 import { useAuth } from '../contexts/AuthContext';
+import styles from './Dashboard.module.css';
 
 export default function Dashboard() {
   const { signOut } = useAuth();
@@ -96,14 +97,14 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-base-100">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="mb-8">
+    <div className={styles.page}>
+      <div className={styles.content}>
+        <div className={styles.topSection}>
           <Header
             setShowForm={() => setEditingJob({} as JobApplication)}
             signOut={signOut}
           />
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
+          <div className={styles.statusGrid}>
             {statuses.map((status) => (
               <JobStatusBtn
                 key={status.value}
@@ -116,21 +117,19 @@ export default function Dashboard() {
           </div>
         </div>
         {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading applications...</p>
-            </div>
+          <div className={styles.loadingState}>
+            <div className={styles.spinner}></div>
+            <p>Loading applications...</p>
           </div>
         ) : filteredApplications.length === 0 ? (
-          <div className="text-center py-20 bg-base-200 rounded-lg shadow-md border border-gray-200">
-            <Briefcase className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <div className={styles.emptyState}>
+            <Briefcase />
+            <h3>
               {statusFilter === 'all'
                 ? 'No Applications Yet'
                 : `No ${statusFilter} Applications`}
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p>
               {statusFilter === 'all'
                 ? 'Start tracking your job applications by adding your first one'
                 : 'Try selecting a different filter or add a new application'}
@@ -138,15 +137,15 @@ export default function Dashboard() {
             {statusFilter === 'all' && (
               <button
                 onClick={() => setEditingJob({} as JobApplication)}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="btn-primary"
               >
-                <Plus className="w-5 h-5" />
+                <Plus />
                 Add Your First Application
               </button>
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className={styles.cardsGrid}>
             {filteredApplications.map((application) => (
               <JobApplicationCard
                 key={application.id}

@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
   MapPin,
@@ -9,25 +9,17 @@ import {
   Mail,
   Edit,
   ExternalLink,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import type { JobApplication, InterviewPhase } from "../lib/supabase";
-import { useStore } from "../store";
-import { interviewPhaseService } from "../services/interviewPhaseService";
-import { jobService } from "../services/jobService";
-import { Loading } from "../components/Loading";
-import JobApplicationForm from "../components/JobApplicationForm";
-import InterviewPhaseForm from "../components/InterviewPhaseForm";
-import InterviewPhaseTimeline from "../components/InterviewPhaseTimeline";
-
-const statusColors = {
-  applied: "bg-blue-100 text-blue-800 border-blue-200",
-  interviewing: "bg-yellow-100 text-yellow-800 border-yellow-200",
-  offered: "bg-green-100 text-green-800 border-green-200",
-  rejected: "bg-red-100 text-red-800 border-red-200",
-  accepted: "bg-emerald-100 text-emerald-800 border-emerald-200",
-  withdrawn: "bg-gray-100 text-gray-800 border-gray-200",
-};
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import type { JobApplication, InterviewPhase } from '../lib/supabase';
+import { useStore } from '../store';
+import { interviewPhaseService } from '../services/interviewPhaseService';
+import { jobService } from '../services/jobService';
+import { Loading } from '../components/Loading';
+import JobApplicationForm from '../components/JobApplicationForm';
+import InterviewPhaseForm from '../components/InterviewPhaseForm';
+import InterviewPhaseTimeline from '../components/InterviewPhaseTimeline';
+import styles from './JobDetail.module.css';
 
 export default function JobDetail() {
   const { id } = useParams<{ id: string }>();
@@ -62,7 +54,7 @@ export default function JobDetail() {
 
       setInterviewPhases(phasesData);
     } catch (err) {
-      console.error("Failed to fetch job and phases:", err);
+      console.error('Failed to fetch job and phases:', err);
     } finally {
       setIsLoading(false);
     }
@@ -83,7 +75,7 @@ export default function JobDetail() {
   };
 
   const handleDeletePhase = async (phaseId: string) => {
-    if (!confirm("Are you sure you want to delete this interview phase?"))
+    if (!confirm('Are you sure you want to delete this interview phase?'))
       return;
 
     const success = await interviewPhaseService.deletePhase(phaseId);
@@ -93,19 +85,19 @@ export default function JobDetail() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
     });
   };
 
   function renderJobValue(val: string | null | undefined, Icon: LucideIcon) {
     if (!val) return null;
     return (
-      <div className="flex items-center gap-2 text-color-neutral">
-        <Icon className="w-5 h-5" />
-        <span className="text-base">{val}</span>
+      <div className={styles.detail}>
+        <Icon />
+        <span>{val}</span>
       </div>
     );
   }
@@ -116,12 +108,10 @@ export default function JobDetail() {
 
   if (!job) {
     return (
-      <div className="min-h-screen bg-base-100 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Job Application Not Found
-          </h2>
-          <button onClick={() => navigate("/")} className="btn btn-primary">
+      <div className={styles.notFoundPage}>
+        <div>
+          <h2>Job Application Not Found</h2>
+          <button onClick={() => navigate('/')} className="btn-primary">
             Back to Dashboard
           </button>
         </div>
@@ -130,41 +120,29 @@ export default function JobDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-base-100">
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        <button
-          onClick={() => navigate("/")}
-          className="flex items-center gap-2 text-color-neutral hover:text-primary transition-colors mb-6"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span className="font-medium">Back to Dashboard</span>
+    <div className={styles.page}>
+      <div className={styles.content}>
+        <button onClick={() => navigate('/')} className={styles.backBtn}>
+          <ArrowLeft />
+          Back to Dashboard
         </button>
 
-        <div className="bg-base-200 rounded-lg shadow-lg border border-base-200 p-8 mb-8">
-          <div className="flex items-start justify-between mb-6">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-color-neutral mb-2">
-                {job.position_title}
-              </h1>
-              <h2 className="text-2xl text-color-neutral font-medium mb-4">
-                {job.company_name}
-              </h2>
-              <span
-                className={`inline-block px-4 py-2 rounded-full text-sm font-medium border ${statusColors[job.status]}`}
-              >
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <div className={styles.jobInfo}>
+              <h1>{job.position_title}</h1>
+              <p className={styles.company}>{job.company_name}</p>
+              <span className={styles.statusBadge} data-status={job.status}>
                 {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
               </span>
             </div>
-            <button
-              onClick={() => setEditingJob(job)}
-              className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <Edit className="w-4 h-4" />
+            <button onClick={() => setEditingJob(job)} className="btn-primary">
+              <Edit />
               Edit Job
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div className={styles.detailsGrid}>
             {renderJobValue(job.location, MapPin)}
             {renderJobValue(job.salary_range, DollarSign)}
             {renderJobValue(formatDate(job.application_date), Calendar)}
@@ -173,50 +151,38 @@ export default function JobDetail() {
           </div>
 
           {job.job_posting_link && (
-            <div className="mb-6">
+            <div className={styles.section}>
               <a
                 href={job.job_posting_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-blue-600 hover:underline"
+                className={styles.postingLink}
               >
                 <span>View Job Posting</span>
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink />
               </a>
             </div>
           )}
 
           {job.job_description && (
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold text-color-neutral mb-2">
-                Job Description
-              </h3>
-              <div className="p-4 bg-accent/70 rounded-lg">
-                <p className="text-sm text-accent-content whitespace-pre-wrap">
-                  {job.job_description}
-                </p>
-              </div>
+            <div className={styles.section}>
+              <h3>Job Description</h3>
+              <div className={styles.textBlock}>{job.job_description}</div>
             </div>
           )}
 
           {job.notes && (
             <div>
-              <h3 className="text-lg font-semibold text-color-neutral mb-2">
-                Notes
-              </h3>
-              <div className="p-4 bg-info/70 rounded-lg border border-blue-100">
-                <p className="text-sm text-info-content whitespace-pre-wrap">
-                  {job.notes}
-                </p>
+              <h3>Notes</h3>
+              <div className={`${styles.textBlock} ${styles.notesBlock}`}>
+                {job.notes}
               </div>
             </div>
           )}
         </div>
 
-        <div className="bg-base-200 rounded-lg shadow-lg border border-base-200 p-8">
-          <h2 className="text-2xl font-bold text-color-neutral mb-6">
-            Interview Process
-          </h2>
+        <div className={styles.card}>
+          <h2>Interview Process</h2>
           <InterviewPhaseTimeline
             phases={jobPhases}
             onAdd={() => setEditingPhase({} as InterviewPhase)}

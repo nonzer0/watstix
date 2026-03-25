@@ -1,0 +1,130 @@
+.card {
+  background: var(--color-base-100);
+  border-radius: var(--radius-md);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--color-border);
+  padding: var(--space-lg);
+  transition: box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.07),
+    0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.info {
+  flex: 1;
+}
+
+.title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.description {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-sm);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.iconBtn {
+  color: var(--color-text-muted);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background 0.15s;
+
+  & svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+    display: block;
+  }
+}
+
+.iconBtnDelete:hover {
+  color: var(--color-badge-red-text);
+  background: var(--color-badge-red-bg);
+}
+
+.iconBtnEdit:hover {
+  color: var(--color-prime);
+  background: var(--color-badge-blue-bg);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.detail {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+
+  & svg {
+    width: var(--icon-xs);
+    height: var(--icon-xs);
+    flex-shrink: 0;
+  }
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.outcomeBadge {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-xl);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  border: 1px solid var(--color-badge-neutral-border);
+  background: var(--color-badge-neutral-bg);
+  color: var(--color-badge-neutral-text);
+}
+
+.outcomeBadge[data-outcome='passed'] {
+  background: var(--color-badge-green-bg);
+  color: var(--color-badge-green-text);
+  border-color: var(--color-badge-green-border);
+}
+
+.outcomeBadge[data-outcome='failed'] {
+  background: var(--color-badge-red-bg);
+  color: var(--color-badge-red-text);
+  border-color: var(--color-badge-red-border);
+}
+
+.outcomeBadge[data-outcome='cancelled'] {
+  background: var(--color-badge-yellow-bg);
+  color: var(--color-badge-yellow-text);
+  border-color: var(--color-badge-yellow-border);
+}
