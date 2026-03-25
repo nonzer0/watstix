@@ -46,16 +46,16 @@ export default function ForgotPasswordModal({
   };
 
   return (
-    <div className={styles.overlay}>
+    <div className="modal-overlay">
       <div className={styles.modal}>
-        <div className={styles.modalHeader}>
+        <div className="modal-header">
           <h2>Reset Password</h2>
-          <button onClick={onClose} className={styles.closeBtn}>
+          <button onClick={onClose} className="modal-close">
             <X />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className={styles.formBody}>
+        <form onSubmit={handleSubmit} className="form-body">
           {error && <div className="error">{error}</div>}
 
           {success ? (
@@ -87,7 +87,7 @@ export default function ForgotPasswordModal({
                 </p>
                 <fieldset>
                   <legend>Email</legend>
-                  <div className={styles.inputIcon}>
+                  <div className="input-with-icon">
                     <Mail />
                     <input
                       type="email"
@@ -102,7 +102,7 @@ export default function ForgotPasswordModal({
                 </fieldset>
               </div>
 
-              <div className={styles.formFooter}>
+              <div className="form-footer">
                 <button
                   type="button"
                   onClick={onClose}

@@ -4,7 +4,10 @@ export function Loading() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.content}>
-        <div className={styles.spinner}></div>
+        <div
+          className="spinner"
+          style={{ margin: '0 auto var(--space-md)' }}
+        ></div>
         <p>Loading...</p>
       </div>
     </div>

@@ -79,20 +79,6 @@
     width: 100%;
   }
 
-  .spinner {
-    width: 1.25rem;
-    height: 1.25rem;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    border-bottom-color: white;
-    animation: spin 0.75s linear infinite;
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
   .buttonIcon {
     width: var(--icon-sm);
     height: var(--icon-sm);
