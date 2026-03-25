@@ -90,7 +90,7 @@ export default function AuthForm() {
           </div>
 
           <form onSubmit={handleSubmit}>
-            {error && <div className={styles.error}>{error}</div>}
+            {error && <div className="error">{error}</div>}
 
             <div>
               <label htmlFor="email">Email</label>
@@ -148,7 +148,7 @@ export default function AuthForm() {
             >
               {loading ? (
                 <>
-                  <div className={styles.spinner}></div>
+                  <div className="spinner-sm"></div>
                   {isSignUp ? 'Creating Account...' : 'Signing In...'}
                 </>
               ) : (

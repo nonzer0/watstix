@@ -84,19 +84,19 @@ export default function JobApplicationForm({
   const submitLabel = jobApp ? 'Update' : 'Add Application';
 
   return (
-    <div className={styles.overlay}>
+    <div className="modal-overlay">
       <div className={styles.modal}>
-        <div className={styles.modalHeader}>
+        <div className="modal-header">
           <h2>{formLabel}</h2>
-          <button onClick={onCancel} className={styles.closeBtn}>
+          <button onClick={onCancel} className="modal-close">
             <X />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className={styles.formBody}>
+        <form onSubmit={handleSubmit} className="form-body">
           {error && <div className="error">{error}</div>}
 
-          <div className={styles.fieldGrid}>
+          <div className="field-grid">
             <fieldset>
               <legend>Company Name *</legend>
               <input
@@ -236,7 +236,7 @@ export default function JobApplicationForm({
             />
           </fieldset>
 
-          <div className={styles.formFooter}>
+          <div className="form-footer">
             <button type="button" onClick={onCancel} className="btn-secondary">
               Cancel
             </button>

@@ -41,22 +41,6 @@
   text-align: center;
 }
 
-.spinner {
-  width: var(--icon-xl);
-  height: var(--icon-xl);
-  border-radius: 50%;
-  border: 2px solid transparent;
-  border-bottom-color: var(--color-prime);
-  animation: spin 0.75s linear infinite;
-  margin-bottom: var(--space-md);
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .emptyState {
   text-align: center;
   padding: var(--space-xl) var(--space-md);

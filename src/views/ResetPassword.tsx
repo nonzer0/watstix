@@ -86,7 +86,7 @@ export default function ResetPassword() {
   if (checkingToken) {
     return (
       <div className={styles.loadingPage}>
-        <div className={styles.spinner}></div>
+        <div className="spinner"></div>
       </div>
     );
   }
@@ -140,7 +140,7 @@ export default function ResetPassword() {
 
               <div>
                 <label htmlFor="newPassword">New Password</label>
-                <div className={styles.inputIcon}>
+                <div className="input-with-icon">
                   <Lock />
                   <input
                     type="password"
@@ -156,7 +156,7 @@ export default function ResetPassword() {
 
               <div>
                 <label htmlFor="confirmPassword">Confirm New Password</label>
-                <div className={styles.inputIcon}>
+                <div className="input-with-icon">
                   <Lock />
                   <input
                     type="password"
@@ -172,7 +172,7 @@ export default function ResetPassword() {
               <button type="submit" disabled={loading} className="btn-primary">
                 {loading ? (
                   <>
-                    <div className={styles.spinnerSm}></div>
+                    <div className="spinner-sm"></div>
                     Updating Password...
                   </>
                 ) : (

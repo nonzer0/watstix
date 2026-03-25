@@ -1,14 +1,3 @@
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-md);
-  z-index: 50;
-}
-
 .modal {
   background: var(--color-base-200);
   border-radius: var(--radius-md);
@@ -17,61 +6,4 @@
   width: 100%;
   max-height: 90dvh;
   overflow-y: auto;
-}
-
-.modalHeader {
-  position: sticky;
-  top: 0;
-  background: var(--color-base-200);
-  border-bottom: 1px solid var(--color-bg-muted);
-  padding: var(--space-md) var(--space-lg);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 10;
-}
-
-.closeBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--color-text-muted);
-  padding: var(--space-xs);
-  border-radius: var(--radius-md);
-  transition: color 0.15s;
-
-  & svg {
-    width: var(--icon-md);
-    height: var(--icon-md);
-    display: block;
-  }
-}
-
-.closeBtn:hover {
-  color: var(--color-text-primary);
-}
-
-.formBody {
-  padding: var(--space-lg);
-  gap: var(--space-lg);
-}
-
-.fieldGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-lg);
-}
-
-@media (min-width: 768px) {
-  .fieldGrid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.formFooter {
-  display: flex;
-  gap: var(--space-sm);
-  justify-content: flex-end;
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--color-border);
 }

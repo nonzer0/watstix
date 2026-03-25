@@ -118,7 +118,10 @@ export default function Dashboard() {
         </div>
         {isLoading ? (
           <div className={styles.loadingState}>
-            <div className={styles.spinner}></div>
+            <div
+              className="spinner"
+              style={{ marginBottom: 'var(--space-md)' }}
+            ></div>
             <p>Loading applications...</p>
           </div>
         ) : filteredApplications.length === 0 ? (
