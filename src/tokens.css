@@ -39,6 +39,24 @@
   --color-text-muted: #6b7280;
   --color-bg-light: #eff6ff;
   --color-bg-muted: #f3f4f6;
+  --color-border: #e5e7eb;
+
+  /* badge colors */
+  --color-badge-blue-bg: #dbeafe;
+  --color-badge-blue-text: #1e40af;
+  --color-badge-blue-border: #bfdbfe;
+  --color-badge-yellow-bg: #fef9c3;
+  --color-badge-yellow-text: #854d0e;
+  --color-badge-yellow-border: #fef08a;
+  --color-badge-green-bg: #dcfce7;
+  --color-badge-green-text: #166534;
+  --color-badge-green-border: #bbf7d0;
+  --color-badge-red-bg: #fee2e2;
+  --color-badge-red-text: #991b1b;
+  --color-badge-red-border: #fecaca;
+  --color-badge-neutral-bg: #f3f4f6;
+  --color-badge-neutral-text: #1f2937;
+  --color-badge-neutral-border: #e5e7eb;
 
   /* status colors */
   --color-status-all: #4b5563;

@@ -1,0 +1,185 @@
+.card {
+  background: var(--color-base-100);
+  border-radius: var(--radius-md);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--color-border);
+  padding: var(--space-lg);
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.07),
+    0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.info {
+  flex: 1;
+}
+
+.title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.company {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.iconBtn {
+  color: var(--color-text-muted);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background 0.15s;
+
+  & svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+    display: block;
+  }
+}
+
+.iconBtnDelete:hover {
+  color: var(--color-badge-red-text);
+  background: var(--color-badge-red-bg);
+}
+
+.iconBtnEdit:hover {
+  color: var(--color-prime);
+  background: var(--color-badge-blue-bg);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.detail {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+
+  & svg {
+    width: var(--icon-xs);
+    height: var(--icon-xs);
+    flex-shrink: 0;
+  }
+}
+
+.postingLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+  font-size: var(--font-size-xs);
+  color: var(--color-prime);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  & svg {
+    width: var(--icon-xs);
+    height: var(--icon-xs);
+  }
+}
+
+.descriptionBlock,
+.notesBlock {
+  margin-bottom: var(--space-md);
+  padding: var(--space-sm);
+  background: var(--color-bg-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.notesBlock {
+  border: 1px solid var(--color-badge-blue-border);
+}
+
+.clampedText {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.statusSelect {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-xl);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  border: 1px solid var(--color-badge-neutral-border);
+  background: var(--color-badge-neutral-bg);
+  color: var(--color-badge-neutral-text);
+  cursor: pointer;
+  width: auto;
+}
+
+.statusSelect[data-status='applied'] {
+  background: var(--color-badge-blue-bg);
+  color: var(--color-badge-blue-text);
+  border-color: var(--color-badge-blue-border);
+}
+
+.statusSelect[data-status='interviewing'] {
+  background: var(--color-badge-yellow-bg);
+  color: var(--color-badge-yellow-text);
+  border-color: var(--color-badge-yellow-border);
+}
+
+.statusSelect[data-status='offered'],
+.statusSelect[data-status='accepted'] {
+  background: var(--color-badge-green-bg);
+  color: var(--color-badge-green-text);
+  border-color: var(--color-badge-green-border);
+}
+
+.statusSelect[data-status='rejected'] {
+  background: var(--color-badge-red-bg);
+  color: var(--color-badge-red-text);
+  border-color: var(--color-badge-red-border);
+}
+
+.meta {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}

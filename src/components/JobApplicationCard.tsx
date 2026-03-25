@@ -14,21 +14,13 @@ import type { LucideIcon } from 'lucide-react';
 import { JobApplication, supabase } from '../lib/supabase';
 import { jobService } from '../services/jobService';
 import { useStore } from '../store';
+import styles from './JobApplicationCard.module.css';
 
 interface JobApplicationCardProps {
   application: JobApplication;
   onUpdate: () => void;
   onEdit: (job: JobApplication) => void;
 }
-
-const statusColors = {
-  applied: 'bg-blue-100 text-blue-800 border-blue-200',
-  interviewing: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  offered: 'bg-green-100 text-green-800 border-green-200',
-  rejected: 'bg-red-100 text-red-800 border-red-200',
-  accepted: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-  withdrawn: 'bg-gray-100 text-gray-800 border-gray-200',
-};
 
 export default function JobApplicationCard({
   application,
@@ -86,47 +78,40 @@ export default function JobApplicationCard({
   function renderJobValue(val: string | null | undefined, Icon: LucideIcon) {
     if (!val) return null;
     return (
-      <div className="flex items-center gap-2 text-color-neutral">
-        <Icon className="w-4 h-4" />
-        <span className="text-sm">{val}</span>
+      <div className={styles.detail}>
+        <Icon />
+        <span>{val}</span>
       </div>
     );
   }
 
   return (
-    <div
-      onClick={handleCardClick}
-      className="bg-base-400 rounded-lg shadow-md border border-base-400 p-6 hover:shadow-lg transition-shadow cursor-pointer"
-    >
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <h3 className="text-xl font-bold text-color-neutral mb-1">
-            {application.position_title}
-          </h3>
-          <p className="text-lg text-color-neutral font-medium">
-            {application.company_name}
-          </p>
+    <div onClick={handleCardClick} className={styles.card}>
+      <div className={styles.header}>
+        <div className={styles.info}>
+          <h3 className={styles.title}>{application.position_title}</h3>
+          <p className={styles.company}>{application.company_name}</p>
         </div>
-        <div className="flex gap-2">
+        <div className={styles.actions}>
           <button
             onClick={handleDelete}
             disabled={isDeleting}
-            className="text-gray-400 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50"
+            className={`${styles.iconBtn} ${styles.iconBtnDelete}`}
             title="Delete application"
           >
-            <Trash2 className="w-5 h-5" />
+            <Trash2 />
           </button>
           <button
             onClick={handleEdit}
-            className="text-gray-400 hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50"
+            className={`${styles.iconBtn} ${styles.iconBtnEdit}`}
             title="Edit application"
           >
-            <Edit className="w-5 h-5" />
+            <Edit />
           </button>
         </div>
       </div>
 
-      <div className="space-y-3 mb-4">
+      <div className={styles.details}>
         {renderJobValue(application.location, MapPin)}
         {renderJobValue(application.salary_range, DollarSign)}
         {renderJobValue(application.application_date, Calendar)}
@@ -135,40 +120,38 @@ export default function JobApplicationCard({
       </div>
 
       {application.job_posting_link && (
-        <div className="mb-4">
-          <a
-            href={application.job_posting_link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 hover:underline text-sm"
-          >
-            View Job Posting
-          </a>
-          <ExternalLink className="inline-block w-4 h-4 ml-1 text-blue-600" />
-        </div>
+        <a
+          href={application.job_posting_link}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className={styles.postingLink}
+        >
+          View Job Posting
+          <ExternalLink />
+        </a>
       )}
 
       {application.job_description && (
-        <div className="mb-4 p-3 bg-accent/70 rounded-lg">
-          <p className="text-sm text-accent-content line-clamp-3">
-            {application.job_description}
-          </p>
+        <div className={styles.descriptionBlock}>
+          <p className={styles.clampedText}>{application.job_description}</p>
         </div>
       )}
 
       {application.notes && (
-        <div className="mb-4 p-3 bg-info/70 rounded-lg border border-blue-100">
-          <p className="text-sm text-info-content">{application.notes}</p>
+        <div className={styles.notesBlock}>
+          <p>{application.notes}</p>
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+      <div className={styles.footer}>
         <select
           value={application.status}
+          data-status={application.status}
           onClick={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
           onChange={handleStatusChange}
-          className={`px-3 py-1.5 rounded-full text-sm font-medium border ${statusColors[application.status]} cursor-pointer focus:ring-2 focus:ring-blue-500 focus:outline-hidden`}
+          className={styles.statusSelect}
         >
           <option value="applied">Applied</option>
           <option value="interviewing">Interviewing</option>
@@ -178,7 +161,7 @@ export default function JobApplicationCard({
           <option value="withdrawn">Withdrawn</option>
         </select>
 
-        <span className="text-xs text-color-neutral">
+        <span className={styles.meta}>
           Updated {formatDate(application.updated_at)}
         </span>
       </div>

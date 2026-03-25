@@ -1,0 +1,31 @@
+.wrapper {
+  min-height: 100dvh;
+  background: linear-gradient(
+    to bottom right,
+    var(--color-bg-muted),
+    var(--color-bg-muted)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  text-align: center;
+}
+
+.spinner {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-bottom-color: var(--color-prime);
+  animation: spin 0.75s linear infinite;
+  margin: 0 auto var(--space-md);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

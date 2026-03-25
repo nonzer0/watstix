@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { X } from "lucide-react";
-import type { InterviewPhase } from "../lib/supabase";
-import { useAuth } from "../contexts/AuthContext";
-import { interviewPhaseService } from "../services/interviewPhaseService";
-import { useStore } from "../store";
+import { useState } from 'react';
+import { X } from 'lucide-react';
+import type { InterviewPhase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
+import { interviewPhaseService } from '../services/interviewPhaseService';
+import { useStore } from '../store';
+import styles from './InterviewPhaseForm.module.css';
 
 interface InterviewPhaseFormProps {
   phaseToEdit: InterviewPhase | null;
@@ -25,14 +26,14 @@ export default function InterviewPhaseForm({
   const interviewPhases = useStore.use.interviewPhases();
 
   const [formData, setFormData] = useState({
-    title: phase?.title || "",
-    description: phase?.description || "",
+    title: phase?.title || '',
+    description: phase?.description || '',
     interview_date: phase?.interview_date
       ? new Date(phase.interview_date).toISOString().slice(0, 16)
-      : "",
-    interviewer_names: phase?.interviewer_names?.join(", ") || "",
-    notes: phase?.notes || "",
-    outcome: phase?.outcome || "pending",
+      : '',
+    interviewer_names: phase?.interviewer_names?.join(', ') || '',
+    notes: phase?.notes || '',
+    outcome: phase?.outcome || 'pending',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +45,7 @@ export default function InterviewPhaseForm({
 
     try {
       const interviewer_names = formData.interviewer_names
-        .split(",")
+        .split(',')
         .map((name) => name.trim())
         .filter(Boolean);
 
@@ -62,17 +63,17 @@ export default function InterviewPhaseForm({
       if (phase) {
         const success = await interviewPhaseService.updatePhase(
           phase.id,
-          phaseData,
+          phaseData
         );
 
-        if (!success) throw new Error("Failed to update phase");
+        if (!success) throw new Error('Failed to update phase');
         updateInterviewPhase(phase.id, phaseData as Partial<InterviewPhase>);
         onSuccess();
         return;
       }
 
       const jobPhases = interviewPhases.filter(
-        (p) => p.job_application_id === jobId,
+        (p) => p.job_application_id === jobId
       );
       const maxSortOrder =
         jobPhases.length > 0
@@ -86,12 +87,12 @@ export default function InterviewPhaseForm({
         sort_order: maxSortOrder + 1,
       });
 
-      if (!newPhase) throw new Error("Failed to create phase");
+      if (!newPhase) throw new Error('Failed to create phase');
       addInterviewPhase(newPhase);
       onSuccess();
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to save interview phase",
+        err instanceof Error ? err.message : 'Failed to save interview phase'
       );
     } finally {
       setIsSubmitting(false);
@@ -101,7 +102,7 @@ export default function InterviewPhaseForm({
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     setFormData((prev) => ({
       ...prev,
@@ -109,138 +110,109 @@ export default function InterviewPhaseForm({
     }));
   };
 
-  const formLabel = phase ? "Edit Interview Phase" : "Add Interview Phase";
-  const submitLabel = phase ? "Update" : "Add Phase";
+  const formLabel = phase ? 'Edit Interview Phase' : 'Add Interview Phase';
+  const submitLabel = phase ? 'Update' : 'Add Phase';
 
   return (
-    <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-base-200 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-base-200 border-b border-base-200 px-6 py-4 flex items-center justify-between z-10">
-          <h2 className="text-2xl font-bold text-color-neutral">{formLabel}</h2>
-          <button
-            onClick={onCancel}
-            className="text-color-neutral hover:text-gray-600 transition-colors"
-          >
-            <X className="w-6 h-6" />
+    <div className={styles.overlay}>
+      <div className={styles.modal}>
+        <div className={styles.modalHeader}>
+          <h2>{formLabel}</h2>
+          <button onClick={onCancel} className={styles.closeBtn}>
+            <X />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-sm">
-              {error}
-            </div>
-          )}
+        <form onSubmit={handleSubmit} className={styles.formBody}>
+          {error && <div className="error">{error}</div>}
 
-          <div>
-            <fieldset className="fieldset">
-              <legend className="legend">Title *</legend>
+          <fieldset>
+            <legend>Title *</legend>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              required
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="e.g., Phone Screen, Technical Interview"
+            />
+          </fieldset>
+
+          <fieldset>
+            <legend>Description</legend>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows={2}
+              placeholder="Additional details about this interview phase"
+            />
+          </fieldset>
+
+          <div className={styles.fieldGrid}>
+            <fieldset>
+              <legend>Date & Time</legend>
               <input
-                type="text"
-                id="title"
-                name="title"
-                required
-                value={formData.title}
+                type="datetime-local"
+                id="interview_date"
+                name="interview_date"
+                value={formData.interview_date}
                 onChange={handleChange}
-                placeholder="e.g., Phone Screen, Technical Interview"
-                className="input input-neutral"
               />
+            </fieldset>
+
+            <fieldset>
+              <legend>Outcome</legend>
+              <select
+                id="outcome"
+                name="outcome"
+                value={formData.outcome}
+                onChange={handleChange}
+              >
+                <option value="pending">Pending</option>
+                <option value="passed">Passed</option>
+                <option value="failed">Failed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
             </fieldset>
           </div>
 
-          <div>
-            <fieldset className="fieldset">
-              <legend className="legend">Description</legend>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                rows={2}
-                placeholder="Additional details about this interview phase"
-                className="textarea textarea-neutral w-full"
-              />
-            </fieldset>
-          </div>
+          <fieldset>
+            <legend>Interviewer Names</legend>
+            <input
+              type="text"
+              id="interviewer_names"
+              name="interviewer_names"
+              value={formData.interviewer_names}
+              onChange={handleChange}
+              placeholder="Jane Doe, John Smith (comma-separated)"
+            />
+          </fieldset>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <fieldset className="fieldset">
-                <legend className="legend">Date & Time</legend>
-                <input
-                  type="datetime-local"
-                  id="interview_date"
-                  name="interview_date"
-                  value={formData.interview_date}
-                  onChange={handleChange}
-                  className="input input-neutral"
-                />
-              </fieldset>
-            </div>
+          <fieldset>
+            <legend>Notes & Feedback</legend>
+            <textarea
+              id="notes"
+              name="notes"
+              value={formData.notes}
+              onChange={handleChange}
+              rows={4}
+              placeholder="Interview feedback, impressions, follow-up actions..."
+            />
+          </fieldset>
 
-            <div>
-              <fieldset className="fieldset">
-                <legend className="legend">Outcome</legend>
-                <select
-                  id="outcome"
-                  name="outcome"
-                  value={formData.outcome}
-                  onChange={handleChange}
-                  className="input input-neutral"
-                >
-                  <option value="pending">Pending</option>
-                  <option value="passed">Passed</option>
-                  <option value="failed">Failed</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
-              </fieldset>
-            </div>
-          </div>
-
-          <div>
-            <fieldset className="fieldset">
-              <legend className="legend">Interviewer Names</legend>
-              <input
-                type="text"
-                id="interviewer_names"
-                name="interviewer_names"
-                value={formData.interviewer_names}
-                onChange={handleChange}
-                placeholder="Jane Doe, John Smith (comma-separated)"
-                className="input input-neutral w-full"
-              />
-            </fieldset>
-          </div>
-
-          <div>
-            <fieldset className="fieldset">
-              <legend className="legend">Notes & Feedback</legend>
-              <textarea
-                id="notes"
-                name="notes"
-                value={formData.notes}
-                onChange={handleChange}
-                rows={4}
-                placeholder="Interview feedback, impressions, follow-up actions..."
-                className="textarea textarea-neutral w-full"
-              />
-            </fieldset>
-          </div>
-
-          <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
-            <button
-              type="button"
-              onClick={onCancel}
-              className="btn btn-secondary btn-lg px-4"
-            >
+          <div className={styles.formFooter}>
+            <button type="button" onClick={onCancel} className="btn-secondary">
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn btn-primary btn-lg px-4"
+              className="btn-primary"
             >
-              {isSubmitting ? "Saving..." : submitLabel}
+              {isSubmitting ? 'Saving...' : submitLabel}
             </button>
           </div>
         </form>

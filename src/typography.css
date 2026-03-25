@@ -1,8 +1,28 @@
-h1 {
-  font-size: var(--font-size-lg);
+h1,
+h2,
+h3,
+h4 {
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
+}
+
+h1 {
+  font-size: var(--font-size-lg);
   margin-bottom: var(--space-sm);
+}
+
+h2 {
+  font-size: var(--font-size-md);
+}
+
+h3 {
+  font-size: var(--font-size-md);
+  margin-bottom: var(--space-xs);
+}
+
+h4 {
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-xs);
 }
 
 p {
@@ -32,9 +52,36 @@ input {
   outline: none;
 }
 
-input:focus {
+input:focus,
+textarea:focus,
+select:focus {
   outline: 2px solid var(--color-prime);
   border-color: transparent;
+}
+
+textarea,
+select {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-base-300);
+  border-radius: var(--radius-md);
+  outline: none;
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+legend {
+  display: block;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+  padding: 0;
+  width: 100%;
 }
 
 .link-button {
@@ -73,6 +120,49 @@ input:focus {
 .btn-primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 0.75rem var(--space-md);
+  background: var(--color-bg-muted);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-bold);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+  background: var(--color-base-300);
+}
+
+.alert-success {
+  background: var(--color-badge-green-bg);
+  border: 1px solid var(--color-badge-green-border);
+  color: var(--color-badge-green-text);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+
+  & svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+
+  & p {
+    margin: 0;
+    color: inherit;
+  }
 }
 
 .error {
