@@ -1,28 +1,25 @@
 :root {
   --layout-med: 28rem;
+
+  /* spacing */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
   --space-lg: 2rem;
   --space-xl: 4rem;
 
+  /* border radius */
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
 
-  /* from daisyui */
-  --color-prime: var(--color-primary);
-  --color-text-primary: var(--color-base-content);
-  --color-text-muted: var(--color-neutral-content);
-  --color-bg-light: var(--color-base-200);
-  --color-bg-muted: var(--color-base-300);
-
-  --icon-xs: 1rem; /* 16px */
+  /* icon sizes */
+  --icon-xs: 1rem;
   --icon-sm: 1.25rem;
-  --icon-md: 1.5rem; /* 24px */
-  --icon-lg: 2rem; /* 32px */
-  --icon-xl: 3rem; /* 48px */
+  --icon-md: 1.5rem;
+  --icon-lg: 2rem;
+  --icon-xl: 3rem;
 
   /* typography */
   --font-size-xs: 0.875rem;
@@ -30,16 +27,27 @@
   --font-size-md: 1.25rem;
   --font-size-lg: 1.875rem;
   --font-size-xl: 2.25rem;
-
   --font-weight-normal: 400;
   --font-weight-bold: 700;
 
-  /* colors */
+  /* base palette (daisyui light values) */
+  --color-base-100: #ffffff;
+  --color-base-200: #f9fafb;
+  --color-base-300: #f3f4f6;
+
+  /* semantic colors */
+  --color-prime: #4f46e5;
+  --color-prime-hover: #4338ca;
   --color-text-primary: #111827;
   --color-text-muted: #6b7280;
   --color-bg-light: #eff6ff;
   --color-bg-muted: #f3f4f6;
   --color-border: #e5e7eb;
+  --color-error: #dc2626;
+  --color-error-content: #fee2e2;
+
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 
   /* badge colors */
   --color-badge-blue-bg: #dbeafe;
@@ -66,7 +74,4 @@
   --color-status-rejected: #dc2626;
   --color-status-accepted: #059669;
   --color-status-withdrawn: #6b7280;
-
-  --shadow-xl:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }

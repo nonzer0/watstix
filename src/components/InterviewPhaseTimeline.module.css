@@ -5,6 +5,9 @@
 }
 
 .emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   padding: var(--space-xl) var(--space-md);
   background: var(--color-base-200);
@@ -16,7 +19,7 @@
     width: var(--icon-xl);
     height: var(--icon-xl);
     color: var(--color-text-muted);
-    margin: 0 auto var(--space-sm);
+    margin-bottom: var(--space-sm);
   }
 }
 

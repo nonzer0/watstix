@@ -86,7 +86,7 @@ legend {
 
 .link-button {
   font-size: var(--font-size-sm);
-  color: var(--color-primary);
+  color: var(--color-prime);
   background: none;
   border: none;
   cursor: pointer;
@@ -104,7 +104,7 @@ legend {
   justify-content: center;
   gap: var(--space-sm);
   padding: 0.75rem var(--space-md);
-  background: var(--color-primary);
+  background: var(--color-prime);
   color: white;
   border-radius: var(--radius-md);
   font-weight: var(--font-weight-bold);
@@ -114,7 +114,7 @@ legend {
 }
 
 .btn-primary:hover {
-  background: var(--color-primary-content);
+  background: var(--color-prime-hover);
 }
 
 .btn-primary:disabled {
