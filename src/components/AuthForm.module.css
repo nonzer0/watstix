@@ -60,7 +60,7 @@
 
         .tabInactive {
           background: var(--color-base-200);
-          color: var(--color-text-prime);
+          color: var(--color-text-primary);
         }
 
         .tabInactive:hover {
