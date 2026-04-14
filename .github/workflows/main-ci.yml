@@ -11,6 +11,9 @@ on:
 jobs:
   job:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -35,11 +38,8 @@ jobs:
         run: pnpm run build
 
       - name: Testing & Coverage
-        run: pnpm run test --run
+        run: pnpm run test --run --coverage
 
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
+      - name: Coverage report
+        uses: davelosert/vitest-coverage-report-action@v2
         if: always()
-        with:
-          files: ./coverage/coverage-final.json
-          fail_ci_if_error: false
