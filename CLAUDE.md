@@ -11,7 +11,7 @@
 - Interview phase management (custom phases per job)
 - Status filtering and tracking (applied, interviewing, offered, rejected, accepted, withdrawn)
 - Multi-page routing with React Router
-- Responsive UI with DaisyUI components
+- Responsive UI with CSS Modules and CSS custom properties
 - Real-time data sync with Supabase
 
 ---
@@ -33,8 +33,6 @@
 
 ### UI & Styling
 
-- **Tailwind CSS 4.1.17** - Utility-first CSS framework
-- **DaisyUI 5.5.8** - Tailwind component library
 - **lucide-react 0.344.0** - Icon library
 
 ### Testing & Quality
@@ -70,29 +68,43 @@ watstix/
 │       ├── 20251128225142_add_job_posting_link_to_job_applications.sql
 │       └── 20251226230616_create_interview_phases_table.sql
 ├── src/
-│   ├── index.css                # Tailwind + DaisyUI base styles
+│   ├── index.css                # Minimal CSS reset
 │   ├── tokens.css               # Design tokens (CSS custom properties / vars)
 │   ├── typography.css           # Global element styles & utility classes
 │   ├── components/              # Reusable UI components
 │   │   ├── Header/              # Legacy: has folder (being phased out)
 │   │   │   ├── Header.tsx
+│   │   │   ├── Header.module.css
 │   │   │   ├── Header.spec.tsx
 │   │   │   └── index.ts
 │   │   ├── JobStatusBtn/        # Legacy: has folder (being phased out)
 │   │   │   ├── JobStatusBtn.tsx
+│   │   │   ├── JobStatusBtn.module.css
 │   │   │   ├── JobStatusBtn.spec.tsx
 │   │   │   └── index.ts
 │   │   ├── AuthForm.tsx
-│   │   ├── AuthForm.module.css  # CSS Module for AuthForm
+│   │   ├── AuthForm.module.css
+│   │   ├── ForgotPasswordModal.tsx
+│   │   ├── ForgotPasswordModal.module.css
 │   │   ├── InterviewPhaseCard.tsx
+│   │   ├── InterviewPhaseCard.module.css
 │   │   ├── InterviewPhaseForm.tsx
+│   │   ├── InterviewPhaseForm.module.css
 │   │   ├── InterviewPhaseTimeline.tsx
+│   │   ├── InterviewPhaseTimeline.module.css
 │   │   ├── JobApplicationCard.tsx
+│   │   ├── JobApplicationCard.module.css
 │   │   ├── JobApplicationForm.tsx
-│   │   └── Loading.tsx
+│   │   ├── JobApplicationForm.module.css
+│   │   ├── Loading.tsx
+│   │   └── Loading.module.css
 │   ├── views/                   # Route/page components
 │   │   ├── Dashboard.tsx        # Main dashboard (/ route)
-│   │   └── JobDetail.tsx        # Job detail page (/job/:id route)
+│   │   ├── Dashboard.module.css
+│   │   ├── JobDetail.tsx        # Job detail page (/job/:id route)
+│   │   ├── JobDetail.module.css
+│   │   ├── ResetPassword.tsx    # Password reset (/reset-password route)
+│   │   └── ResetPassword.module.css
 │   ├── contexts/                # React contexts
 │   │   └── AuthContext.tsx      # Authentication context & hooks
 │   ├── lib/                     # External library integrations
@@ -108,7 +120,9 @@ watstix/
 │   │   ├── store.test.ts
 │   │   └── index.ts
 │   ├── stories/                 # Storybook stories
-│   │   └── Header.stories.tsx
+│   │   ├── Header.stories.tsx
+│   │   ├── JobStatusBtn.stories.tsx
+│   │   └── AuthForm.stories.tsx
 │   ├── test/                    # Test configuration
 │   │   └── setup.ts
 │   ├── types/                   # TypeScript type definitions
@@ -203,6 +217,7 @@ The app uses React Router for client-side navigation:
 
 // App.tsx - Define routes
 <Routes>
+  <Route path="/reset-password" element={<ResetPassword />} />
   <Route path="/" element={<Dashboard />} />
   <Route path="/job/:id" element={<JobDetail />} />
 </Routes>
@@ -216,6 +231,7 @@ navigate(`/job/${jobId}`);
 
 - `/` - Dashboard with job cards and filtering
 - `/job/:id` - Job detail page with interview phases
+- `/reset-password` - Password reset (public, linked from Supabase reset email)
 
 **Key principles**:
 
@@ -329,7 +345,7 @@ export const interviewPhaseService = {
 
 **Organization**:
 
-- **Route components** go in `src/views/` folder (Dashboard.tsx, JobDetail.tsx)
+- **Route components** go in `src/views/` folder (Dashboard.tsx, JobDetail.tsx, ResetPassword.tsx)
 - **Reusable UI components** go in `src/components/` folder
 - **Avoid separate folders for components** - Keep components as single files
 - **Do NOT use barrel files** (`index.ts`) for components - Import components directly from their files
@@ -341,16 +357,30 @@ export const interviewPhaseService = {
 
 ```
 components/
-├── AuthForm.tsx                # Component
-├── Loading.tsx                 # Component
-├── JobApplicationCard.tsx      # Component
-├── InterviewPhaseCard.tsx      # Component
-├── InterviewPhaseForm.tsx      # Component
-└── InterviewPhaseTimeline.tsx  # Component
+├── AuthForm.tsx
+├── AuthForm.module.css
+├── ForgotPasswordModal.tsx
+├── ForgotPasswordModal.module.css
+├── Loading.tsx
+├── Loading.module.css
+├── JobApplicationCard.tsx
+├── JobApplicationCard.module.css
+├── JobApplicationForm.tsx
+├── JobApplicationForm.module.css
+├── InterviewPhaseCard.tsx
+├── InterviewPhaseCard.module.css
+├── InterviewPhaseForm.tsx
+├── InterviewPhaseForm.module.css
+├── InterviewPhaseTimeline.tsx
+└── InterviewPhaseTimeline.module.css
 
 views/
-├── Dashboard.tsx               # Route component (/)
-└── JobDetail.tsx               # Route component (/job/:id)
+├── Dashboard.tsx
+├── Dashboard.module.css
+├── JobDetail.tsx
+├── JobDetail.module.css
+├── ResetPassword.tsx
+└── ResetPassword.module.css
 ```
 
 **Why avoid folders and barrel files?**
@@ -524,36 +554,50 @@ export function MyComponent({ prop1, prop2 }: Props) {
 
 ### Styling
 
-The project is **migrating away from Tailwind utility classes** toward global CSS files, CSS custom properties (design tokens), and CSS Modules. New components should follow this pattern. Existing components may still use Tailwind during the transition.
+The project uses CSS Modules + CSS custom properties (design tokens). No Tailwind or DaisyUI — both have been fully removed.
 
 **CSS architecture** (`src/main.tsx` imports in order):
 
-1. **`src/index.css`** — Tailwind/DaisyUI base. Imports `tailwindcss` and the DaisyUI plugin. Provides DaisyUI CSS variables (e.g. `--color-primary`, `--color-base-100`, `--color-base-200`, `--color-base-300`, `--color-error`, etc.).
+1. **`src/index.css`** — Minimal CSS reset (`box-sizing`, `font-family`, `margin: 0` on body).
 
-2. **`src/tokens.css`** — Design tokens as CSS custom properties on `:root`. Use these instead of raw values or Tailwind classes:
+2. **`src/tokens.css`** — All design tokens as CSS custom properties on `:root`. Use these for all styling — no raw values:
    - **Layout**: `--layout-med`
    - **Spacing**: `--space-xs`, `--space-sm`, `--space-md`, `--space-lg`, `--space-xl`
    - **Border radius**: `--radius-sm`, `--radius-md`, `--radius-lg`, `--radius-xl`
    - **Icon sizes**: `--icon-xs`, `--icon-sm`, `--icon-md`, `--icon-lg`, `--icon-xl`
    - **Font sizes**: `--font-size-xs`, `--font-size-sm`, `--font-size-md`, `--font-size-lg`, `--font-size-xl`
    - **Font weights**: `--font-weight-normal`, `--font-weight-bold`
-   - **Color aliases** (wrapping DaisyUI vars): `--color-prime` (→ `--color-primary`), `--color-text-primary`, `--color-text-muted`, `--color-bg-light`, `--color-bg-muted`
+   - **Base palette**: `--color-base-100`, `--color-base-200`, `--color-base-300`
+   - **Semantic colors**: `--color-prime`, `--color-prime-hover`, `--color-text-primary`, `--color-text-muted`, `--color-bg-light`, `--color-bg-muted`, `--color-border`, `--color-error`, `--color-error-content`
+   - **Badge colors**: `--color-badge-{blue,yellow,green,red,neutral}-{bg,text,border}`
+   - **Status colors**: `--color-status-{all,applied,interviewing,offered,rejected,accepted,withdrawn}`
    - **Shadows**: `--shadow-xl`
 
 3. **`src/typography.css`** — Global element styles and reusable utility classes:
-   - Styles bare elements: `h1`, `p`, `form`, `label`, `input`
-   - Utility classes: `.btn-primary`, `.link-button`, `.error`
+   - Styles bare elements: `h1`–`h4`, `p`, `form`, `label`, `input`, `textarea`, `select`, `fieldset`, `legend`
+   - Utility classes: `.btn-primary`, `.btn-secondary`, `.link-button`, `.error`, `.alert-success`, `.spinner`, `.spinner-sm`, `.input-with-icon`, `.modal-overlay`, `.modal-header`, `.modal-close`, `.form-body`, `.field-grid`, `.form-footer`
 
-**CSS Modules** — Component-specific styles use `ComponentName.module.css` files co-located with their component. Import as `styles` and apply via `className={styles.className}`. See `src/components/AuthForm.module.css` for the pattern.
+**CSS Modules** — Component-specific styles use `ComponentName.module.css` co-located with their component. Import as `styles` and apply via `className={styles.className}`.
 
 **Approach for new components**:
 
 - Use tokens from `tokens.css` for spacing, sizing, color, etc.
-- Use global classes from `typography.css` for common patterns (`btn-primary`, `link-button`, `error`)
+- Use global classes from `typography.css` for common patterns before writing new CSS
 - Put component-specific styles in a `.module.css` file
-- Avoid adding new Tailwind utility classes to components
+- No Tailwind utility classes
 
-**DaisyUI** is still available for components not yet migrated and for its CSS variable tokens (e.g. `--color-primary`, `--color-base-100`) which are aliased in `tokens.css`.
+---
+
+### TODO: Dark Mode
+
+Dark mode is currently disabled (light-only). The groundwork is in place — all colors are tokens in `tokens.css`. To implement:
+
+1. Add a `@media (prefers-color-scheme: dark)` block to `tokens.css` overriding the color tokens with dark values. The non-color tokens (spacing, radius, etc.) don't need dark variants.
+2. Badge colors (`--color-badge-*`) and status colors (`--color-status-*`) will need dark variants in that block.
+3. Base palette (`--color-base-100/200/300`) and semantic colors (`--color-prime`, `--color-text-*`, etc.) will also need overrides.
+4. No other files should need changes — all components reference tokens.
+
+---
 
 ### ESLint & Prettier
 
@@ -886,7 +930,7 @@ If you discover a security vulnerability:
    - Component structure: Single file components, avoid folders and barrel files
    - State management: Use Zustand store with selectors
    - Services: Keep Supabase calls in service layer
-   - Styling: Use Tailwind classes, maintain responsive design
+   - Styling: Use CSS tokens and CSS Modules, maintain responsive design
 
 6. **Formatting & linting**
    - Pre-commit hook handles Prettier formatting automatically
@@ -1011,13 +1055,16 @@ pnpm storybook     # Start Storybook
 - `src/App.tsx` - Router configuration
 - `src/views/Dashboard.tsx` - Main dashboard page
 - `src/views/JobDetail.tsx` - Job detail page
+- `src/views/ResetPassword.tsx` - Password reset page
+- `src/components/AuthForm.tsx` - Sign in / sign up form
+- `src/components/ForgotPasswordModal.tsx` - Forgot password modal
 - `src/store/store.ts` - Zustand state management
 - `src/lib/supabase.ts` - Supabase client
 - `src/types/types.ts` - Shared TypeScript types
 - `src/contexts/AuthContext.tsx` - Authentication
 - `src/services/jobService.ts` - Job CRUD operations
 - `src/services/interviewPhaseService.ts` - Interview phase CRUD operations
-- `src/index.css` - Tailwind + DaisyUI base
+- `src/index.css` - Minimal CSS reset
 - `src/tokens.css` - Design tokens (CSS custom properties)
 - `src/typography.css` - Global element styles & utility classes
 - `eslint.config.js` - Linting rules
@@ -1058,7 +1105,7 @@ export default function MyComponent({ prop }: { prop: string }) { }
 
 ---
 
-**Last Updated**: March 10, 2026
+**Last Updated**: April 4, 2026
 **Project Version**: 0.0.0 (as per package.json)
 
 **Recent Major Changes**:
@@ -1066,6 +1113,6 @@ export default function MyComponent({ prop }: { prop: string }) { }
 - Added React Router for multi-page navigation (January 2026)
 - Implemented interview phase tracking feature (January 2026)
 - Created `views/` folder structure for route components (January 2026)
-- Started migration from Tailwind utility classes to CSS custom properties + CSS Modules (March 2026): added `src/tokens.css`, `src/typography.css`, and `src/components/AuthForm.module.css`
+- Fully migrated to CSS Modules + CSS custom properties; removed Tailwind and DaisyUI (March–April 2026)
 
 **Key Principles**: Security First • Simplicity Over Complexity • Type Safety • Test Coverage
