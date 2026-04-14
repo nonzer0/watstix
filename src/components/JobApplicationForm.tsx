@@ -245,7 +245,7 @@ export default function JobApplicationForm({
               disabled={isSubmitting}
               className="btn-primary"
             >
-              {isSubmitting ? 'Adding...' : submitLabel}
+              {isSubmitting ? (jobToEdit ? 'Updating...' : 'Adding...') : submitLabel}
             </button>
           </div>
         </form>
