@@ -18,7 +18,6 @@ import styles from './JobApplicationCard.module.css';
 
 interface JobApplicationCardProps {
   application: JobApplication;
-  onUpdate: () => void;
   onEdit: (job: JobApplication) => void;
 }
 

@@ -153,7 +153,6 @@ export default function Dashboard() {
               <JobApplicationCard
                 key={application.id}
                 application={application}
-                onUpdate={fetchApplications}
                 onEdit={(job) => setEditingJob(job)}
               />
             ))}
