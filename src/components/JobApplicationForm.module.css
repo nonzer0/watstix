@@ -7,3 +7,28 @@
   max-height: 90dvh;
   overflow-y: auto;
 }
+
+.autofillRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  align-items: flex-start;
+
+  & input {
+    flex: 1;
+  }
+
+  & button {
+    flex-shrink: 0;
+    white-space: nowrap;
+
+    & svg {
+      width: var(--icon-sm);
+      height: var(--icon-sm);
+    }
+  }
+}
+
+.fetchNotice {
+  margin-top: var(--space-xs);
+}
