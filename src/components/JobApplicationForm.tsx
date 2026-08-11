@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { supabase, JobApplication } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { X } from 'lucide-react';
+import { jobPostingService } from '../services/jobPostingService';
+import { X, Wand2 } from 'lucide-react';
 import styles from './JobApplicationForm.module.css';
 
 interface JobApplicationFormProps {
@@ -34,6 +35,8 @@ export default function JobApplicationForm({
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isFetchingPosting, setIsFetchingPosting] = useState(false);
+  const [fetchNotice, setFetchNotice] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +70,33 @@ export default function JobApplicationForm({
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleAutofill = async () => {
+    const url = formData.job_posting_link.trim();
+    if (!url) return;
+
+    setIsFetchingPosting(true);
+    setFetchNotice(null);
+
+    const result = await jobPostingService.parseJobPosting(url);
+
+    if (result?.found) {
+      setFormData((prev) => ({ ...prev, ...result.fields }));
+    } else if (
+      result?.error === 'fetch_failed' ||
+      result?.error === 'timeout'
+    ) {
+      setFetchNotice(
+        "This site blocked or didn't respond to our request — please fill in the fields manually."
+      );
+    } else {
+      setFetchNotice(
+        "Couldn't find structured job details on this page — please fill in the fields manually."
+      );
+    }
+
+    setIsFetchingPosting(false);
   };
 
   const handleChange = (
@@ -202,14 +232,32 @@ export default function JobApplicationForm({
 
           <fieldset>
             <legend>Job Posting Link</legend>
-            <input
-              type="url"
-              id="job_posting_link"
-              name="job_posting_link"
-              value={formData.job_posting_link}
-              onChange={handleChange}
-              placeholder="https://company.com/job-posting"
-            />
+            <div className={styles.autofillRow}>
+              <input
+                type="url"
+                id="job_posting_link"
+                name="job_posting_link"
+                value={formData.job_posting_link}
+                onChange={handleChange}
+                placeholder="https://company.com/job-posting"
+              />
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={handleAutofill}
+                disabled={
+                  !formData.job_posting_link.trim() || isFetchingPosting
+                }
+              >
+                {isFetchingPosting ? (
+                  <span className="spinner-sm" />
+                ) : (
+                  <Wand2 />
+                )}
+                Autofill from link
+              </button>
+            </div>
+            {fetchNotice && <p className={styles.fetchNotice}>{fetchNotice}</p>}
           </fieldset>
 
           <fieldset>
@@ -245,7 +293,11 @@ export default function JobApplicationForm({
               disabled={isSubmitting}
               className="btn-primary"
             >
-              {isSubmitting ? (jobToEdit ? 'Updating...' : 'Adding...') : submitLabel}
+              {isSubmitting
+                ? jobToEdit
+                  ? 'Updating...'
+                  : 'Adding...'
+                : submitLabel}
             </button>
           </div>
         </form>
