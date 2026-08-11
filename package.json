@@ -13,7 +13,8 @@
     "prepare": "husky",
     "test": "vitest",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "deploy:parse-job-posting": "supabase functions deploy parse-job-posting --use-api"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
