@@ -1,8 +1,8 @@
 // Orchestrates extraction: JSON-LD JobPosting data is authoritative when
-// present; Open Graph tags are a best-effort fallback when it's not. See
-// the sibling modules for the actual parsing logic — this file just wires
-// them together into the field set used to autofill the job application
-// form.
+// present; page meta tags (Open Graph, <title>) are a best-effort fallback
+// when it's not. See the sibling modules for the actual parsing logic —
+// this file just wires them together into the field set used to autofill
+// the job application form.
 
 import type { ParsedJobPostingFields, ExtractResult } from './types.ts';
 import {
@@ -14,7 +14,7 @@ import {
 import { stripHtml } from './html.ts';
 import { extractCompanyName, extractLocation } from './job-fields.ts';
 import { extractSalary, extractSalaryFromDescription } from './salary.ts';
-import { extractFromOpenGraph } from './open-graph.ts';
+import { extractFromPageMeta } from './page-meta.ts';
 
 function hasAnyField(fields: ParsedJobPostingFields): boolean {
   return Object.keys(fields).length > 0;
@@ -25,8 +25,8 @@ export function extractJobPostingFields(html: string): ExtractResult {
   const posting = candidates.find(isJobPosting);
 
   if (!posting) {
-    const ogFields = extractFromOpenGraph(html);
-    return { found: hasAnyField(ogFields), fields: ogFields };
+    const metaFields = extractFromPageMeta(html);
+    return { found: hasAnyField(metaFields), fields: metaFields };
   }
 
   const idIndex = buildIdIndex(candidates);

@@ -294,6 +294,27 @@ describe('extractJobPostingFields', () => {
     });
   });
 
+  it('falls back to Greenhouse\'s "Job Application for X at Y" document title when no JSON-LD or LinkedIn-style og:title is present', () => {
+    // Mirrors real-world Greenhouse-hosted postings that render server-side
+    // but never publish JobPosting JSON-LD (e.g. parachutehealth's listings).
+    const html = `
+      <html><head>
+        <title>Job Application for Engineering Manager, AI Intake at Parachute Health</title>
+        <meta property="og:title" content="Engineering Manager, AI Intake">
+        <meta property="og:description" content="U.S. Remote">
+      </head><body></body></html>
+    `;
+
+    const result = extractJobPostingFields(html);
+
+    expect(result.found).toBe(true);
+    expect(result.fields).toEqual({
+      position_title: 'Engineering Manager, AI Intake',
+      company_name: 'Parachute Health',
+      job_description: 'U.S. Remote',
+    });
+  });
+
   it('returns found: false when there is neither JSON-LD nor usable Open Graph tags', () => {
     const html =
       '<html><head><title>Careers</title></head><body>No structured data here</body></html>';
