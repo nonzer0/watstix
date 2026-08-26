@@ -1,10 +1,10 @@
 export type Status =
-  | "applied"
-  | "interviewing"
-  | "offered"
-  | "rejected"
-  | "accepted"
-  | "withdrawn";
+  | 'applied'
+  | 'interviewing'
+  | 'offered'
+  | 'rejected'
+  | 'accepted'
+  | 'withdrawn';
 
 export type JobApplication = {
   id: string;
@@ -24,13 +24,28 @@ export type JobApplication = {
   updated_at: string;
 };
 
-export type StatusFilter = "all" | JobApplication["status"];
+export type StatusFilter = 'all' | JobApplication['status'];
 
 export interface StatusType {
   value: StatusFilter;
   label: string;
   color: string;
 }
+
+export type ParsedJobPosting = {
+  found: boolean;
+  fields: Partial<
+    Pick<
+      JobApplication,
+      | 'company_name'
+      | 'position_title'
+      | 'location'
+      | 'salary_range'
+      | 'job_description'
+    >
+  >;
+  error?: 'invalid_url' | 'fetch_failed' | 'timeout';
+};
 
 export type InterviewPhase = {
   id: string;
