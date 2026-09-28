@@ -1,4 +1,4 @@
-import { isObject } from './json-ld.ts';
+import { isObject, nonEmptyString } from './json-ld.ts';
 
 function formatMoney(value: number): string {
   return `$${Math.round(value).toLocaleString('en-US')}`;
@@ -27,11 +27,8 @@ export function extractSalary(
   const valueNode = base['value'];
 
   const rawUnit =
-    (isObject(valueNode) &&
-      typeof valueNode['unitText'] === 'string' &&
-      valueNode['unitText']) ||
-    (typeof base['unitText'] === 'string' && base['unitText']) ||
-    undefined;
+    (isObject(valueNode) && nonEmptyString(valueNode['unitText'])) ||
+    nonEmptyString(base['unitText']);
   const unitSuffix = rawUnit ? ` / ${rawUnit.toLowerCase()}` : '';
 
   const direct = toNumber(valueNode);
@@ -78,12 +75,10 @@ function normalizeMoneyToken(token: string): string {
 export function extractSalaryFromDescription(
   description: string
 ): string | undefined {
-  const tokens: { text: string; index: number }[] = [];
-  const re = new RegExp(MONEY_TOKEN_RE);
-  let match: RegExpExecArray | null;
-  while ((match = re.exec(description)) !== null) {
-    tokens.push({ text: match[0], index: match.index });
-  }
+  const tokens = [...description.matchAll(MONEY_TOKEN_RE)].map((match) => ({
+    text: match[0],
+    index: match.index,
+  }));
   if (tokens.length === 0) return undefined;
 
   for (let i = 0; i < tokens.length - 1; i++) {

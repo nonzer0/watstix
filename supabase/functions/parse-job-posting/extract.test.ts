@@ -249,7 +249,7 @@ describe('extractJobPostingFields', () => {
     expect(result).toEqual({ found: false, fields: {} });
   });
 
-  it('returns found: false when there is no ld+json at all', () => {
+  it('returns found: false when there is neither JSON-LD nor usable page meta', () => {
     const html =
       '<html><head><title>Careers</title></head><body>No structured data here</body></html>';
 
@@ -313,14 +313,5 @@ describe('extractJobPostingFields', () => {
       company_name: 'Parachute Health',
       job_description: 'U.S. Remote',
     });
-  });
-
-  it('returns found: false when there is neither JSON-LD nor usable Open Graph tags', () => {
-    const html =
-      '<html><head><title>Careers</title></head><body>No structured data here</body></html>';
-
-    const result = extractJobPostingFields(html);
-
-    expect(result).toEqual({ found: false, fields: {} });
   });
 });

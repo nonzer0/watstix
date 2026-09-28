@@ -10,6 +10,7 @@ import {
   flattenCandidates,
   isJobPosting,
   buildIdIndex,
+  nonEmptyString,
 } from './json-ld.ts';
 import { stripHtml } from './html.ts';
 import { extractCompanyName, extractLocation } from './job-fields.ts';
@@ -32,10 +33,8 @@ export function extractJobPostingFields(html: string): ExtractResult {
   const idIndex = buildIdIndex(candidates);
   const fields: ParsedJobPostingFields = {};
 
-  const title = posting['title'];
-  if (typeof title === 'string' && title.trim()) {
-    fields.position_title = title.trim();
-  }
+  const title = nonEmptyString(posting['title']);
+  if (title) fields.position_title = title;
 
   const companyName = extractCompanyName(posting, idIndex);
   if (companyName) fields.company_name = companyName;
@@ -43,11 +42,9 @@ export function extractJobPostingFields(html: string): ExtractResult {
   const location = extractLocation(posting);
   if (location) fields.location = location;
 
-  const description = posting['description'];
-  if (typeof description === 'string' && description.trim()) {
-    const stripped = stripHtml(description);
-    if (stripped) fields.job_description = stripped;
-  }
+  const description = nonEmptyString(posting['description']);
+  const strippedDescription = description && stripHtml(description);
+  if (strippedDescription) fields.job_description = strippedDescription;
 
   const salary =
     extractSalary(posting) ??

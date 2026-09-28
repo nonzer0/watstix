@@ -1,40 +1,23 @@
-import { isObject, resolveNode } from './json-ld.ts';
+import { isObject, nonEmptyString, resolveNode } from './json-ld.ts';
 
 export function extractCompanyName(
   node: Record<string, unknown>,
   idIndex: Map<string, Record<string, unknown>>
 ): string | undefined {
-  const org = resolveNode(node['hiringOrganization'], idIndex);
-  if (org && typeof org['name'] === 'string' && org['name'].trim()) {
-    return org['name'].trim();
-  }
-  return undefined;
+  return nonEmptyString(resolveNode(node['hiringOrganization'], idIndex)?.name);
 }
 
 function addressToLocation(
   address: Record<string, unknown>
 ): string | undefined {
-  const locality =
-    typeof address['addressLocality'] === 'string'
-      ? address['addressLocality']
-      : undefined;
-  const region =
-    typeof address['addressRegion'] === 'string'
-      ? address['addressRegion']
-      : undefined;
-  const rawCountry = address['addressCountry'];
-  const country =
-    typeof rawCountry === 'string'
-      ? rawCountry
-      : isObject(rawCountry) && typeof rawCountry['name'] === 'string'
-        ? rawCountry['name']
-        : undefined;
-
-  const parts = [locality, region].filter((part): part is string =>
-    Boolean(part)
-  );
+  const parts = [
+    nonEmptyString(address['addressLocality']),
+    nonEmptyString(address['addressRegion']),
+  ].filter(Boolean);
   if (parts.length) return parts.join(', ');
-  return country;
+
+  const country = address['addressCountry'];
+  return nonEmptyString(isObject(country) ? country['name'] : country);
 }
 
 export function extractLocation(
@@ -44,20 +27,11 @@ export function extractLocation(
   const locations = Array.isArray(rawLocation) ? rawLocation : [rawLocation];
   const first = locations.find(isObject);
   if (first) {
-    const address = isObject(first['address'])
-      ? (first['address'] as Record<string, unknown>)
-      : first;
+    const address = isObject(first['address']) ? first['address'] : first;
     const formatted = addressToLocation(address);
     if (formatted) return formatted;
   }
 
-  const locationType = node['jobLocationType'];
-  if (
-    typeof locationType === 'string' &&
-    locationType.toUpperCase() === 'TELECOMMUTE'
-  ) {
-    return 'Remote';
-  }
-
-  return undefined;
+  const locationType = nonEmptyString(node['jobLocationType']);
+  return locationType?.toUpperCase() === 'TELECOMMUTE' ? 'Remote' : undefined;
 }
