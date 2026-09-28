@@ -6,6 +6,8 @@ export type ParsedJobPostingFields = {
   job_description?: string;
 };
 
+export type FailureReason = 'invalid_url' | 'fetch_failed' | 'timeout';
+
 export type ExtractResult = {
   found: boolean;
   fields: ParsedJobPostingFields;

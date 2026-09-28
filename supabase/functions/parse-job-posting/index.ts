@@ -6,6 +6,7 @@
 
 import { extractJobPostingFields } from './extract.ts';
 import { isSafeUrl } from './url-safety.ts';
+import type { FailureReason } from './types.ts';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -16,8 +17,6 @@ const CORS_HEADERS = {
 const FETCH_TIMEOUT_MS = 8000;
 const MAX_RESPONSE_BYTES = 2 * 1024 * 1024;
 const MAX_REDIRECTS = 2;
-
-type FailureReason = 'invalid_url' | 'fetch_failed' | 'timeout';
 
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -30,98 +29,82 @@ function failure(reason: FailureReason, status = 200): Response {
   return jsonResponse({ found: false, fields: {}, error: reason }, status);
 }
 
-function concatChunks(chunks: Uint8Array[], totalLength: number): Uint8Array {
-  const result = new Uint8Array(totalLength);
-  let offset = 0;
-  for (const chunk of chunks) {
-    result.set(chunk, offset);
-    offset += chunk.byteLength;
+function parseUrl(raw: string, base?: URL): URL | undefined {
+  try {
+    return new URL(raw, base);
+  } catch {
+    return undefined;
   }
-  return result;
 }
 
-async function fetchHtml(startUrl: string): Promise<string | FailureReason> {
-  let current: URL;
-  try {
-    current = new URL(startUrl);
-  } catch {
-    return 'invalid_url';
-  }
-  if (!isSafeUrl(current)) return 'invalid_url';
+// Returns undefined once the body exceeds MAX_RESPONSE_BYTES, cancelling the
+// stream rather than buffering an arbitrarily large page into memory.
+async function readCappedText(response: Response): Promise<string | undefined> {
+  const reader = response.body?.getReader();
+  if (!reader) return undefined;
 
-  // One deadline shared across every redirect hop — without this, each hop
-  // would get its own fresh FETCH_TIMEOUT_MS, letting a redirect chain block
-  // for MAX_REDIRECTS+1 times longer than the timeout implies.
-  const deadline = Date.now() + FETCH_TIMEOUT_MS;
-
-  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
-    const remaining = deadline - Date.now();
-    if (remaining <= 0) return 'timeout';
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), remaining);
-
-    let response: Response;
-    try {
-      response = await fetch(current.toString(), {
-        redirect: 'manual',
-        signal: controller.signal,
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; WatstixJobFetcher/1.0)',
-          Accept: 'text/html',
-        },
-      });
-    } catch (err) {
-      clearTimeout(timeout);
-      if (err instanceof DOMException && err.name === 'AbortError')
-        return 'timeout';
-      return 'fetch_failed';
+  const decoder = new TextDecoder();
+  let text = '';
+  let received = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) return text + decoder.decode();
+    received += value.byteLength;
+    if (received > MAX_RESPONSE_BYTES) {
+      await reader.cancel();
+      return undefined;
     }
-    clearTimeout(timeout);
+    text += decoder.decode(value, { stream: true });
+  }
+}
+
+async function fetchHtmlWithin(
+  start: URL,
+  signal: AbortSignal
+): Promise<string | FailureReason> {
+  let current = start;
+  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+    const response = await fetch(current, {
+      redirect: 'manual',
+      signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; WatstixJobFetcher/1.0)',
+        Accept: 'text/html',
+      },
+    });
 
     if (response.status >= 300 && response.status < 400) {
-      const location = response.headers.get('location');
-      if (!location) return 'fetch_failed';
-      let next: URL;
-      try {
-        next = new URL(location, current);
-      } catch {
-        return 'fetch_failed';
-      }
+      const next = parseUrl(response.headers.get('location') ?? '', current);
+      if (!next) return 'fetch_failed';
       if (!isSafeUrl(next)) return 'invalid_url';
       current = next;
       continue;
     }
 
-    if (!response.ok) return 'fetch_failed';
-
     const contentType = response.headers.get('content-type') ?? '';
-    if (
-      !contentType.includes('text/html') &&
-      !contentType.includes('application/xhtml+xml')
-    ) {
-      return 'fetch_failed';
-    }
+    const isHtml =
+      contentType.includes('text/html') ||
+      contentType.includes('application/xhtml+xml');
+    if (!response.ok || !isHtml) return 'fetch_failed';
 
-    const reader = response.body?.getReader();
-    if (!reader) return 'fetch_failed';
-
-    const chunks: Uint8Array[] = [];
-    let received = 0;
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      received += value.byteLength;
-      if (received > MAX_RESPONSE_BYTES) {
-        await reader.cancel();
-        return 'fetch_failed';
-      }
-      chunks.push(value);
-    }
-    return new TextDecoder().decode(concatChunks(chunks, received));
+    return (await readCappedText(response)) ?? 'fetch_failed';
   }
-
   return 'fetch_failed';
+}
+
+async function fetchHtml(rawUrl: string): Promise<string | FailureReason> {
+  const start = parseUrl(rawUrl);
+  if (!start || !isSafeUrl(start)) return 'invalid_url';
+
+  // A single signal bounds the whole operation — every redirect hop and the
+  // body download — so neither a redirect chain nor a slow-drip body can
+  // outlast FETCH_TIMEOUT_MS.
+  const signal = AbortSignal.timeout(FETCH_TIMEOUT_MS);
+  try {
+    return await fetchHtmlWithin(start, signal);
+  } catch {
+    return signal.aborted ? 'timeout' : 'fetch_failed';
+  }
 }
 
 Deno.serve(async (req: Request) => {
