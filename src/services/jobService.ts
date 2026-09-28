@@ -1,19 +1,20 @@
-import { supabase, JobApplication } from "../lib/supabase";
+import { supabase } from '../lib/supabase';
+import type { JobApplication } from '../types/types';
 
 const getJobs = async (): Promise<JobApplication[]> => {
   const jobs: JobApplication[] = [];
   try {
     const { data, error } = await supabase
-      .from("job_applications")
-      .select("*")
-      .order("application_date", { ascending: false });
+      .from('job_applications')
+      .select('*')
+      .order('application_date', { ascending: false });
 
     if (data) {
       jobs.push(...data);
     }
     if (error) throw error;
   } catch (err) {
-    console.error("Failed to fetch applications:", err);
+    console.error('Failed to fetch applications:', err);
   }
   return jobs;
 };
@@ -21,15 +22,15 @@ const getJobs = async (): Promise<JobApplication[]> => {
 const getJobById = async (id: string): Promise<JobApplication | null> => {
   try {
     const { data, error } = await supabase
-      .from("job_applications")
-      .select("*")
-      .eq("id", id)
+      .from('job_applications')
+      .select('*')
+      .eq('id', id)
       .single();
 
     if (error) throw error;
     return data;
   } catch (err) {
-    console.error("Failed to fetch application by ID:", err);
+    console.error('Failed to fetch application by ID:', err);
     return null;
   }
 };
@@ -37,14 +38,14 @@ const getJobById = async (id: string): Promise<JobApplication | null> => {
 const deleteJobById = async (id: string): Promise<boolean> => {
   try {
     const { error } = await supabase
-      .from("job_applications")
+      .from('job_applications')
       .delete()
-      .eq("id", id);
+      .eq('id', id);
 
     if (error) throw error;
     return true;
   } catch (err) {
-    console.error("Failed to delete application by ID:", err);
+    console.error('Failed to delete application by ID:', err);
     return false;
   }
 };

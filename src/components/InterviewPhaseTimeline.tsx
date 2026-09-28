@@ -1,5 +1,5 @@
 import { Plus, Briefcase } from 'lucide-react';
-import type { InterviewPhase } from '../lib/supabase';
+import type { InterviewPhase } from '../types/types';
 import InterviewPhaseCard from './InterviewPhaseCard';
 import styles from './InterviewPhaseTimeline.module.css';
 

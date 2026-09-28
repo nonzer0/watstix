@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
-import type { InterviewPhase } from '../lib/supabase';
+import type { InterviewPhase } from '../types/types';
 import { useAuth } from '../contexts/AuthContext';
 import { interviewPhaseService } from '../services/interviewPhaseService';
 import { useStore } from '../store';

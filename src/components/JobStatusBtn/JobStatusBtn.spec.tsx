@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { JobStatusBtn } from './JobStatusBtn';
-import { JobApplication } from '../../lib/supabase';
+import type { JobApplication } from '../../types/types';
 
 const mockApplications: JobApplication[] = [
   { id: '1', status: 'applied' } as JobApplication,

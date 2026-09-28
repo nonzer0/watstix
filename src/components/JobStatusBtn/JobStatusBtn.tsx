@@ -1,4 +1,4 @@
-import { JobApplication } from '../../lib/supabase';
+import type { JobApplication } from '../../types/types';
 import styles from './JobStatusBtn.module.css';
 
 type StatusFilter = 'all' | JobApplication['status'];

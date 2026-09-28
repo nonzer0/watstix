@@ -11,7 +11,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import type { JobApplication, InterviewPhase } from '../lib/supabase';
+import type { JobApplication, InterviewPhase } from '../types/types';
 import { useStore } from '../store';
 import { interviewPhaseService } from '../services/interviewPhaseService';
 import { jobService } from '../services/jobService';
