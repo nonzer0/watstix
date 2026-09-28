@@ -81,23 +81,26 @@ export function extractSalaryFromDescription(
   }));
   if (tokens.length === 0) return undefined;
 
-  for (let i = 0; i < tokens.length - 1; i++) {
-    const between = description.slice(
-      tokens[i].index + tokens[i].text.length,
-      tokens[i + 1].index
+  // Both ranges and single figures must sit near a salary keyword, so dollar
+  // amounts about revenue, funding, etc. aren't mistaken for pay.
+  const nearSalaryKeyword = (start: number, end: number) =>
+    SALARY_KEYWORD_RE.test(
+      description.slice(Math.max(0, start - 60), end + 60)
     );
-    if (between.length <= 15 && /^\s*(-|–|—|to)\s*$/i.test(between)) {
-      return `${normalizeMoneyToken(tokens[i].text)} - ${normalizeMoneyToken(tokens[i + 1].text)} (from description, please verify)`;
+
+  for (let i = 0; i < tokens.length - 1; i++) {
+    const [low, high] = [tokens[i], tokens[i + 1]];
+    const between = description.slice(low.index + low.text.length, high.index);
+    if (
+      /^\s*(-|–|—|to)\s*$/i.test(between) &&
+      nearSalaryKeyword(low.index, high.index + high.text.length)
+    ) {
+      return `${normalizeMoneyToken(low.text)} - ${normalizeMoneyToken(high.text)} (from description, please verify)`;
     }
   }
 
   for (const token of tokens) {
-    const windowStart = Math.max(0, token.index - 60);
-    const windowEnd = Math.min(
-      description.length,
-      token.index + token.text.length + 60
-    );
-    if (SALARY_KEYWORD_RE.test(description.slice(windowStart, windowEnd))) {
+    if (nearSalaryKeyword(token.index, token.index + token.text.length)) {
       return `${normalizeMoneyToken(token.text)} (from description, please verify)`;
     }
   }
