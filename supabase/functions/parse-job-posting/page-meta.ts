@@ -1,4 +1,4 @@
-import { extractOgTag, decodeEntities } from './html.ts';
+import { extractOgTag, decodeEntities, stripHtml } from './html.ts';
 import type { ParsedJobPostingFields } from './types.ts';
 
 // LinkedIn never embeds JobPosting JSON-LD, but its og:title always follows
@@ -40,8 +40,11 @@ export function extractFromPageMeta(html: string): ParsedJobPostingFields {
     }
   }
 
+  // extractOgTag has already decoded entities, so any markup that was
+  // entity-encoded in the attribute is now real tags — strip it.
   const ogDescription = extractOgTag(html, 'og:description');
-  if (ogDescription) fields.job_description = ogDescription;
+  const description = ogDescription && stripHtml(ogDescription);
+  if (description) fields.job_description = description;
 
   return fields;
 }
