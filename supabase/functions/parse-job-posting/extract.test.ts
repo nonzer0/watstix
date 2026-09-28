@@ -189,6 +189,19 @@ describe('extractJobPostingFields', () => {
     expect(result.fields.salary_range).toBeUndefined();
   });
 
+  it('does not guess a salary from an unrelated dollar range with no nearby salary keyword', () => {
+    const html = withLdJson({
+      '@type': 'JobPosting',
+      title: 'Engineering Manager',
+      description:
+        '<p>You will own a product line generating $2,000,000 - $3,000,000 in annual revenue.</p>',
+    });
+
+    const result = extractJobPostingFields(html);
+
+    expect(result.fields.salary_range).toBeUndefined();
+  });
+
   it('prefers structured baseSalary over a description-guessed figure when both are present', () => {
     const html = withLdJson({
       '@type': 'JobPosting',
