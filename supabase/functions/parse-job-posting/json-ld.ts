@@ -5,6 +5,10 @@ export function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
+export function nonEmptyString(value: unknown): string | undefined {
+  return typeof value === 'string' && value.trim() ? value.trim() : undefined;
+}
+
 export function isJobPosting(node: Record<string, unknown>): boolean {
   const type = node['@type'];
   if (typeof type === 'string') return type === 'JobPosting';
@@ -14,11 +18,8 @@ export function isJobPosting(node: Record<string, unknown>): boolean {
 
 export function collectJsonLdBlocks(html: string): unknown[] {
   const blocks: unknown[] = [];
-  const re = new RegExp(LD_JSON_SCRIPT_RE);
-  let match: RegExpExecArray | null;
-  while ((match = re.exec(html)) !== null) {
-    const raw = match[1].trim();
-    if (!raw) continue;
+  for (const [, raw] of html.matchAll(LD_JSON_SCRIPT_RE)) {
+    if (!raw.trim()) continue;
     try {
       blocks.push(JSON.parse(raw));
     } catch {
@@ -28,26 +29,19 @@ export function collectJsonLdBlocks(html: string): unknown[] {
   return blocks;
 }
 
+// Blocks may be a single node, an array of nodes, or a node wrapping an
+// @graph array — possibly nested. Walk them uniformly into one flat list.
 export function flattenCandidates(
-  blocks: unknown[]
+  value: unknown,
+  out: Record<string, unknown>[] = []
 ): Record<string, unknown>[] {
-  const candidates: Record<string, unknown>[] = [];
-  for (const block of blocks) {
-    if (Array.isArray(block)) {
-      for (const item of block) {
-        if (isObject(item)) candidates.push(item);
-      }
-    } else if (isObject(block)) {
-      candidates.push(block);
-      const graph = block['@graph'];
-      if (Array.isArray(graph)) {
-        for (const item of graph) {
-          if (isObject(item)) candidates.push(item);
-        }
-      }
-    }
+  if (Array.isArray(value)) {
+    for (const item of value) flattenCandidates(item, out);
+  } else if (isObject(value)) {
+    out.push(value);
+    flattenCandidates(value['@graph'], out);
   }
-  return candidates;
+  return out;
 }
 
 // JSON-LD nodes can reference each other by `@id` instead of inlining data —
