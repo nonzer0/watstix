@@ -307,6 +307,20 @@ describe('extractJobPostingFields', () => {
     });
   });
 
+  it('strips entity-encoded HTML out of an og:description fallback', () => {
+    // Mirrors Greenhouse board pages, whose og:description is the board's
+    // rich-text intro with its markup entity-encoded into the attribute.
+    const html = `
+      <html><head>
+        <meta property="og:description" content="&lt;div&gt;&amp;nbsp;&lt;/div&gt;&lt;div&gt;Over 30 million patients.&lt;/div&gt;">
+      </head><body></body></html>
+    `;
+
+    const result = extractJobPostingFields(html);
+
+    expect(result.fields.job_description).toBe('Over 30 million patients.');
+  });
+
   it('falls back to Greenhouse\'s "Job Application for X at Y" document title when no JSON-LD or LinkedIn-style og:title is present', () => {
     // Mirrors real-world Greenhouse-hosted postings that render server-side
     // but never publish JobPosting JSON-LD (e.g. parachutehealth's listings).
