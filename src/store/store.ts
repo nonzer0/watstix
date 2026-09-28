@@ -1,6 +1,6 @@
 import { create, StoreApi, UseBoundStore } from 'zustand';
 import { combine } from 'zustand/middleware';
-import type { JobApplication, InterviewPhase } from '../lib/supabase';
+import type { JobApplication, InterviewPhase } from '../types/types';
 
 const useStoreBase = create(
   combine(

@@ -1,4 +1,5 @@
-import { supabase, InterviewPhase } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
+import type { InterviewPhase } from '../types/types';
 
 const getAllPhases = async (): Promise<InterviewPhase[]> => {
   const phases: InterviewPhase[] = [];

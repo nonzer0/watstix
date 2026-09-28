@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { interviewPhaseService } from './interviewPhaseService';
 import { supabase } from '../lib/supabase';
-import type { InterviewPhase } from '../lib/supabase';
+import type { InterviewPhase } from '../types/types';
 
 // Mock the supabase client
 vi.mock('../lib/supabase', () => ({

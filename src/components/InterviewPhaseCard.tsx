@@ -1,6 +1,6 @@
 import { Calendar, Users, FileText, Trash2, Edit } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import type { InterviewPhase } from '../lib/supabase';
+import type { InterviewPhase } from '../types/types';
 import styles from './InterviewPhaseCard.module.css';
 
 interface InterviewPhaseCardProps {

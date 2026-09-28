@@ -977,7 +977,7 @@ If you discover a security vulnerability:
 
 1. Create new migration in `supabase/migrations/`
 2. Use timestamp naming: `YYYYMMDDHHMMSS_description.sql`
-3. Update TypeScript types in `src/types/types.ts` and `src/lib/supabase.ts`
+3. Update TypeScript types in `src/types/types.ts`
 4. Update RLS policies if needed
 
 #### Adding Zustand state
@@ -1017,7 +1017,7 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 2. **Environment variables**: Prefix with `VITE_` for client-side access
 3. **Zustand selectors**: Use `useStore.use.propertyName()` pattern for granular subscriptions
 4. **Barrel files**: Don't create `index.ts` files for components - import directly from source files
-5. **Type definitions**: Keep `JobApplication` and `InterviewPhase` types in sync between `types.ts` and `lib/supabase.ts`
+5. **Type definitions**: Domain types (`JobApplication`, `InterviewPhase`, etc.) live only in `src/types/types.ts` — import them from there; `src/lib/supabase.ts` exports only the client
 6. **Security**: Always validate inputs and check authentication before operations
 7. **Routing**: Use `e.stopPropagation()` on button click handlers inside clickable cards to prevent navigation
 8. **Insert operations**: Use `.select().single()` after insert to get the created record with auto-generated fields

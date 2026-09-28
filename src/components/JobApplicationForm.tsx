@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { supabase, JobApplication } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
+import type { JobApplication } from '../types/types';
 import { useAuth } from '../contexts/AuthContext';
 import { jobPostingService } from '../services/jobPostingService';
 import { X, Wand2 } from 'lucide-react';

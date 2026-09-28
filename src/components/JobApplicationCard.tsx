@@ -11,7 +11,8 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { JobApplication, supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
+import type { JobApplication } from '../types/types';
 import { jobService } from '../services/jobService';
 import { useStore } from '../store';
 import styles from './JobApplicationCard.module.css';
