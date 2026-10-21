@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Briefcase, LogIn, UserPlus } from 'lucide-react';
 import ForgotPasswordModal from './ForgotPasswordModal';
+import Logo from './Logo';
 
 import styles from './AuthForm.module.css';
 
@@ -52,138 +52,104 @@ export default function AuthForm() {
     }
   };
 
+  const switchMode = () => {
+    setIsSignUp(!isSignUp);
+    setError(null);
+  };
+
   return (
-    <div className={styles.outer_wrapper}>
-      <div className={styles.main_section}>
-        <div className={styles.header}>
-          <div className={styles.icon}>
-            <Briefcase />
-          </div>
-          <h1>Job Application Tracker</h1>
-          <p>Track and manage your job applications in one place</p>
+    <div className={styles.page}>
+      <main className={styles.column}>
+        <Logo size={28} />
+        <div className={styles.heading}>
+          <h1>{isSignUp ? 'Create your account' : 'Sign in to watstix'}</h1>
+          <p>Every application, interview and outcome in one place.</p>
         </div>
 
-        <div className={styles.card}>
-          <div className={styles.tabList}>
-            <button
-              onClick={() => {
-                setIsSignUp(false);
-                setError(null);
-              }}
-              className={`${styles.tab} ${
-                !isSignUp ? styles.tabActive : styles.tabInactive
-              }`}
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => {
-                setIsSignUp(true);
-                setError(null);
-              }}
-              className={`${styles.tab} ${
-                isSignUp ? styles.tabActive : styles.tabInactive
-              }`}
-            >
-              Sign Up
-            </button>
+        <form onSubmit={handleSubmit}>
+          {error && (
+            <div className="error" role="alert">
+              {error}
+            </div>
+          )}
+
+          <div>
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoFocus
+              placeholder="you@example.com"
+            />
           </div>
 
-          <form onSubmit={handleSubmit}>
-            {error && <div className="error">{error}</div>}
-
-            <div>
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div>
+          <div>
+            <div className={styles.labelRow}>
               <label htmlFor="password">Password</label>
+              {!isSignUp && (
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPassword(true)}
+                  className="link-button"
+                >
+                  Forgot password?
+                </button>
+              )}
+            </div>
+            <input
+              type="password"
+              id="password"
+              autoComplete={isSignUp ? 'new-password' : 'current-password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="••••••••"
+            />
+            {isSignUp && <p className={styles.hint}>At least 6 characters.</p>}
+          </div>
+
+          {isSignUp && (
+            <div>
+              <label htmlFor="confirmPassword">Confirm password</label>
               <input
                 type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                id="confirmPassword"
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 placeholder="••••••••"
               />
-              {!isSignUp && (
-                <div className={styles.forgotPassword}>
-                  <button
-                    type="button"
-                    onClick={() => setShowForgotPassword(true)}
-                    className="link-button"
-                  >
-                    Forgot Password?
-                  </button>
-                </div>
-              )}
             </div>
+          )}
 
-            {isSignUp && (
-              <div>
-                <label htmlFor="confirmPassword">Confirm Password</label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  placeholder="••••••••"
-                />
-              </div>
-            )}
+          <button
+            type="submit"
+            disabled={loading}
+            className={`btn-primary ${styles.submit}`}
+          >
+            {loading && <span className="spinner-sm" />}
+            {loading
+              ? isSignUp
+                ? 'Creating account…'
+                : 'Signing in…'
+              : isSignUp
+                ? 'Create account'
+                : 'Sign in'}
+          </button>
+        </form>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className={`btn-primary ${styles.submitButton}`}
-            >
-              {loading ? (
-                <>
-                  <div className="spinner-sm"></div>
-                  {isSignUp ? 'Creating Account...' : 'Signing In...'}
-                </>
-              ) : (
-                <>
-                  {isSignUp ? (
-                    <UserPlus className={styles.buttonIcon} />
-                  ) : (
-                    <LogIn className={styles.buttonIcon} />
-                  )}
-                  {isSignUp ? 'Create Account' : 'Sign In'}
-                </>
-              )}
-            </button>
-          </form>
-
-          <div className={styles.divider}>
-            <div className={styles.footer}>
-              <p>
-                {isSignUp
-                  ? 'Already have an account?'
-                  : "Don't have an account?"}{' '}
-                <button
-                  onClick={() => {
-                    setIsSignUp(!isSignUp);
-                    setError(null);
-                  }}
-                  className="link-button"
-                >
-                  {isSignUp ? 'Sign in' : 'Sign up'}
-                </button>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+        <p className={styles.switch}>
+          {isSignUp ? 'Already have an account?' : 'New to watstix?'}{' '}
+          <button type="button" onClick={switchMode} className="link-button">
+            {isSignUp ? 'Sign in' : 'Create an account'}
+          </button>
+        </p>
+      </main>
 
       {showForgotPassword && (
         <ForgotPasswordModal onClose={() => setShowForgotPassword(false)} />

@@ -129,7 +129,7 @@ export default function InterviewPhaseForm({
             value={formData.title}
             onChange={handleChange}
             placeholder="e.g., Phone screen, Technical interview"
-            autoFocus
+            data-autofocus
           />
         </div>
 

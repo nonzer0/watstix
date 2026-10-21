@@ -161,7 +161,7 @@ export default function JobApplicationForm({
               required
               value={formData.position_title}
               onChange={handleChange}
-              autoFocus={!jobApp}
+              data-autofocus={jobApp ? undefined : true}
             />
           </div>
 

@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
-import { Briefcase, Lock, CheckCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
+import Logo from '../components/Logo';
 import styles from './ResetPassword.module.css';
 
 export default function ResetPassword() {
@@ -85,8 +86,8 @@ export default function ResetPassword() {
 
   if (checkingToken) {
     return (
-      <div className={styles.loadingPage}>
-        <div className="spinner"></div>
+      <div className={styles.page}>
+        <div className="spinner" aria-label="Checking reset link" />
       </div>
     );
   }
@@ -94,98 +95,81 @@ export default function ResetPassword() {
   if (!hasValidToken) {
     return (
       <div className={styles.page}>
-        <div className={styles.container}>
-          <div className={styles.header}>
-            <div className={styles.icon}>
-              <Briefcase />
-            </div>
-            <h1>Invalid Reset Link</h1>
+        <main className={styles.column}>
+          <Logo size={28} />
+          <div className={styles.heading}>
+            <h1>Reset link invalid</h1>
+            <p>{error ?? 'This link has expired or was already used.'}</p>
           </div>
-          <div className={styles.card}>
-            {error && <div className="error">{error}</div>}
-            <button onClick={() => navigate('/')} className="btn-primary">
-              Back to Login
-            </button>
-          </div>
-        </div>
+          <button onClick={() => navigate('/')} className="btn">
+            Back to sign in
+          </button>
+        </main>
       </div>
     );
   }
 
   return (
     <div className={styles.page}>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <div className={styles.icon}>
-            <Briefcase />
+      <main className={styles.column}>
+        <Logo size={28} />
+        <div className={styles.heading}>
+          <h1>Choose a new password</h1>
+          <p>You'll be signed in once it's saved.</p>
+        </div>
+
+        {success ? (
+          <div className="alert-success" role="status">
+            <CheckCircle />
+            <p>Password updated. Redirecting…</p>
           </div>
-          <h1>Reset Password</h1>
-          <p>Enter your new password below</p>
-        </div>
-
-        <div className={styles.card}>
-          {success ? (
-            <div className="alert-success">
-              <CheckCircle />
-              <div>
-                <p>
-                  <strong>Password updated successfully!</strong>
-                </p>
-                <p>Redirecting to login...</p>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            {error && (
+              <div className="error" role="alert">
+                {error}
               </div>
+            )}
+
+            <div>
+              <label htmlFor="newPassword">New password</label>
+              <input
+                type="password"
+                id="newPassword"
+                autoComplete="new-password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+                autoFocus
+                placeholder="••••••••"
+              />
+              <p className={styles.hint}>At least 6 characters.</p>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              {error && <div className="error">{error}</div>}
 
-              <div>
-                <label htmlFor="newPassword">New Password</label>
-                <div className="input-with-icon">
-                  <Lock />
-                  <input
-                    type="password"
-                    id="newPassword"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    required
-                    placeholder="••••••••"
-                  />
-                </div>
-                <p className={styles.hint}>Minimum 6 characters</p>
-              </div>
+            <div>
+              <label htmlFor="confirmPassword">Confirm new password</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+              />
+            </div>
 
-              <div>
-                <label htmlFor="confirmPassword">Confirm New Password</label>
-                <div className="input-with-icon">
-                  <Lock />
-                  <input
-                    type="password"
-                    id="confirmPassword"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    placeholder="••••••••"
-                  />
-                </div>
-              </div>
-
-              <button type="submit" disabled={loading} className="btn-primary">
-                {loading ? (
-                  <>
-                    <div className="spinner-sm"></div>
-                    Updating Password...
-                  </>
-                ) : (
-                  <>
-                    <Lock />
-                    Update Password
-                  </>
-                )}
-              </button>
-            </form>
-          )}
-        </div>
-      </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`btn-primary ${styles.submit}`}
+            >
+              {loading && <span className="spinner-sm" />}
+              {loading ? 'Saving…' : 'Save password'}
+            </button>
+          </form>
+        )}
+      </main>
     </div>
   );
 }
