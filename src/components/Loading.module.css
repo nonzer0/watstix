@@ -1,15 +1,7 @@
 .wrapper {
   min-height: 100dvh;
-  background: linear-gradient(
-    to bottom right,
-    var(--color-bg-muted),
-    var(--color-bg-muted)
-  );
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.content {
-  text-align: center;
+  background: var(--bg);
 }

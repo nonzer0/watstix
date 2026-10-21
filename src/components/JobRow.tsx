@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ExternalLink, Pencil, Trash2 } from 'lucide-react';
 import type { JobApplication, Status } from '../types/types';
 import { formatShortDate } from '../utils/format';
+import { safeExternalUrl } from '../utils/url';
 import StatusMenu from './StatusMenu';
 import styles from './JobTable.module.css';
 
@@ -30,6 +31,7 @@ const JobRow = forwardRef<HTMLTableRowElement, JobRowProps>(function JobRow(
 ) {
   const navigate = useNavigate();
   const href = `/job/${job.id}`;
+  const postingUrl = safeExternalUrl(job.job_posting_link);
 
   const handleRowClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -76,9 +78,9 @@ const JobRow = forwardRef<HTMLTableRowElement, JobRowProps>(function JobRow(
       </td>
       <td className={styles.actionsCell}>
         <div className={styles.actions}>
-          {job.job_posting_link && (
+          {postingUrl && (
             <a
-              href={job.job_posting_link}
+              href={postingUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-ghost btn-icon btn-sm"

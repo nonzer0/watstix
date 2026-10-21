@@ -1,4 +1,4 @@
-import { Plus, Briefcase } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import type { InterviewPhase } from '../types/types';
 import InterviewPhaseCard from './InterviewPhaseCard';
 import styles from './InterviewPhaseTimeline.module.css';
@@ -21,33 +21,26 @@ export default function InterviewPhaseTimeline({
   return (
     <div className={styles.timeline}>
       {sortedPhases.length === 0 ? (
-        <div className={styles.emptyState}>
-          <Briefcase />
-          <h4>No Interview Phases Yet</h4>
-          <p>Track your interview process by adding phases</p>
-          <button onClick={onAdd} className="btn-primary">
-            <Plus />
-            Add First Phase
-          </button>
-        </div>
+        <p className={styles.empty}>
+          No interview phases yet. Add one when a screen or interview is
+          scheduled.
+        </p>
       ) : (
-        <>
-          <div className={styles.phaseList}>
-            {sortedPhases.map((phase) => (
-              <InterviewPhaseCard
-                key={phase.id}
-                phase={phase}
-                onEdit={onEdit}
-                onDelete={onDelete}
-              />
-            ))}
-          </div>
-          <button onClick={onAdd} className={styles.addBtn}>
-            <Plus />
-            Add Interview Phase
-          </button>
-        </>
+        <ol className={styles.list}>
+          {sortedPhases.map((phase) => (
+            <InterviewPhaseCard
+              key={phase.id}
+              phase={phase}
+              onEdit={onEdit}
+              onDelete={onDelete}
+            />
+          ))}
+        </ol>
       )}
+      <button type="button" onClick={onAdd} className="btn-ghost btn-sm">
+        <Plus />
+        Add phase
+      </button>
     </div>
   );
 }

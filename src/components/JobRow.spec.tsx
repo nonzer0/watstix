@@ -81,4 +81,22 @@ describe('JobRow', () => {
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
+
+  it('does not render unsafe posting links', () => {
+    render(
+      <MemoryRouter>
+        <table>
+          <tbody>
+            <JobRow
+              job={{ ...job, job_posting_link: 'javascript:alert(1)' }}
+              {...handlers}
+            />
+          </tbody>
+        </table>
+      </MemoryRouter>
+    );
+    expect(
+      screen.queryByRole('link', { name: /open job posting/i })
+    ).not.toBeInTheDocument();
+  });
 });
