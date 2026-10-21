@@ -141,7 +141,7 @@
 
 @media (pointer: coarse) {
   .footer,
-  .inputRow .kbd {
+  .inputRow :global(.kbd) {
     display: none;
   }
 }

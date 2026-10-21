@@ -66,12 +66,16 @@
   font-weight: var(--font-weight-normal);
   font-size: var(--font-size-xs);
 
-  & .kbd {
+  & :global(.kbd) {
     margin-left: var(--space-lg);
   }
 }
 
 @media (max-width: 639px) {
+  .actions :global(.kbd) {
+    display: none;
+  }
+
   .searchTrigger {
     width: 2rem;
     padding: 0;
@@ -79,7 +83,7 @@
     background: transparent;
 
     & .searchLabel,
-    & .kbd {
+    & :global(.kbd) {
       display: none;
     }
   }

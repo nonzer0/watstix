@@ -1,6 +1,8 @@
-import { Calendar, Users, FileText, Trash2, Edit } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { useId, useState } from 'react';
+import { ChevronRight, Pencil, Trash2 } from 'lucide-react';
 import type { InterviewPhase } from '../types/types';
+import { formatDateTime } from '../utils/format';
+import { outcomeLabel } from '../utils/outcome';
 import styles from './InterviewPhaseCard.module.css';
 
 interface InterviewPhaseCardProps {
@@ -9,76 +11,72 @@ interface InterviewPhaseCardProps {
   onDelete: (id: string) => void;
 }
 
+/** One node on the interview timeline; expands to show description and notes. */
 export default function InterviewPhaseCard({
   phase,
   onEdit,
   onDelete,
 }: InterviewPhaseCardProps) {
-  const formatDateTime = (dateString: string | undefined) => {
-    if (!dateString) return null;
-    return new Date(dateString).toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    });
-  };
+  const [expanded, setExpanded] = useState(false);
+  const detailsId = useId();
+  const outcome = phase.outcome?.toLowerCase() || 'pending';
+  const hasDetails = Boolean(phase.description || phase.notes);
 
-  function renderPhaseValue(val: string | null | undefined, Icon: LucideIcon) {
-    if (!val) return null;
-    return (
-      <div className={styles.detail}>
-        <Icon />
-        <span>{val}</span>
-      </div>
-    );
-  }
+  const meta = [
+    phase.interview_date ? formatDateTime(phase.interview_date) : null,
+    phase.interviewer_names.length > 0
+      ? phase.interviewer_names.join(', ')
+      : null,
+  ].filter(Boolean);
 
   return (
-    <div className={styles.card}>
-      <div className={styles.header}>
-        <div className={styles.info}>
-          <h3 className={styles.title}>{phase.title}</h3>
-          {phase.description && (
-            <p className={styles.description}>{phase.description}</p>
-          )}
-        </div>
-        <div className={styles.actions}>
+    <li className={styles.item} data-outcome={outcome}>
+      <span className={styles.node} aria-hidden="true" />
+      <div className={styles.content}>
+        <div className={styles.header}>
           <button
-            onClick={() => onDelete(phase.id)}
-            className={`${styles.iconBtn} ${styles.iconBtnDelete}`}
-            title="Delete phase"
+            type="button"
+            className={styles.toggle}
+            onClick={() => setExpanded((e) => !e)}
+            aria-expanded={hasDetails ? expanded : undefined}
+            aria-controls={hasDetails ? detailsId : undefined}
+            disabled={!hasDetails}
           >
-            <Trash2 />
+            {hasDetails && (
+              <ChevronRight className={styles.chevron} aria-hidden="true" />
+            )}
+            <span className={styles.title}>{phase.title}</span>
           </button>
-          <button
-            onClick={() => onEdit(phase)}
-            className={`${styles.iconBtn} ${styles.iconBtnEdit}`}
-            title="Edit phase"
-          >
-            <Edit />
-          </button>
+          <span className={styles.outcome}>{outcomeLabel(outcome)}</span>
+          <div className={styles.actions}>
+            <button
+              type="button"
+              onClick={() => onEdit(phase)}
+              className="btn-ghost btn-icon btn-sm"
+              aria-label={`Edit ${phase.title}`}
+            >
+              <Pencil />
+            </button>
+            <button
+              type="button"
+              onClick={() => onDelete(phase.id)}
+              className="btn-ghost btn-icon btn-sm"
+              aria-label={`Delete ${phase.title}`}
+            >
+              <Trash2 />
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div className={styles.details}>
-        {renderPhaseValue(formatDateTime(phase.interview_date), Calendar)}
-        {phase.interviewer_names.length > 0 &&
-          renderPhaseValue(phase.interviewer_names.join(', '), Users)}
-        {renderPhaseValue(phase.notes, FileText)}
-      </div>
+        {meta.length > 0 && <p className={styles.meta}>{meta.join(' · ')}</p>}
 
-      <div className={styles.footer}>
-        {phase.outcome && (
-          <span
-            className={styles.outcomeBadge}
-            data-outcome={phase.outcome.toLowerCase()}
-          >
-            {phase.outcome.charAt(0).toUpperCase() + phase.outcome.slice(1)}
-          </span>
+        {hasDetails && expanded && (
+          <div id={detailsId} className={styles.details}>
+            {phase.description && <p>{phase.description}</p>}
+            {phase.notes && <p className={styles.notes}>{phase.notes}</p>}
+          </div>
         )}
       </div>
-    </div>
+    </li>
   );
 }

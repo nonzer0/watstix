@@ -1,130 +1,144 @@
-.card {
-  background: var(--color-base-100);
-  border-radius: var(--radius-md);
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.06);
-  border: 1px solid var(--color-border);
-  padding: var(--space-lg);
-  transition: box-shadow 0.2s;
+.item {
+  position: relative;
+  display: flex;
+  gap: var(--space-md);
+  padding-bottom: var(--space-lg);
+  --node-color: var(--outcome-pending);
 }
 
-.card:hover {
-  box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.07),
-    0 2px 4px rgba(0, 0, 0, 0.06);
+.item[data-outcome='passed'] {
+  --node-color: var(--outcome-passed);
+}
+.item[data-outcome='failed'] {
+  --node-color: var(--outcome-failed);
+}
+.item[data-outcome='cancelled'] {
+  --node-color: var(--outcome-cancelled);
+}
+
+/* Connector to the next node */
+.item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 1.125rem;
+  bottom: 0.125rem;
+  width: 1px;
+  background: var(--border);
+}
+
+.node {
+  flex-shrink: 0;
+  width: 11px;
+  height: 11px;
+  margin-top: 0.3rem;
+  border-radius: 50%;
+  border: 2px solid var(--node-color);
+  background: var(--bg);
+}
+
+.item[data-outcome='passed'] .node,
+.item[data-outcome='failed'] .node {
+  background: var(--node-color);
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
 }
 
 .header {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: var(--space-md);
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: 1.625rem;
 }
 
-.info {
-  flex: 1;
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  min-width: 0;
+  padding: 0;
+  margin-left: calc(-1 * var(--space-2xs));
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+
+  &:disabled {
+    cursor: default;
+    margin-left: 0;
+  }
+}
+
+.chevron {
+  width: var(--icon-xs);
+  height: var(--icon-xs);
+  flex-shrink: 0;
+  color: var(--text-faint);
+  transition: transform var(--duration-fast);
+}
+
+.toggle[aria-expanded='true'] .chevron {
+  transform: rotate(90deg);
 }
 
 .title {
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-  margin-bottom: var(--space-xs);
+  font-weight: var(--font-weight-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.description {
+.outcome {
   font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
-  margin-top: var(--space-sm);
+  color: var(--node-color);
+  white-space: nowrap;
+}
+
+.item[data-outcome='pending'] .outcome {
+  color: var(--text-faint);
 }
 
 .actions {
   display: flex;
-  gap: var(--space-sm);
+  gap: var(--space-2xs);
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity var(--duration-fast);
 }
 
-.iconBtn {
-  color: var(--color-text-muted);
-  padding: var(--space-sm);
-  border-radius: var(--radius-md);
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition:
-    color 0.15s,
-    background 0.15s;
+.item:hover .actions,
+.item:focus-within .actions {
+  opacity: 1;
+}
 
-  & svg {
-    width: var(--icon-sm);
-    height: var(--icon-sm);
-    display: block;
+@media (pointer: coarse) {
+  .actions {
+    opacity: 1;
   }
 }
 
-.iconBtnDelete:hover {
-  color: var(--color-badge-red-text);
-  background: var(--color-badge-red-bg);
-}
-
-.iconBtnEdit:hover {
-  color: var(--color-prime);
-  background: var(--color-badge-blue-bg);
+.meta {
+  font-size: var(--font-size-xs);
+  color: var(--text-faint);
 }
 
 .details {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-  margin-bottom: var(--space-md);
-}
+  margin-top: var(--space-sm);
+  white-space: pre-wrap;
 
-.detail {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  color: var(--color-text-muted);
-  font-size: var(--font-size-xs);
-
-  & svg {
-    width: var(--icon-xs);
-    height: var(--icon-xs);
-    flex-shrink: 0;
+  & p {
+    color: var(--text-muted);
   }
 }
 
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--color-border);
-}
-
-.outcomeBadge {
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-xl);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
-  border: 1px solid var(--color-badge-neutral-border);
-  background: var(--color-badge-neutral-bg);
-  color: var(--color-badge-neutral-text);
-}
-
-.outcomeBadge[data-outcome='passed'] {
-  background: var(--color-badge-green-bg);
-  color: var(--color-badge-green-text);
-  border-color: var(--color-badge-green-border);
-}
-
-.outcomeBadge[data-outcome='failed'] {
-  background: var(--color-badge-red-bg);
-  color: var(--color-badge-red-text);
-  border-color: var(--color-badge-red-border);
-}
-
-.outcomeBadge[data-outcome='cancelled'] {
-  background: var(--color-badge-yellow-bg);
-  color: var(--color-badge-yellow-text);
-  border-color: var(--color-badge-yellow-border);
+.notes {
+  padding-left: var(--space-md);
+  border-left: 2px solid var(--border);
 }

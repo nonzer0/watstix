@@ -24,6 +24,14 @@ const SECTIONS: { title: string; shortcuts: [string[], string][] }[] = [
     ],
   },
   {
+    title: 'Application page',
+    shortcuts: [
+      [['E'], 'Edit application'],
+      [['S'], 'Change status'],
+      [['P'], 'Add interview phase'],
+    ],
+  },
+  {
     title: 'Forms and menus',
     shortcuts: [
       [[MOD_KEY_LABEL, '↵'], 'Save form'],

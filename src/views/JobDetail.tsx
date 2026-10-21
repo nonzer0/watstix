@@ -1,25 +1,30 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import {
-  ArrowLeft,
-  MapPin,
-  DollarSign,
-  Calendar,
-  User,
-  Mail,
-  Edit,
-  ExternalLink,
-} from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { ArrowUpRight, ChevronRight, Pencil, Trash2 } from 'lucide-react';
 import type { JobApplication, InterviewPhase } from '../types/types';
 import { useConfirm, useStore, useToastStore } from '../store';
 import { interviewPhaseService } from '../services/interviewPhaseService';
 import { jobService } from '../services/jobService';
-import { Loading } from '../components/Loading';
+import AppShell from '../components/AppShell';
 import JobApplicationForm from '../components/JobApplicationForm';
 import InterviewPhaseForm from '../components/InterviewPhaseForm';
 import InterviewPhaseTimeline from '../components/InterviewPhaseTimeline';
+import StatusMenu from '../components/StatusMenu';
+import { useHotkeys } from '../hooks/useHotkeys';
+import { useJobActions } from '../hooks/useJobActions';
+import { formatLongDate } from '../utils/format';
+import { displayHost, mailtoHref, safeExternalUrl } from '../utils/url';
 import styles from './JobDetail.module.css';
+
+function Property({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className={styles.property}>
+      <dt>{label}</dt>
+      <dd>{children || <span className={styles.empty}>—</span>}</dd>
+    </div>
+  );
+}
 
 export default function JobDetail() {
   const { id } = useParams<{ id: string }>();
@@ -27,6 +32,7 @@ export default function JobDetail() {
   const [isLoading, setIsLoading] = useState(true);
   const [editingJob, setEditingJob] = useState<JobApplication | null>(null);
   const [editingPhase, setEditingPhase] = useState<InterviewPhase | null>(null);
+  const [statusMenuOpen, setStatusMenuOpen] = useState(false);
 
   const jobs = useStore.use.jobs();
   const phases = useStore.use.interviewPhases();
@@ -35,11 +41,10 @@ export default function JobDetail() {
   const deleteInterviewPhase = useStore.use.deleteInterviewPhase();
   const confirm = useConfirm();
   const showToast = useToastStore.use.showToast();
+  const { changeStatus, removeJob } = useJobActions();
 
   const job = jobs.find((j) => j.id === id);
-  const jobPhases = phases
-    .filter((p) => p.job_application_id === id)
-    .sort((a, b) => a.sort_order - b.sort_order);
+  const jobPhases = phases.filter((p) => p.job_application_id === id);
 
   const fetchJobAndPhases = useCallback(async () => {
     if (!id) return;
@@ -50,21 +55,26 @@ export default function JobDetail() {
         interviewPhaseService.getPhasesByJobId(id),
       ]);
 
-      if (jobData && !jobs.find((j) => j.id === id)) {
-        setJobs([...jobs, jobData]);
+      // Read the store at call time so this callback stays stable.
+      const { jobs: currentJobs, interviewPhases: currentPhases } =
+        useStore.getState();
+      if (jobData) {
+        setJobs(
+          currentJobs.some((j) => j.id === id)
+            ? currentJobs.map((j) => (j.id === id ? jobData : j))
+            : [...currentJobs, jobData]
+        );
       }
-
-      setInterviewPhases(phasesData);
+      setInterviewPhases([
+        ...currentPhases.filter((p) => p.job_application_id !== id),
+        ...phasesData,
+      ]);
     } catch (err) {
       console.error('Failed to fetch job and phases:', err);
     } finally {
       setIsLoading(false);
     }
-  }, [id, jobs, setJobs, setInterviewPhases]);
-
-  useEffect(() => {
-    fetchJobAndPhases();
-  }, [fetchJobAndPhases]);
+  }, [id, setJobs, setInterviewPhases]);
 
   const handleJobFormSuccess = () => {
     setEditingJob(null);
@@ -74,6 +84,10 @@ export default function JobDetail() {
   const handlePhaseFormSuccess = () => {
     setEditingPhase(null);
     fetchJobAndPhases();
+  };
+
+  const handleDeleteJob = async () => {
+    if (job && (await removeJob(job))) navigate('/');
   };
 
   const handleDeletePhase = async (phaseId: string) => {
@@ -93,112 +107,173 @@ export default function JobDetail() {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
+  useHotkeys(
+    {
+      e: () => job && setEditingJob(job),
+      s: () => setStatusMenuOpen(true),
+      p: () => setEditingPhase({} as InterviewPhase),
+    },
+    Boolean(job)
+  );
 
-  function renderJobValue(val: string | null | undefined, Icon: LucideIcon) {
-    if (!val) return null;
+  useEffect(() => {
+    fetchJobAndPhases();
+  }, [fetchJobAndPhases]);
+
+  const openNewForm = () => setEditingJob({} as JobApplication);
+
+  if (isLoading && !job) {
     return (
-      <div className={styles.detail}>
-        <Icon />
-        <span>{val}</span>
-      </div>
+      <AppShell>
+        <div className={styles.loading} aria-busy="true">
+          <div className="spinner" />
+        </div>
+      </AppShell>
     );
-  }
-
-  if (isLoading) {
-    return <Loading />;
   }
 
   if (!job) {
     return (
-      <div className={styles.notFoundPage}>
-        <div>
-          <h2>Job Application Not Found</h2>
-          <button onClick={() => navigate('/')} className="btn-primary">
-            Back to Dashboard
-          </button>
+      <AppShell onNew={openNewForm}>
+        <div className={styles.notFound}>
+          <h1>Application not found</h1>
+          <p>It may have been deleted, or the link is incorrect.</p>
+          <Link to="/" className="btn">
+            Back to applications
+          </Link>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
-  return (
-    <div className={styles.page}>
-      <div className={styles.content}>
-        <button onClick={() => navigate('/')} className={styles.backBtn}>
-          <ArrowLeft />
-          Back to Dashboard
-        </button>
+  const postingUrl = safeExternalUrl(job.job_posting_link);
+  const emailHref = mailtoHref(job.contact_email);
 
-        <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            <div className={styles.jobInfo}>
-              <h1>{job.position_title}</h1>
-              <p className={styles.company}>{job.company_name}</p>
-              <span className={styles.statusBadge} data-status={job.status}>
-                {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
+  return (
+    <AppShell onNew={openNewForm}>
+      <nav className={styles.breadcrumb} aria-label="Breadcrumb">
+        <Link to="/">Applications</Link>
+        <ChevronRight aria-hidden="true" />
+        <span aria-current="page">{job.company_name}</span>
+      </nav>
+
+      <div className={styles.layout}>
+        <header className={styles.header}>
+          <h1>{job.position_title}</h1>
+          <p className={styles.company}>{job.company_name}</p>
+        </header>
+
+        <article className={styles.main}>
+          <section className={styles.section}>
+            <h2>Description</h2>
+            {job.job_description ? (
+              <p className={styles.prose}>{job.job_description}</p>
+            ) : (
+              <p className={styles.empty}>No description.</p>
+            )}
+          </section>
+
+          <section className={styles.section}>
+            <h2>Notes</h2>
+            {job.notes ? (
+              <p className={styles.prose}>{job.notes}</p>
+            ) : (
+              <p className={styles.empty}>No notes.</p>
+            )}
+          </section>
+
+          <section className={styles.section}>
+            <h2>
+              Interview process
+              {jobPhases.length > 0 && (
+                <span className={styles.count}>{jobPhases.length}</span>
+              )}
+            </h2>
+            <InterviewPhaseTimeline
+              phases={jobPhases}
+              onAdd={() => setEditingPhase({} as InterviewPhase)}
+              onEdit={setEditingPhase}
+              onDelete={handleDeletePhase}
+            />
+          </section>
+        </article>
+
+        <aside className={styles.sidebar} aria-label="Properties">
+          <dl className={styles.properties}>
+            <Property label="Status">
+              <StatusMenu
+                value={job.status}
+                onChange={(status) => changeStatus(job, status)}
+                open={statusMenuOpen}
+                onOpenChange={setStatusMenuOpen}
+              />
+            </Property>
+            <Property label="Company">{job.company_name}</Property>
+            <Property label="Location">{job.location}</Property>
+            <Property label="Salary">
+              {job.salary_range && (
+                <span className="mono">{job.salary_range}</span>
+              )}
+            </Property>
+            <Property label="Applied">
+              <span className="mono">
+                {formatLongDate(job.application_date)}
               </span>
-            </div>
-            <button onClick={() => setEditingJob(job)} className="btn-primary">
-              <Edit />
-              Edit Job
+            </Property>
+            <Property label="Contact">{job.contact_person}</Property>
+            <Property label="Email">
+              {job.contact_email &&
+                (emailHref ? (
+                  <a href={emailHref}>{job.contact_email}</a>
+                ) : (
+                  job.contact_email
+                ))}
+            </Property>
+            <Property label="Posting">
+              {postingUrl && (
+                <a
+                  href={postingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.external}
+                >
+                  {displayHost(postingUrl)}
+                  <ArrowUpRight aria-hidden="true" />
+                </a>
+              )}
+            </Property>
+          </dl>
+
+          <dl className={`${styles.properties} ${styles.timestamps}`}>
+            <Property label="Created">
+              <span className="mono">{formatLongDate(job.created_at)}</span>
+            </Property>
+            <Property label="Updated">
+              <span className="mono">{formatLongDate(job.updated_at)}</span>
+            </Property>
+          </dl>
+
+          <div className={styles.sidebarActions}>
+            <button
+              type="button"
+              onClick={() => setEditingJob(job)}
+              className="btn btn-sm"
+              aria-keyshortcuts="E"
+            >
+              <Pencil />
+              Edit
+              <kbd className="kbd">E</kbd>
+            </button>
+            <button
+              type="button"
+              onClick={handleDeleteJob}
+              className={`btn-ghost btn-sm ${styles.deleteButton}`}
+            >
+              <Trash2 />
+              Delete
             </button>
           </div>
-
-          <div className={styles.detailsGrid}>
-            {renderJobValue(job.location, MapPin)}
-            {renderJobValue(job.salary_range, DollarSign)}
-            {renderJobValue(formatDate(job.application_date), Calendar)}
-            {renderJobValue(job.contact_person, User)}
-            {renderJobValue(job.contact_email, Mail)}
-          </div>
-
-          {job.job_posting_link && (
-            <div className={styles.section}>
-              <a
-                href={job.job_posting_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.postingLink}
-              >
-                <span>View Job Posting</span>
-                <ExternalLink />
-              </a>
-            </div>
-          )}
-
-          {job.job_description && (
-            <div className={styles.section}>
-              <h3>Job Description</h3>
-              <div className={styles.textBlock}>{job.job_description}</div>
-            </div>
-          )}
-
-          {job.notes && (
-            <div>
-              <h3>Notes</h3>
-              <div className={`${styles.textBlock} ${styles.notesBlock}`}>
-                {job.notes}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className={styles.card}>
-          <h2>Interview Process</h2>
-          <InterviewPhaseTimeline
-            phases={jobPhases}
-            onAdd={() => setEditingPhase({} as InterviewPhase)}
-            onEdit={setEditingPhase}
-            onDelete={handleDeletePhase}
-          />
-        </div>
+        </aside>
       </div>
 
       {editingJob && (
@@ -217,6 +292,6 @@ export default function JobDetail() {
           onCancel={() => setEditingPhase(null)}
         />
       )}
-    </div>
+    </AppShell>
   );
 }
