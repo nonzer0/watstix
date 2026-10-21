@@ -37,10 +37,12 @@ export default function Toaster() {
   const toasts = useToastStore.use.toasts();
 
   return (
-    <ol className={styles.region} role="status" aria-live="polite">
-      {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} />
-      ))}
-    </ol>
+    <div role="status" aria-live="polite">
+      <ol className={styles.region}>
+        {toasts.map((toast) => (
+          <ToastItem key={toast.id} toast={toast} />
+        ))}
+      </ol>
+    </div>
   );
 }

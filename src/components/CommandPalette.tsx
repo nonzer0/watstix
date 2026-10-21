@@ -31,7 +31,7 @@ export default function CommandPalette({
   onClose,
 }: CommandPaletteProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
   const listId = useId();
@@ -120,11 +120,17 @@ export default function CommandPalette({
           <kbd className="kbd">Esc</kbd>
         </div>
 
-        <ul ref={listRef} id={listId} role="listbox" className={styles.list}>
+        <div
+          ref={listRef}
+          id={listId}
+          role="listbox"
+          aria-label="Results"
+          className={styles.list}
+        >
           {results.length === 0 && (
-            <li className={styles.empty} role="presentation">
+            <div className={styles.empty} role="presentation">
               No results
-            </li>
+            </div>
           )}
           {results.map((command, index) => {
             const startsGroup =
@@ -142,7 +148,7 @@ export default function CommandPalette({
               />
             );
           })}
-        </ul>
+        </div>
 
         <div className={styles.footer}>
           <span>
@@ -181,11 +187,11 @@ function CommandItem({
   return (
     <>
       {groupLabel && (
-        <li className={styles.group} role="presentation">
+        <div className={styles.group} role="presentation">
           {groupLabel}
-        </li>
+        </div>
       )}
-      <li
+      <div
         id={id}
         role="option"
         aria-selected={active}
@@ -200,7 +206,7 @@ function CommandItem({
           <span className={styles.detail}>{command.detail}</span>
         )}
         {command.shortcut && <kbd className="kbd">{command.shortcut}</kbd>}
-      </li>
+      </div>
     </>
   );
 }

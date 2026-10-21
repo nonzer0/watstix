@@ -125,7 +125,12 @@ export default function JobDetail() {
   if (isLoading && !job) {
     return (
       <AppShell>
-        <div className={styles.loading} aria-busy="true">
+        <div
+          className={styles.loading}
+          role="status"
+          aria-busy="true"
+          aria-label="Loading application"
+        >
           <div className="spinner" />
         </div>
       </AppShell>

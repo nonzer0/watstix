@@ -87,7 +87,11 @@ export default function ResetPassword() {
   if (checkingToken) {
     return (
       <div className={styles.page}>
-        <div className="spinner" aria-label="Checking reset link" />
+        <div
+          className="spinner"
+          role="status"
+          aria-label="Checking reset link"
+        />
       </div>
     );
   }

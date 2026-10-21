@@ -94,12 +94,19 @@
 
 .outcome {
   font-size: var(--font-size-xs);
-  color: var(--node-color);
+  color: var(--text-faint);
   white-space: nowrap;
 }
 
-.item[data-outcome='pending'] .outcome {
-  color: var(--text-faint);
+/* Text-safe variants of the node colours */
+.item[data-outcome='passed'] .outcome {
+  color: var(--success-text);
+}
+.item[data-outcome='failed'] .outcome {
+  color: var(--danger-text);
+}
+.item[data-outcome='cancelled'] .outcome {
+  color: var(--outcome-cancelled);
 }
 
 .actions {

@@ -203,11 +203,11 @@ select:focus-visible {
 }
 
 .btn-danger {
-  background: var(--danger);
+  background: var(--danger-solid);
   color: #fff;
 
   &:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--danger) 88%, black);
+    background: color-mix(in srgb, var(--danger-solid) 88%, black);
   }
 }
 
