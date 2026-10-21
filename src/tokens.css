@@ -1,77 +1,239 @@
 :root {
+  color-scheme: light;
+
+  /* layout */
+  --layout-narrow: 22rem;
   --layout-med: 28rem;
+  --layout-wide: 72rem;
+  --topbar-height: 3rem;
+  --row-height: 2.25rem;
 
   /* spacing */
+  --space-2xs: 0.125rem;
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 2rem;
-  --space-xl: 4rem;
+  --space-md: 0.75rem;
+  --space-lg: 1.25rem;
+  --space-xl: 2rem;
 
   /* border radius */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
 
   /* icon sizes */
-  --icon-xs: 1rem;
-  --icon-sm: 1.25rem;
-  --icon-md: 1.5rem;
-  --icon-lg: 2rem;
-  --icon-xl: 3rem;
+  --icon-xs: 0.875rem;
+  --icon-sm: 1rem;
+  --icon-md: 1.125rem;
+  --icon-lg: 1.5rem;
+  --icon-xl: 2rem;
 
   /* typography */
-  --font-size-xs: 0.875rem;
-  --font-size-sm: 1rem;
-  --font-size-md: 1.25rem;
-  --font-size-lg: 1.875rem;
-  --font-size-xl: 2.25rem;
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', monospace;
+  --font-size-2xs: 0.6875rem;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.8125rem;
+  --font-size-md: 0.875rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.5rem;
   --font-weight-normal: 400;
-  --font-weight-bold: 700;
+  --font-weight-medium: 500;
+  --font-weight-bold: 600;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
 
-  /* base palette (daisyui light values) */
-  --color-base-100: #ffffff;
-  --color-base-200: #f9fafb;
-  --color-base-300: #f3f4f6;
+  /* motion */
+  --duration-fast: 100ms;
+  --duration-normal: 160ms;
 
-  /* semantic colors */
-  --color-prime: #4f46e5;
-  --color-prime-hover: #4338ca;
-  --color-text-primary: #111827;
-  --color-text-muted: #6b7280;
-  --color-bg-light: #eff6ff;
-  --color-bg-muted: #f3f4f6;
-  --color-border: #e5e7eb;
-  --color-error: #dc2626;
-  --color-error-content: #fee2e2;
+  /* neutral scale (slate) */
+  --gray-1: #fcfcfd;
+  --gray-2: #f9f9fb;
+  --gray-3: #f0f0f3;
+  --gray-4: #e8e8ec;
+  --gray-5: #e0e1e6;
+  --gray-6: #d9d9e0;
+  --gray-7: #cdced6;
+  --gray-8: #b9bbc6;
+  --gray-9: #8b8d98;
+  --gray-10: #80838d;
+  --gray-11: #60646c;
+  --gray-12: #1c2024;
 
-  --shadow-xl:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  /* semantic */
+  --bg: var(--gray-1);
+  --bg-subtle: var(--gray-2);
+  --bg-hover: var(--gray-3);
+  --bg-active: var(--gray-4);
+  --surface: #ffffff;
+  --border: var(--gray-5);
+  --border-strong: var(--gray-7);
+  --text: var(--gray-12);
+  --text-muted: var(--gray-11);
+  --text-faint: var(--gray-9);
 
-  /* badge colors */
-  --color-badge-blue-bg: #dbeafe;
-  --color-badge-blue-text: #1e40af;
-  --color-badge-blue-border: #bfdbfe;
-  --color-badge-yellow-bg: #fef9c3;
-  --color-badge-yellow-text: #854d0e;
-  --color-badge-yellow-border: #fef08a;
-  --color-badge-green-bg: #dcfce7;
-  --color-badge-green-text: #166534;
-  --color-badge-green-border: #bbf7d0;
-  --color-badge-red-bg: #fee2e2;
-  --color-badge-red-text: #991b1b;
-  --color-badge-red-border: #fecaca;
-  --color-badge-neutral-bg: #f3f4f6;
-  --color-badge-neutral-text: #1f2937;
-  --color-badge-neutral-border: #e5e7eb;
+  --accent: #5b5bd6;
+  --accent-hover: #5151cd;
+  --accent-subtle: #f0f1fe;
+  --accent-text: #4c4bb8;
+  --focus-ring: color-mix(in srgb, var(--accent) 55%, transparent);
 
-  /* status colors */
-  --color-status-all: #4b5563;
-  --color-status-applied: #2563eb;
-  --color-status-interviewing: #ca8a04;
-  --color-status-offered: #16a34a;
-  --color-status-rejected: #dc2626;
-  --color-status-accepted: #059669;
-  --color-status-withdrawn: #6b7280;
+  --primary-bg: var(--gray-12);
+  --primary-bg-hover: #2e3238;
+  --primary-text: var(--gray-1);
+
+  --danger: #dc3e42;
+  --danger-subtle: #feebec;
+  --danger-text: #ce2c31;
+  --success: #30a46c;
+  --success-subtle: #e9f6e9;
+  --success-text: #218358;
+
+  --overlay: rgb(10 10 15 / 0.32);
+  --shadow-popover:
+    0 0 0 1px rgb(0 0 0 / 0.06), 0 4px 12px rgb(0 0 0 / 0.08),
+    0 1px 2px rgb(0 0 0 / 0.04);
+  --shadow-dialog:
+    0 0 0 1px rgb(0 0 0 / 0.06), 0 16px 48px rgb(0 0 0 / 0.16),
+    0 2px 6px rgb(0 0 0 / 0.06);
+
+  /* status (single hue per status, used for glyphs and dots) */
+  --status-applied: #3e63dd;
+  --status-interviewing: #ef5f00;
+  --status-offered: #30a46c;
+  --status-accepted: #218358;
+  --status-rejected: #dc3e42;
+  --status-withdrawn: var(--gray-9);
+
+  /* interview outcomes */
+  --outcome-pending: var(--gray-9);
+  --outcome-passed: var(--success);
+  --outcome-failed: var(--danger);
+  --outcome-cancelled: #ab6400;
+
+  /* legacy aliases — remove once every module uses the semantic tokens */
+  --color-base-100: var(--surface);
+  --color-base-200: var(--bg-subtle);
+  --color-base-300: var(--bg-hover);
+  --color-prime: var(--accent);
+  --color-prime-hover: var(--accent-hover);
+  --color-text-primary: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-bg-light: var(--bg-subtle);
+  --color-bg-muted: var(--bg-hover);
+  --color-border: var(--border);
+  --color-error: var(--danger);
+  --color-error-content: var(--danger-subtle);
+  --shadow-xl: var(--shadow-dialog);
+  --color-badge-blue-bg: var(--accent-subtle);
+  --color-badge-blue-text: var(--accent-text);
+  --color-badge-blue-border: var(--border);
+  --color-badge-yellow-bg: var(--bg-hover);
+  --color-badge-yellow-text: var(--text);
+  --color-badge-yellow-border: var(--border);
+  --color-badge-green-bg: var(--success-subtle);
+  --color-badge-green-text: var(--success-text);
+  --color-badge-green-border: var(--border);
+  --color-badge-red-bg: var(--danger-subtle);
+  --color-badge-red-text: var(--danger-text);
+  --color-badge-red-border: var(--border);
+  --color-badge-neutral-bg: var(--bg-hover);
+  --color-badge-neutral-text: var(--text);
+  --color-badge-neutral-border: var(--border);
+  --color-status-all: var(--text-muted);
+  --color-status-applied: var(--status-applied);
+  --color-status-interviewing: var(--status-interviewing);
+  --color-status-offered: var(--status-offered);
+  --color-status-rejected: var(--status-rejected);
+  --color-status-accepted: var(--status-accepted);
+  --color-status-withdrawn: var(--status-withdrawn);
+}
+
+/* Dark values, shared by the system preference and the explicit override */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --gray-1: #111113;
+    --gray-2: #18191b;
+    --gray-3: #212225;
+    --gray-4: #272a2d;
+    --gray-5: #2e3135;
+    --gray-6: #363a3f;
+    --gray-7: #43484e;
+    --gray-8: #5a6169;
+    --gray-9: #696e77;
+    --gray-10: #777b84;
+    --gray-11: #b0b4ba;
+    --gray-12: #edeef0;
+
+    --surface: var(--gray-2);
+    --accent: #6e6ade;
+    --accent-hover: #7b78e6;
+    --accent-subtle: #202248;
+    --accent-text: #b1a9ff;
+    --primary-bg-hover: #d6d8dc;
+    --danger: #e5484d;
+    --danger-subtle: #3b1219;
+    --danger-text: #ff9592;
+    --success: #33b074;
+    --success-subtle: #132d21;
+    --success-text: #3dd68c;
+    --overlay: rgb(0 0 0 / 0.6);
+    --shadow-popover:
+      0 0 0 1px rgb(255 255 255 / 0.06), 0 4px 16px rgb(0 0 0 / 0.5);
+    --shadow-dialog:
+      0 0 0 1px rgb(255 255 255 / 0.08), 0 16px 48px rgb(0 0 0 / 0.6);
+
+    --status-applied: #5472e4;
+    --status-interviewing: #ff801f;
+    --status-offered: #33b074;
+    --status-accepted: #3dd68c;
+    --status-rejected: #e5484d;
+    --outcome-cancelled: #ffca16;
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --gray-1: #111113;
+  --gray-2: #18191b;
+  --gray-3: #212225;
+  --gray-4: #272a2d;
+  --gray-5: #2e3135;
+  --gray-6: #363a3f;
+  --gray-7: #43484e;
+  --gray-8: #5a6169;
+  --gray-9: #696e77;
+  --gray-10: #777b84;
+  --gray-11: #b0b4ba;
+  --gray-12: #edeef0;
+
+  --surface: var(--gray-2);
+  --accent: #6e6ade;
+  --accent-hover: #7b78e6;
+  --accent-subtle: #202248;
+  --accent-text: #b1a9ff;
+  --primary-bg-hover: #d6d8dc;
+  --danger: #e5484d;
+  --danger-subtle: #3b1219;
+  --danger-text: #ff9592;
+  --success: #33b074;
+  --success-subtle: #132d21;
+  --success-text: #3dd68c;
+  --overlay: rgb(0 0 0 / 0.6);
+  --shadow-popover:
+    0 0 0 1px rgb(255 255 255 / 0.06), 0 4px 16px rgb(0 0 0 / 0.5);
+  --shadow-dialog:
+    0 0 0 1px rgb(255 255 255 / 0.08), 0 16px 48px rgb(0 0 0 / 0.6);
+
+  --status-applied: #5472e4;
+  --status-interviewing: #ff801f;
+  --status-offered: #33b074;
+  --status-accepted: #3dd68c;
+  --status-rejected: #e5484d;
+  --outcome-cancelled: #ffca16;
 }

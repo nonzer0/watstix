@@ -1,0 +1,52 @@
+.icon {
+  display: block;
+  flex-shrink: 0;
+  color: var(--text-faint);
+}
+
+.icon[data-status='applied'] {
+  color: var(--status-applied);
+}
+.icon[data-status='interviewing'] {
+  color: var(--status-interviewing);
+}
+.icon[data-status='offered'] {
+  color: var(--status-offered);
+}
+.icon[data-status='accepted'] {
+  color: var(--status-accepted);
+}
+.icon[data-status='rejected'] {
+  color: var(--status-rejected);
+}
+.icon[data-status='withdrawn'] {
+  color: var(--status-withdrawn);
+}
+
+.ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.dashed {
+  stroke-dasharray: 2.2 1.6;
+}
+
+.fill {
+  fill: currentColor;
+}
+
+.mark {
+  fill: none;
+  stroke: var(--surface);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.minus {
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
