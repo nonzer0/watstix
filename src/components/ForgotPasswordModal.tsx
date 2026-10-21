@@ -78,7 +78,7 @@ export default function ForgotPasswordModal({
                 id="reset-email"
                 name="email"
                 required
-                autoFocus
+                data-autofocus
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"

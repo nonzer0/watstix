@@ -114,7 +114,7 @@ export default function CommandPalette({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            autoFocus
+            data-autofocus
             spellCheck={false}
           />
           <kbd className="kbd">Esc</kbd>

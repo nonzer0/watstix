@@ -41,3 +41,21 @@ describe('Dialog', () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 });
+
+describe('Dialog focus', () => {
+  it('focuses the data-autofocus field and returns focus to the opener', () => {
+    const opener = document.body.appendChild(document.createElement('button'));
+    opener.focus();
+
+    const { unmount } = render(
+      <Dialog title="Reset password" onClose={() => {}}>
+        <input aria-label="Email" data-autofocus />
+      </Dialog>
+    );
+    expect(screen.getByLabelText('Email')).toHaveFocus();
+
+    unmount();
+    expect(opener).toHaveFocus();
+    opener.remove();
+  });
+});

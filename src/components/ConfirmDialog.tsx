@@ -25,7 +25,7 @@ export default function ConfirmDialog() {
           type="button"
           className={request.destructive ? 'btn-danger' : 'btn-primary'}
           onClick={() => settle(true)}
-          autoFocus
+          data-autofocus
         >
           {request.confirmLabel ?? 'Confirm'}
         </button>
