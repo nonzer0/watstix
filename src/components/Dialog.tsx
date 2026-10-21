@@ -1,6 +1,7 @@
-import { useEffect, useId, useRef } from 'react';
+import { useId, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { X } from 'lucide-react';
+import { useModalDialog } from '../hooks/useModalDialog';
 import styles from './Dialog.module.css';
 
 interface DialogProps {
@@ -24,22 +25,7 @@ export default function Dialog({
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
-  useEffect(() => {
-    const dialog = ref.current;
-    if (!dialog) return;
-    const previouslyFocused = document.activeElement as HTMLElement | null;
-
-    if (typeof dialog.showModal === 'function') {
-      if (!dialog.open) dialog.showModal();
-    } else {
-      dialog.setAttribute('open', '');
-    }
-
-    return () => {
-      if (typeof dialog.close === 'function') dialog.close();
-      previouslyFocused?.focus?.();
-    };
-  }, []);
+  useModalDialog(ref);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {

@@ -58,3 +58,29 @@
     padding: var(--space-lg) var(--space-lg) var(--space-xl);
   }
 }
+
+.searchTrigger {
+  height: 1.625rem;
+  padding: 0 var(--space-xs) 0 var(--space-sm);
+  color: var(--text-faint);
+  font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-xs);
+
+  & .kbd {
+    margin-left: var(--space-lg);
+  }
+}
+
+@media (max-width: 639px) {
+  .searchTrigger {
+    width: 2rem;
+    padding: 0;
+    border-color: transparent;
+    background: transparent;
+
+    & .searchLabel,
+    & .kbd {
+      display: none;
+    }
+  }
+}

@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Plus, Search } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Layers, Plus, Search } from 'lucide-react';
 import type { JobApplication, StatusFilter } from '../types/types';
 import { interviewPhaseService } from '../services/interviewPhaseService';
 import { jobService } from '../services/jobService';
 import AppShell from '../components/AppShell';
+import type { Command } from '../components/CommandPalette';
+import StatusIcon from '../components/StatusIcon';
 import JobApplicationForm from '../components/JobApplicationForm';
 import JobTable, { JobTableSkeleton } from '../components/JobTable';
 import StatusFilterBar from '../components/StatusFilterBar';
+import { useHotkeys } from '../hooks/useHotkeys';
 import { useJobActions } from '../hooks/useJobActions';
 import { useStore } from '../store';
 import {
@@ -17,6 +21,7 @@ import {
   type JobSort,
   type SortKey,
 } from '../utils/jobFilters';
+import { STATUS_FILTERS, statusFilterLabel } from '../utils/status';
 import styles from './Dashboard.module.css';
 
 export default function Dashboard() {
@@ -30,12 +35,42 @@ export default function Dashboard() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<JobSort>(DEFAULT_SORT);
+  const [activeJobId, setActiveJobId] = useState<string | null>(null);
+  const [statusMenuJobId, setStatusMenuJobId] = useState<string | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   const counts = useMemo(() => countByStatus(jobs), [jobs]);
   const rows = useMemo(
     () => visibleJobs(jobs, { status: statusFilter, query, sort }),
     [jobs, statusFilter, query, sort]
+  );
+
+  const activeIndex = rows.findIndex((job) => job.id === activeJobId);
+  const activeJob = activeIndex === -1 ? null : rows[activeIndex];
+
+  const moveActive = (delta: number) => {
+    if (rows.length === 0) return;
+    const next =
+      activeIndex === -1
+        ? delta > 0
+          ? 0
+          : rows.length - 1
+        : Math.min(rows.length - 1, Math.max(0, activeIndex + delta));
+    setActiveJobId(rows[next].id);
+  };
+
+  const filterCommands = useMemo<Command[]>(
+    () =>
+      STATUS_FILTERS.map((filter) => ({
+        id: `filter-${filter}`,
+        label: `Show ${statusFilterLabel(filter).toLowerCase()}`,
+        keywords: 'filter status',
+        group: 'Filters',
+        icon: filter === 'all' ? <Layers /> : <StatusIcon status={filter} />,
+        perform: () => setStatusFilter(filter),
+      })),
+    []
   );
 
   const fetchApplications = useCallback(async () => {
@@ -78,12 +113,28 @@ export default function Dashboard() {
     }
   };
 
+  useHotkeys({
+    '/': () => searchRef.current?.focus(),
+    j: () => moveActive(1),
+    ArrowDown: () => moveActive(1),
+    k: () => moveActive(-1),
+    ArrowUp: () => moveActive(-1),
+    Enter: () => activeJob && navigate(`/job/${activeJob.id}`),
+    o: () => activeJob && navigate(`/job/${activeJob.id}`),
+    e: () => activeJob && setEditingJob(activeJob),
+    s: () => activeJob && setStatusMenuJobId(activeJob.id),
+    Escape: () => {
+      if (activeJob) setActiveJobId(null);
+      else clearFilters();
+    },
+  });
+
   useEffect(() => {
     fetchApplications();
   }, [fetchApplications]);
 
   return (
-    <AppShell onNew={openNewForm}>
+    <AppShell onNew={openNewForm} commands={filterCommands}>
       <div className={styles.heading}>
         <h1>Applications</h1>
         {!isLoading && <span className={styles.total}>{counts.all}</span>}
@@ -138,6 +189,9 @@ export default function Dashboard() {
           onEdit={setEditingJob}
           onDelete={removeJob}
           onStatusChange={changeStatus}
+          activeJobId={activeJob?.id ?? null}
+          statusMenuJobId={statusMenuJobId}
+          onStatusMenuJobIdChange={setStatusMenuJobId}
         />
       )}
 

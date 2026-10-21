@@ -1,0 +1,160 @@
+.dialog {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  width: calc(100% - 2 * var(--space-md));
+  max-width: 36rem;
+  margin: 12vh auto auto;
+  overflow: visible;
+}
+
+.dialog::backdrop {
+  background: var(--overlay);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  max-height: 70vh;
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-dialog);
+  overflow: hidden;
+  animation: enter var(--duration-fast) ease-out;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0 var(--space-md);
+  border-bottom: 1px solid var(--border);
+
+  & > svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+    color: var(--text-faint);
+    flex-shrink: 0;
+  }
+
+  & input {
+    height: 3rem;
+    padding: 0;
+    font-size: var(--font-size-md);
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  & input:focus-visible {
+    box-shadow: none;
+  }
+}
+
+.list {
+  flex: 1;
+  margin: 0;
+  padding: var(--space-xs);
+  list-style: none;
+  overflow-y: auto;
+}
+
+.group {
+  padding: var(--space-sm) var(--space-sm) var(--space-xs);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-faint);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  height: 2.25rem;
+  padding: 0 var(--space-sm);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.item[data-active] {
+  background: var(--bg-hover);
+}
+
+.icon {
+  display: inline-flex;
+  width: var(--icon-sm);
+  justify-content: center;
+  color: var(--text-muted);
+  flex-shrink: 0;
+
+  & svg {
+    width: var(--icon-xs);
+    height: var(--icon-xs);
+  }
+}
+
+.label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.detail {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-faint);
+}
+
+.item:not(:has(.detail)) .label {
+  flex: 1;
+}
+
+.empty {
+  padding: var(--space-lg) var(--space-sm);
+  color: var(--text-faint);
+  text-align: center;
+}
+
+.footer {
+  display: flex;
+  gap: var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-xs);
+  color: var(--text-faint);
+  border-top: 1px solid var(--border);
+
+  & span {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+  }
+}
+
+.enterIcon {
+  width: 0.625rem;
+  height: 0.625rem;
+}
+
+@media (pointer: coarse) {
+  .footer,
+  .inputRow .kbd {
+    display: none;
+  }
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    animation: none;
+  }
+}
