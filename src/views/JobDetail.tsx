@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { JobApplication, InterviewPhase } from '../types/types';
-import { useStore } from '../store';
+import { useConfirm, useStore, useToastStore } from '../store';
 import { interviewPhaseService } from '../services/interviewPhaseService';
 import { jobService } from '../services/jobService';
 import { Loading } from '../components/Loading';
@@ -33,6 +33,8 @@ export default function JobDetail() {
   const setJobs = useStore.use.setJobs();
   const setInterviewPhases = useStore.use.setInterviewPhases();
   const deleteInterviewPhase = useStore.use.deleteInterviewPhase();
+  const confirm = useConfirm();
+  const showToast = useToastStore.use.showToast();
 
   const job = jobs.find((j) => j.id === id);
   const jobPhases = phases
@@ -75,12 +77,19 @@ export default function JobDetail() {
   };
 
   const handleDeletePhase = async (phaseId: string) => {
-    if (!confirm('Are you sure you want to delete this interview phase?'))
-      return;
+    const confirmed = await confirm({
+      title: 'Delete interview phase?',
+      message: 'The phase and its notes will be permanently deleted.',
+      confirmLabel: 'Delete',
+      destructive: true,
+    });
+    if (!confirmed) return;
 
     const success = await interviewPhaseService.deletePhase(phaseId);
     if (success) {
       deleteInterviewPhase(phaseId);
+    } else {
+      showToast('Could not delete the interview phase.', 'error');
     }
   };
 

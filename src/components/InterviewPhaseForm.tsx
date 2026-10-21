@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { X } from 'lucide-react';
 import type { InterviewPhase } from '../types/types';
 import { useAuth } from '../contexts/AuthContext';
 import { interviewPhaseService } from '../services/interviewPhaseService';
 import { useStore } from '../store';
-import styles from './InterviewPhaseForm.module.css';
+import { OUTCOME_LABELS, OUTCOMES } from '../utils/outcome';
+import { MOD_KEY_LABEL, submitOnModEnter } from '../utils/keyboard';
+import Dialog from './Dialog';
 
 interface InterviewPhaseFormProps {
   phaseToEdit: InterviewPhase | null;
@@ -110,113 +111,106 @@ export default function InterviewPhaseForm({
     }));
   };
 
-  const formLabel = phase ? 'Edit Interview Phase' : 'Add Interview Phase';
-  const submitLabel = phase ? 'Update' : 'Add Phase';
+  const formLabel = phase ? 'Edit interview phase' : 'New interview phase';
+  const submitLabel = phase ? 'Save changes' : 'Add phase';
 
   return (
-    <div className="modal-overlay">
-      <div className={styles.modal}>
-        <div className="modal-header">
-          <h2>{formLabel}</h2>
-          <button onClick={onCancel} className="modal-close">
-            <X />
-          </button>
+    <Dialog title={formLabel} onClose={onCancel} dismissOnBackdrop={false}>
+      <form onSubmit={handleSubmit} onKeyDown={submitOnModEnter}>
+        {error && <div className="error">{error}</div>}
+
+        <div>
+          <label htmlFor="title">Title *</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            required
+            value={formData.title}
+            onChange={handleChange}
+            placeholder="e.g., Phone screen, Technical interview"
+            autoFocus
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className="form-body">
-          {error && <div className="error">{error}</div>}
-
-          <fieldset>
-            <legend>Title *</legend>
+        <div className="field-grid">
+          <div>
+            <label htmlFor="interview_date">Date & time</label>
             <input
-              type="text"
-              id="title"
-              name="title"
-              required
-              value={formData.title}
+              type="datetime-local"
+              id="interview_date"
+              name="interview_date"
+              value={formData.interview_date}
               onChange={handleChange}
-              placeholder="e.g., Phone Screen, Technical Interview"
             />
-          </fieldset>
-
-          <fieldset>
-            <legend>Description</legend>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={2}
-              placeholder="Additional details about this interview phase"
-            />
-          </fieldset>
-
-          <div className="field-grid">
-            <fieldset>
-              <legend>Date & Time</legend>
-              <input
-                type="datetime-local"
-                id="interview_date"
-                name="interview_date"
-                value={formData.interview_date}
-                onChange={handleChange}
-              />
-            </fieldset>
-
-            <fieldset>
-              <legend>Outcome</legend>
-              <select
-                id="outcome"
-                name="outcome"
-                value={formData.outcome}
-                onChange={handleChange}
-              >
-                <option value="pending">Pending</option>
-                <option value="passed">Passed</option>
-                <option value="failed">Failed</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </fieldset>
           </div>
 
-          <fieldset>
-            <legend>Interviewer Names</legend>
-            <input
-              type="text"
-              id="interviewer_names"
-              name="interviewer_names"
-              value={formData.interviewer_names}
+          <div>
+            <label htmlFor="outcome">Outcome</label>
+            <select
+              id="outcome"
+              name="outcome"
+              value={formData.outcome}
               onChange={handleChange}
-              placeholder="Jane Doe, John Smith (comma-separated)"
-            />
-          </fieldset>
-
-          <fieldset>
-            <legend>Notes & Feedback</legend>
-            <textarea
-              id="notes"
-              name="notes"
-              value={formData.notes}
-              onChange={handleChange}
-              rows={4}
-              placeholder="Interview feedback, impressions, follow-up actions..."
-            />
-          </fieldset>
-
-          <div className="form-footer">
-            <button type="button" onClick={onCancel} className="btn-secondary">
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="btn-primary"
             >
-              {isSubmitting ? 'Saving...' : submitLabel}
-            </button>
+              {OUTCOMES.map((outcome) => (
+                <option key={outcome} value={outcome}>
+                  {OUTCOME_LABELS[outcome]}
+                </option>
+              ))}
+            </select>
           </div>
-        </form>
-      </div>
-    </div>
+        </div>
+
+        <div>
+          <label htmlFor="interviewer_names">Interviewers</label>
+          <input
+            type="text"
+            id="interviewer_names"
+            name="interviewer_names"
+            value={formData.interviewer_names}
+            onChange={handleChange}
+            placeholder="Jane Doe, John Smith (comma-separated)"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="description">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            rows={2}
+            placeholder="Format, focus areas, who to ask for"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="notes">Notes & feedback</label>
+          <textarea
+            id="notes"
+            name="notes"
+            value={formData.notes}
+            onChange={handleChange}
+            rows={4}
+            placeholder="Impressions, feedback, follow-up actions"
+          />
+        </div>
+
+        <div className="form-footer">
+          <span className="form-hint">
+            <kbd className="kbd">{MOD_KEY_LABEL}</kbd>
+            <kbd className="kbd">↵</kbd> to save
+          </span>
+          <button type="button" onClick={onCancel} className="btn">
+            Cancel
+          </button>
+          <button type="submit" disabled={isSubmitting} className="btn-primary">
+            {isSubmitting ? 'Saving…' : submitLabel}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }

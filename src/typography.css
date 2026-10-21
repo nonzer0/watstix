@@ -365,51 +365,17 @@ select:focus-visible {
   justify-content: flex-end;
 }
 
-/* Legacy modal utilities — superseded by Dialog.tsx, removed once forms migrate */
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: var(--overlay);
-  display: flex;
+.form-hint {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: var(--space-md);
-  z-index: 50;
+  gap: var(--space-2xs);
+  margin-right: auto;
+  font-size: var(--font-size-xs);
+  color: var(--text-faint);
 }
 
-.modal-header {
-  position: sticky;
-  top: 0;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: var(--space-md) var(--space-lg);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 10;
-}
-
-.modal-close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text-muted);
-  padding: var(--space-xs);
-  border-radius: var(--radius-md);
-
-  & svg {
-    width: var(--icon-sm);
-    height: var(--icon-sm);
-    display: block;
+@media (pointer: coarse) {
+  .form-hint {
+    visibility: hidden;
   }
-
-  &:hover {
-    color: var(--text);
-    background: var(--bg-hover);
-  }
-}
-
-.form-body {
-  padding: var(--space-lg);
 }

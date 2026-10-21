@@ -3,7 +3,10 @@ import { supabase } from '../lib/supabase';
 import type { JobApplication } from '../types/types';
 import { useAuth } from '../contexts/AuthContext';
 import { jobPostingService } from '../services/jobPostingService';
-import { X, Wand2 } from 'lucide-react';
+import { Wand2 } from 'lucide-react';
+import { STATUS_LABELS, STATUS_ORDER } from '../utils/status';
+import { MOD_KEY_LABEL, submitOnModEnter } from '../utils/keyboard';
+import Dialog from './Dialog';
 import styles from './JobApplicationForm.module.css';
 
 interface JobApplicationFormProps {
@@ -111,198 +114,184 @@ export default function JobApplicationForm({
     }));
   };
 
-  const formLabel = jobApp ? 'Edit Job Application' : 'Add Job Application';
-  const submitLabel = jobApp ? 'Update' : 'Add Application';
+  const formLabel = jobApp ? 'Edit application' : 'New application';
+  const submitLabel = jobApp ? 'Save changes' : 'Create application';
 
   return (
-    <div className="modal-overlay">
-      <div className={styles.modal}>
-        <div className="modal-header">
-          <h2>{formLabel}</h2>
-          <button onClick={onCancel} className="modal-close">
-            <X />
-          </button>
+    <Dialog
+      title={formLabel}
+      onClose={onCancel}
+      size="lg"
+      dismissOnBackdrop={false}
+    >
+      <form onSubmit={handleSubmit} onKeyDown={submitOnModEnter}>
+        {error && <div className="error">{error}</div>}
+
+        <div>
+          <label htmlFor="job_posting_link">Job posting link</label>
+          <div className={styles.autofillRow}>
+            <input
+              type="url"
+              id="job_posting_link"
+              name="job_posting_link"
+              value={formData.job_posting_link}
+              onChange={handleChange}
+              placeholder="https://company.com/job-posting"
+            />
+            <button
+              type="button"
+              className="btn"
+              onClick={handleAutofill}
+              disabled={!formData.job_posting_link.trim() || isFetchingPosting}
+            >
+              {isFetchingPosting ? <span className="spinner-sm" /> : <Wand2 />}
+              Autofill from link
+            </button>
+          </div>
+          {fetchNotice && <p className={styles.fetchNotice}>{fetchNotice}</p>}
         </div>
 
-        <form onSubmit={handleSubmit} className="form-body">
-          {error && <div className="error">{error}</div>}
-
-          <div className="field-grid">
-            <fieldset>
-              <legend>Company Name *</legend>
-              <input
-                type="text"
-                id="company_name"
-                name="company_name"
-                required
-                value={formData.company_name}
-                onChange={handleChange}
-              />
-            </fieldset>
-
-            <fieldset>
-              <legend>Position *</legend>
-              <input
-                type="text"
-                id="position_title"
-                name="position_title"
-                required
-                value={formData.position_title}
-                onChange={handleChange}
-              />
-            </fieldset>
-
-            <fieldset>
-              <legend>Location</legend>
-              <input
-                type="text"
-                id="location"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                placeholder="e.g., San Francisco, CA"
-              />
-            </fieldset>
-
-            <fieldset>
-              <legend>Salary Range</legend>
-              <input
-                type="text"
-                id="salary_range"
-                name="salary_range"
-                value={formData.salary_range}
-                onChange={handleChange}
-                placeholder="e.g., $80k - $120k"
-              />
-            </fieldset>
-
-            <fieldset>
-              <legend>Application Date *</legend>
-              <input
-                type="date"
-                id="application_date"
-                name="application_date"
-                required
-                value={formData.application_date}
-                onChange={handleChange}
-              />
-            </fieldset>
-
-            <fieldset>
-              <legend>Status *</legend>
-              <select
-                id="status"
-                name="status"
-                required
-                value={formData.status}
-                onChange={handleChange}
-              >
-                <option value="applied">Applied</option>
-                <option value="interviewing">Interviewing</option>
-                <option value="offered">Offered</option>
-                <option value="rejected">Rejected</option>
-                <option value="accepted">Accepted</option>
-                <option value="withdrawn">Withdrawn</option>
-              </select>
-            </fieldset>
-
-            <fieldset>
-              <legend>Contact Person</legend>
-              <input
-                type="text"
-                id="contact_person"
-                name="contact_person"
-                value={formData.contact_person}
-                onChange={handleChange}
-                placeholder="Recruiter name"
-              />
-            </fieldset>
-
-            <fieldset>
-              <legend>Contact Email</legend>
-              <input
-                type="email"
-                id="contact_email"
-                name="contact_email"
-                value={formData.contact_email}
-                onChange={handleChange}
-                placeholder="recruiter@company.com"
-              />
-            </fieldset>
+        <div className="field-grid">
+          <div>
+            <label htmlFor="position_title">Role *</label>
+            <input
+              type="text"
+              id="position_title"
+              name="position_title"
+              required
+              value={formData.position_title}
+              onChange={handleChange}
+              autoFocus={!jobApp}
+            />
           </div>
 
-          <fieldset>
-            <legend>Job Posting Link</legend>
-            <div className={styles.autofillRow}>
-              <input
-                type="url"
-                id="job_posting_link"
-                name="job_posting_link"
-                value={formData.job_posting_link}
-                onChange={handleChange}
-                placeholder="https://company.com/job-posting"
-              />
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={handleAutofill}
-                disabled={
-                  !formData.job_posting_link.trim() || isFetchingPosting
-                }
-              >
-                {isFetchingPosting ? (
-                  <span className="spinner-sm" />
-                ) : (
-                  <Wand2 />
-                )}
-                Autofill from link
-              </button>
-            </div>
-            {fetchNotice && <p className={styles.fetchNotice}>{fetchNotice}</p>}
-          </fieldset>
-
-          <fieldset>
-            <legend>Job Description</legend>
-            <textarea
-              id="job_description"
-              name="job_description"
-              value={formData.job_description}
+          <div>
+            <label htmlFor="company_name">Company *</label>
+            <input
+              type="text"
+              id="company_name"
+              name="company_name"
+              required
+              value={formData.company_name}
               onChange={handleChange}
-              rows={4}
-              placeholder="Key responsibilities, requirements, etc."
             />
-          </fieldset>
+          </div>
 
-          <fieldset>
-            <legend>Notes</legend>
-            <textarea
-              id="notes"
-              name="notes"
-              value={formData.notes}
+          <div>
+            <label htmlFor="location">Location</label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              value={formData.location}
               onChange={handleChange}
-              rows={3}
-              placeholder="Additional notes, follow-up actions, etc."
+              placeholder="e.g., San Francisco, CA"
             />
-          </fieldset>
+          </div>
 
-          <div className="form-footer">
-            <button type="button" onClick={onCancel} className="btn-secondary">
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="btn-primary"
+          <div>
+            <label htmlFor="salary_range">Salary range</label>
+            <input
+              type="text"
+              id="salary_range"
+              name="salary_range"
+              value={formData.salary_range}
+              onChange={handleChange}
+              placeholder="e.g., $80k - $120k"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="application_date">Applied on *</label>
+            <input
+              type="date"
+              id="application_date"
+              name="application_date"
+              required
+              value={formData.application_date}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="status">Status *</label>
+            <select
+              id="status"
+              name="status"
+              required
+              value={formData.status}
+              onChange={handleChange}
             >
-              {isSubmitting
-                ? jobToEdit
-                  ? 'Updating...'
-                  : 'Adding...'
-                : submitLabel}
-            </button>
+              {STATUS_ORDER.map((status) => (
+                <option key={status} value={status}>
+                  {STATUS_LABELS[status]}
+                </option>
+              ))}
+            </select>
           </div>
-        </form>
-      </div>
-    </div>
+
+          <div>
+            <label htmlFor="contact_person">Contact</label>
+            <input
+              type="text"
+              id="contact_person"
+              name="contact_person"
+              value={formData.contact_person}
+              onChange={handleChange}
+              placeholder="Recruiter name"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="contact_email">Contact email</label>
+            <input
+              type="email"
+              id="contact_email"
+              name="contact_email"
+              value={formData.contact_email}
+              onChange={handleChange}
+              placeholder="recruiter@company.com"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="job_description">Description</label>
+          <textarea
+            id="job_description"
+            name="job_description"
+            value={formData.job_description}
+            onChange={handleChange}
+            rows={4}
+            placeholder="Key responsibilities, requirements, etc."
+          />
+        </div>
+
+        <div>
+          <label htmlFor="notes">Notes</label>
+          <textarea
+            id="notes"
+            name="notes"
+            value={formData.notes}
+            onChange={handleChange}
+            rows={3}
+            placeholder="Follow-ups, impressions, etc."
+          />
+        </div>
+
+        <div className="form-footer">
+          <span className="form-hint">
+            <kbd className="kbd">{MOD_KEY_LABEL}</kbd>
+            <kbd className="kbd">↵</kbd> to save
+          </span>
+          <button type="button" onClick={onCancel} className="btn">
+            Cancel
+          </button>
+          <button type="submit" disabled={isSubmitting} className="btn-primary">
+            {isSubmitting ? 'Saving…' : submitLabel}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }

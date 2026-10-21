@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import type { JobApplication } from '../types/types';
+import type { JobApplication, Status } from '../types/types';
 
 const getJobs = async (): Promise<JobApplication[]> => {
   const jobs: JobApplication[] = [];
@@ -50,8 +50,27 @@ const deleteJobById = async (id: string): Promise<boolean> => {
   }
 };
 
+const updateJobStatus = async (
+  id: string,
+  status: Status
+): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from('job_applications')
+      .update({ status })
+      .eq('id', id);
+
+    if (error) throw error;
+    return true;
+  } catch (err) {
+    console.error('Failed to update application status:', err);
+    return false;
+  }
+};
+
 export const jobService = {
   getJobs,
   getJobById,
   deleteJobById,
+  updateJobStatus,
 };
