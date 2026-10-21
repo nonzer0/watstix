@@ -1,0 +1,59 @@
+.bar {
+  display: flex;
+  gap: var(--space-2xs);
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* Let focus rings show without being clipped by the scroller */
+  padding: 2px;
+  margin: -2px;
+}
+
+.bar::-webkit-scrollbar {
+  display: none;
+}
+
+.segment {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  flex-shrink: 0;
+  height: 1.75rem;
+  padding: 0 var(--space-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast),
+    color var(--duration-fast);
+
+  &:hover {
+    background: var(--bg-hover);
+    color: var(--text);
+  }
+
+  &[aria-pressed='true'] {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text);
+    font-weight: var(--font-weight-medium);
+  }
+
+  &[data-empty]:not([aria-pressed='true']) {
+    color: var(--text-faint);
+  }
+}
+
+.allIcon {
+  width: var(--icon-xs);
+  height: var(--icon-xs);
+}
+
+.count {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}

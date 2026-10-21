@@ -26,12 +26,6 @@ export type JobApplication = {
 
 export type StatusFilter = 'all' | JobApplication['status'];
 
-export interface StatusType {
-  value: StatusFilter;
-  label: string;
-  color: string;
-}
-
 export type ParsedJobPosting = {
   found: boolean;
   fields: Partial<

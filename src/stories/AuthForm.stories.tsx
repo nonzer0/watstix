@@ -3,18 +3,7 @@ import { fn } from 'storybook/test';
 import type { AuthError } from '@supabase/supabase-js';
 import AuthForm from '../components/AuthForm';
 import { AuthContext } from '../contexts/AuthContext';
-
-// Mock AuthContext for Storybook
-const mockAuthContext = {
-  user: null,
-  session: null,
-  loading: false,
-  signIn: fn(async () => ({ error: null })),
-  signUp: fn(async () => ({ error: null })),
-  signOut: fn(async () => {}),
-  resetPassword: fn(async () => ({ error: null })),
-  updatePassword: fn(async () => ({ error: null })),
-};
+import { mockAuthContext } from './storyProviders';
 
 const meta = {
   title: 'Components/AuthForm',
