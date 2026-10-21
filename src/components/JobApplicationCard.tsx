@@ -11,10 +11,9 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 import type { JobApplication } from '../types/types';
 import { jobService } from '../services/jobService';
-import { useStore } from '../store';
+import { useConfirm, useStore, useToastStore } from '../store';
 import styles from './JobApplicationCard.module.css';
 
 interface JobApplicationCardProps {
@@ -30,6 +29,8 @@ export default function JobApplicationCard({
   const [isDeleting, setIsDeleting] = useState(false);
   const deleteJob = useStore.use.deleteJob();
   const updateJob = useStore.use.updateJob();
+  const confirm = useConfirm();
+  const showToast = useToastStore.use.showToast();
 
   const handleCardClick = () => {
     navigate(`/job/${application.id}`);
@@ -37,11 +38,22 @@ export default function JobApplicationCard({
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm('Are you sure you want to delete this application?')) return;
+    const confirmed = await confirm({
+      title: 'Delete application?',
+      message: `${application.position_title} at ${application.company_name} and its interview phases will be permanently deleted.`,
+      confirmLabel: 'Delete',
+      destructive: true,
+    });
+    if (!confirmed) return;
 
     setIsDeleting(true);
-    await jobService.deleteJobById(application.id);
-    deleteJob(application.id);
+    const success = await jobService.deleteJobById(application.id);
+    if (success) {
+      deleteJob(application.id);
+    } else {
+      setIsDeleting(false);
+      showToast('Could not delete the application.', 'error');
+    }
   };
 
   const handleEdit = (e: React.MouseEvent) => {
@@ -54,16 +66,11 @@ export default function JobApplicationCard({
   ) => {
     e.stopPropagation();
     const newStatus = e.target.value as JobApplication['status'];
-    try {
-      const { error } = await supabase
-        .from('job_applications')
-        .update({ status: newStatus })
-        .eq('id', application.id);
-
-      if (error) throw error;
+    const success = await jobService.updateJobStatus(application.id, newStatus);
+    if (success) {
       updateJob(application.id, { status: newStatus });
-    } catch (err) {
-      alert(`Failed to update status ${err}`);
+    } else {
+      showToast('Could not update the status.', 'error');
     }
   };
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { X, Mail, CheckCircle } from 'lucide-react';
+import { Mail, CheckCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import Dialog from './Dialog';
 import styles from './ForgotPasswordModal.module.css';
 
 interface ForgotPasswordModalProps {
@@ -46,82 +47,55 @@ export default function ForgotPasswordModal({
   };
 
   return (
-    <div className="modal-overlay">
-      <div className={styles.modal}>
-        <div className="modal-header">
-          <h2>Reset Password</h2>
-          <button onClick={onClose} className="modal-close">
-            <X />
-          </button>
+    <Dialog title="Reset password" onClose={onClose} size="sm">
+      {success ? (
+        <div className={styles.stack}>
+          <div className="alert-success">
+            <CheckCircle />
+            <p>
+              If an account exists for <strong>{email}</strong>, a reset link is
+              on its way. Follow the link in the email to choose a new password.
+            </p>
+          </div>
+          <div className="form-footer">
+            <button type="button" onClick={onClose} className="btn-primary">
+              Done
+            </button>
+          </div>
         </div>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <p>We'll email you a link to choose a new password.</p>
 
-        <form onSubmit={handleSubmit} className="form-body">
           {error && <div className="error">{error}</div>}
 
-          {success ? (
-            <>
-              <div className="alert-success">
-                <CheckCircle />
-                <div>
-                  <p>
-                    <strong>Check your email</strong>
-                  </p>
-                  <p>
-                    We've sent a password reset link to <strong>{email}</strong>
-                    . Click the link in the email to reset your password.
-                  </p>
-                </div>
-              </div>
-              <div className={styles.successFooter}>
-                <button type="button" onClick={onClose} className="btn-primary">
-                  Close
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <div>
-                <p>
-                  Enter your email address and we'll send you a link to reset
-                  your password.
-                </p>
-                <fieldset>
-                  <legend>Email</legend>
-                  <div className="input-with-icon">
-                    <Mail />
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="you@example.com"
-                    />
-                  </div>
-                </fieldset>
-              </div>
+          <div>
+            <label htmlFor="reset-email">Email</label>
+            <div className="input-with-icon">
+              <Mail />
+              <input
+                type="email"
+                id="reset-email"
+                name="email"
+                required
+                autoFocus
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+              />
+            </div>
+          </div>
 
-              <div className="form-footer">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="btn-secondary"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="btn-primary"
-                >
-                  {loading ? 'Sending...' : 'Send Reset Link'}
-                </button>
-              </div>
-            </>
-          )}
+          <div className="form-footer">
+            <button type="button" onClick={onClose} className="btn">
+              Cancel
+            </button>
+            <button type="submit" disabled={loading} className="btn-primary">
+              {loading ? 'Sending…' : 'Send reset link'}
+            </button>
+          </div>
         </form>
-      </div>
-    </div>
+      )}
+    </Dialog>
   );
 }

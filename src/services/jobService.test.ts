@@ -148,4 +148,40 @@ describe('jobService', () => {
       });
     });
   });
+
+  describe('updateJobStatus', () => {
+    it('updates the status of the given job and returns true', async () => {
+      const eq = vi.fn().mockResolvedValue({ error: null });
+      const update = vi.fn().mockReturnValue({ eq });
+      const mockFrom = vi.fn().mockReturnValue({ update });
+
+      (supabase.from as any) = mockFrom;
+
+      const result = await jobService.updateJobStatus('1', 'offered');
+
+      expect(result).toBe(true);
+      expect(mockFrom).toHaveBeenCalledWith('job_applications');
+      expect(update).toHaveBeenCalledWith({ status: 'offered' });
+      expect(eq).toHaveBeenCalledWith('id', '1');
+    });
+
+    it('returns false and logs on failure', async () => {
+      const mockError = new Error('Update failed');
+      const mockFrom = vi.fn().mockReturnValue({
+        update: vi.fn().mockReturnValue({
+          eq: vi.fn().mockResolvedValue({ error: mockError }),
+        }),
+      });
+
+      (supabase.from as any) = mockFrom;
+
+      const result = await jobService.updateJobStatus('1', 'offered');
+
+      expect(result).toBe(false);
+      expect(console.error).toHaveBeenCalledWith(
+        'Failed to update application status:',
+        mockError
+      );
+    });
+  });
 });
