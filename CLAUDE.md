@@ -11,6 +11,8 @@
 - Interview phase management (custom phases per job)
 - Status filtering and tracking (applied, interviewing, offered, rejected, accepted, withdrawn)
 - Multi-page routing with React Router
+- Dense, keyboard-first UI: sortable applications table, ⌘K command palette, single-key shortcuts
+- Light and dark themes (system preference or explicit choice)
 - Responsive UI with CSS Modules and CSS custom properties
 - Real-time data sync with Supabase
 
@@ -23,7 +25,7 @@
 - **React 18.3.1** - UI library
 - **TypeScript 5.5.3** - Type safety
 - **Vite 7.2.6** - Build tool and dev server
-- **pnpm 10.19.0** - Package manager (enforced via preinstall hook)
+- **pnpm 11.0.1** - Package manager (enforced via preinstall hook)
 
 ### State & Data
 
@@ -34,6 +36,7 @@
 ### UI & Styling
 
 - **lucide-react 0.344.0** - Icon library
+- **Geist / Geist Mono** (`@fontsource-variable/*`) - UI and tabular-numeral fonts
 
 ### Testing & Quality
 
@@ -71,58 +74,60 @@ watstix/
 │   ├── index.css                # Minimal CSS reset
 │   ├── tokens.css               # Design tokens (CSS custom properties / vars)
 │   ├── typography.css           # Global element styles & utility classes
-│   ├── components/              # Reusable UI components
-│   │   ├── Header/              # Legacy: has folder (being phased out)
-│   │   │   ├── Header.tsx
-│   │   │   ├── Header.module.css
-│   │   │   ├── Header.spec.tsx
-│   │   │   └── index.ts
-│   │   ├── JobStatusBtn/        # Legacy: has folder (being phased out)
-│   │   │   ├── JobStatusBtn.tsx
-│   │   │   ├── JobStatusBtn.module.css
-│   │   │   ├── JobStatusBtn.spec.tsx
-│   │   │   └── index.ts
+│   ├── components/              # Reusable UI components (single files)
+│   │   ├── AppShell.tsx             # Top bar, command palette, global hotkeys
 │   │   ├── AuthForm.tsx
-│   │   ├── AuthForm.module.css
+│   │   ├── CommandPalette.tsx       # ⌘K palette (fuzzy search over commands)
+│   │   ├── ConfirmDialog.tsx        # Host for useConfirm()
+│   │   ├── Dialog.tsx               # Native <dialog> wrapper
 │   │   ├── ForgotPasswordModal.tsx
-│   │   ├── ForgotPasswordModal.module.css
-│   │   ├── InterviewPhaseCard.tsx
-│   │   ├── InterviewPhaseCard.module.css
+│   │   ├── InterviewPhaseCard.tsx   # Timeline node for one phase
 │   │   ├── InterviewPhaseForm.tsx
-│   │   ├── InterviewPhaseForm.module.css
 │   │   ├── InterviewPhaseTimeline.tsx
-│   │   ├── InterviewPhaseTimeline.module.css
-│   │   ├── JobApplicationCard.tsx
-│   │   ├── JobApplicationCard.module.css
 │   │   ├── JobApplicationForm.tsx
-│   │   ├── JobApplicationForm.module.css
+│   │   ├── JobRow.tsx / JobTable.tsx  # Applications table
 │   │   ├── Loading.tsx
-│   │   └── Loading.module.css
+│   │   ├── Logo.tsx
+│   │   ├── ShortcutsDialog.tsx
+│   │   ├── StatusFilterBar.tsx
+│   │   ├── StatusIcon.tsx           # Per-status glyph
+│   │   ├── StatusMenu.tsx           # Keyboard-navigable status picker
+│   │   ├── ThemeToggle.tsx
+│   │   ├── Toaster.tsx
+│   │   └── *.module.css / *.spec.tsx alongside each
 │   ├── views/                   # Route/page components
-│   │   ├── Dashboard.tsx        # Main dashboard (/ route)
-│   │   ├── Dashboard.module.css
+│   │   ├── Dashboard.tsx        # Applications table (/ route)
 │   │   ├── JobDetail.tsx        # Job detail page (/job/:id route)
-│   │   ├── JobDetail.module.css
-│   │   ├── ResetPassword.tsx    # Password reset (/reset-password route)
-│   │   └── ResetPassword.module.css
+│   │   └── ResetPassword.tsx    # Password reset (/reset-password route)
 │   ├── contexts/                # React contexts
 │   │   └── AuthContext.tsx      # Authentication context & hooks
+│   ├── hooks/                   # Custom hooks
+│   │   ├── useHotkeys.ts        # Page-level keyboard shortcuts
+│   │   ├── useJobActions.ts     # Shared delete / status-change behaviour
+│   │   └── useModalDialog.ts    # showModal + focus management
 │   ├── lib/                     # External library integrations
 │   │   └── supabase.ts          # Supabase client setup
 │   ├── services/                # Business logic & API calls
 │   │   ├── interviewPhaseService.ts
-│   │   ├── interviewPhaseService.test.ts
+│   │   ├── jobPostingService.ts
 │   │   ├── jobService.ts
-│   │   ├── jobService.test.ts
 │   │   └── index.ts
 │   ├── store/                   # Zustand state management
-│   │   ├── store.ts             # Global store with selectors
-│   │   ├── store.test.ts
+│   │   ├── store.ts             # Jobs / phases store + createSelectors
+│   │   ├── confirmStore.ts      # useConfirm() requests
+│   │   ├── themeStore.ts        # Theme preference
+│   │   ├── toastStore.ts        # Toast queue
 │   │   └── index.ts
-│   ├── stories/                 # Storybook stories
-│   │   ├── Header.stories.tsx
-│   │   ├── JobStatusBtn.stories.tsx
-│   │   └── AuthForm.stories.tsx
+│   ├── stories/                 # Storybook stories (+ fixtures.ts, storyProviders.tsx)
+│   ├── utils/                   # Pure helpers (each with a .test.ts)
+│   │   ├── commandSearch.ts     # Fuzzy ranking for the palette
+│   │   ├── format.ts            # Date formatting (date-only strings parsed as local)
+│   │   ├── jobFilters.ts        # Filter / search / sort / counts
+│   │   ├── keyboard.ts          # Editable-target check, ⌘↵ submit
+│   │   ├── outcome.ts           # Interview outcome labels
+│   │   ├── status.ts            # Status order, labels, open/closed
+│   │   ├── theme.ts             # Theme preference persistence
+│   │   └── url.ts               # safeExternalUrl / mailtoHref
 │   ├── test/                    # Test configuration
 │   │   └── setup.ts
 │   ├── types/                   # TypeScript type definitions
@@ -353,35 +358,7 @@ export const interviewPhaseService = {
 - Co-locate test files next to components with matching names
 - **Note**: Services (`src/services/`) and stores (`src/store/`) may use barrel files for cleaner exports
 
-**Example** (`src/components/`):
-
-```
-components/
-├── AuthForm.tsx
-├── AuthForm.module.css
-├── ForgotPasswordModal.tsx
-├── ForgotPasswordModal.module.css
-├── Loading.tsx
-├── Loading.module.css
-├── JobApplicationCard.tsx
-├── JobApplicationCard.module.css
-├── JobApplicationForm.tsx
-├── JobApplicationForm.module.css
-├── InterviewPhaseCard.tsx
-├── InterviewPhaseCard.module.css
-├── InterviewPhaseForm.tsx
-├── InterviewPhaseForm.module.css
-├── InterviewPhaseTimeline.tsx
-└── InterviewPhaseTimeline.module.css
-
-views/
-├── Dashboard.tsx
-├── Dashboard.module.css
-├── JobDetail.tsx
-├── JobDetail.module.css
-├── ResetPassword.tsx
-└── ResetPassword.module.css
-```
+See the repository structure above for the current component list.
 
 **Why avoid folders and barrel files?**
 
@@ -556,46 +533,54 @@ export function MyComponent({ prop1, prop2 }: Props) {
 
 The project uses CSS Modules + CSS custom properties (design tokens). No Tailwind or DaisyUI — both have been fully removed.
 
-**CSS architecture** (`src/main.tsx` imports in order):
+**Visual direction**: a dense, keyboard-first tool (Linear-like). Neutral slate greys, one accent (used for focus, links and the active row), near-black primary buttons, hairline borders instead of cards and shadows, Geist for UI text and Geist Mono for numerals (dates, counts, salaries). Shadows are reserved for overlays. Status is shown with `StatusIcon` glyphs, not coloured pills.
 
-1. **`src/index.css`** — Minimal CSS reset (`box-sizing`, `font-family`, `margin: 0` on body).
+**CSS architecture** (`src/main.tsx` imports the Geist fonts, then in order):
+
+1. **`src/index.css`** — Reset; body font, size, colour and background from tokens.
 
 2. **`src/tokens.css`** — All design tokens as CSS custom properties on `:root`. Use these for all styling — no raw values:
-   - **Layout**: `--layout-med`
-   - **Spacing**: `--space-xs`, `--space-sm`, `--space-md`, `--space-lg`, `--space-xl`
+   - **Layout**: `--layout-narrow`, `--layout-wide`, `--topbar-height`, `--row-height`
+   - **Spacing**: `--space-2xs` … `--space-xl`
    - **Border radius**: `--radius-sm`, `--radius-md`, `--radius-lg`, `--radius-xl`
-   - **Icon sizes**: `--icon-xs`, `--icon-sm`, `--icon-md`, `--icon-lg`, `--icon-xl`
-   - **Font sizes**: `--font-size-xs`, `--font-size-sm`, `--font-size-md`, `--font-size-lg`, `--font-size-xl`
-   - **Font weights**: `--font-weight-normal`, `--font-weight-bold`
-   - **Base palette**: `--color-base-100`, `--color-base-200`, `--color-base-300`
-   - **Semantic colors**: `--color-prime`, `--color-prime-hover`, `--color-text-primary`, `--color-text-muted`, `--color-bg-light`, `--color-bg-muted`, `--color-border`, `--color-error`, `--color-error-content`
-   - **Badge colors**: `--color-badge-{blue,yellow,green,red,neutral}-{bg,text,border}`
-   - **Status colors**: `--color-status-{all,applied,interviewing,offered,rejected,accepted,withdrawn}`
-   - **Shadows**: `--shadow-xl`
+   - **Icon sizes**: `--icon-xs` … `--icon-xl`
+   - **Typography**: `--font-sans`, `--font-mono`, `--font-size-2xs` … `--font-size-xl`, `--font-weight-{normal,medium,bold}`
+   - **Neutral scale**: `--gray-1` … `--gray-12` (Radix slate steps)
+   - **Semantic**: `--bg`, `--bg-subtle`, `--bg-hover`, `--bg-active`, `--surface`, `--border`, `--border-strong`, `--text`, `--text-muted`, `--text-faint`, `--accent`, `--accent-hover`, `--accent-subtle`, `--accent-text`, `--focus-ring`, `--primary-bg`, `--primary-bg-hover`, `--primary-text`, `--danger`, `--danger-solid`, `--danger-subtle`, `--danger-text`, `--success`, `--success-subtle`, `--success-text`, `--overlay`
+   - **Status / outcome**: `--status-{applied,interviewing,offered,accepted,rejected,withdrawn}`, `--outcome-{pending,passed,failed,cancelled}` — for glyphs and dots; use the `*-text` tokens for text
+   - **Shadows**: `--shadow-popover`, `--shadow-dialog`
+   - **Motion**: `--duration-fast`, `--duration-normal`
 
 3. **`src/typography.css`** — Global element styles and reusable utility classes:
-   - Styles bare elements: `h1`–`h4`, `p`, `form`, `label`, `input`, `textarea`, `select`, `fieldset`, `legend`
-   - Utility classes: `.btn-primary`, `.btn-secondary`, `.link-button`, `.error`, `.alert-success`, `.spinner`, `.spinner-sm`, `.input-with-icon`, `.modal-overlay`, `.modal-header`, `.modal-close`, `.form-body`, `.field-grid`, `.form-footer`
+   - Styles bare elements: `h1`–`h4`, `p`, `a`, `form`, `label`, `input`, `textarea`, `select`, `fieldset`, `legend`, `:focus-visible`
+   - Buttons: `.btn` (= `.btn-secondary`), `.btn-primary`, `.btn-ghost`, `.btn-danger`, size modifiers `.btn-sm`, `.btn-icon`; `.link-button`
+   - Other utilities: `.kbd`, `.mono`, `.muted`, `.visually-hidden`, `.error`, `.alert-success`, `.spinner`, `.spinner-sm`, `.input-with-icon`, `.field-grid`, `.form-footer`, `.form-hint`
 
-**CSS Modules** — Component-specific styles use `ComponentName.module.css` co-located with their component. Import as `styles` and apply via `className={styles.className}`.
+**CSS Modules** — Component-specific styles use `ComponentName.module.css` co-located with their component. Import as `styles` and apply via `className={styles.className}`. Global classes referenced inside a module must be wrapped: `:global(.kbd)`; a bare `.kbd` is hashed and will not match.
 
 **Approach for new components**:
 
 - Use tokens from `tokens.css` for spacing, sizing, color, etc.
 - Use global classes from `typography.css` for common patterns before writing new CSS
 - Put component-specific styles in a `.module.css` file
+- Text colours must meet 4.5:1 in both themes; Storybook's a11y check enforces this
 - No Tailwind utility classes
 
----
+### Theming (light / dark)
 
-### TODO: Dark Mode
+- Dark values live in `tokens.css` twice: under `@media (prefers-color-scheme: dark) { :root:not([data-theme='light']) }` and under `:root[data-theme='dark']`. Keep the two blocks identical.
+- Components never branch on theme; they only reference semantic tokens.
+- The preference (`system` | `light` | `dark`) lives in `src/store/themeStore.ts`, is persisted by `src/utils/theme.ts` (localStorage, wrapped in try/catch), and is applied as `data-theme` on `<html>` before first render in `main.tsx`. `system` removes the attribute.
 
-Dark mode is currently disabled (light-only). The groundwork is in place — all colors are tokens in `tokens.css`. To implement:
+### Dialogs, confirmations and toasts
 
-1. Add a `@media (prefers-color-scheme: dark)` block to `tokens.css` overriding the color tokens with dark values. The non-color tokens (spacing, radius, etc.) don't need dark variants.
-2. Badge colors (`--color-badge-*`) and status colors (`--color-status-*`) will need dark variants in that block.
-3. Base palette (`--color-base-100/200/300`) and semantic colors (`--color-prime`, `--color-text-*`, etc.) will also need overrides.
-4. No other files should need changes — all components reference tokens.
+- Use `Dialog.tsx` (native `<dialog>`) for every modal. Mark the field to focus with `data-autofocus`, not React `autoFocus` (focus fails while the dialog is still closed).
+- Never call `window.confirm` / `alert`. Use `const confirm = useConfirm(); if (await confirm({...}))` and `useToastStore.use.showToast(message, tone)`.
+
+### Keyboard shortcuts
+
+- `useHotkeys({ key: handler })` in `src/hooks/useHotkeys.ts`. Plain keys are ignored in editable fields and while any modal dialog is open; `mod+k` style combos are not.
+- Global shortcuts (⌘K, `?`, `N`) live in `AppShell`; page shortcuts live in the view. Keep `ShortcutsDialog.tsx` in sync when adding one.
 
 ---
 
@@ -659,29 +644,38 @@ describe('Store', () => {
 
 ### Component Tests (Testing Library)
 
-**Example** (`src/components/Header/Header.spec.tsx`):
+**Example** (`src/components/AppShell.spec.tsx`):
 
 ```typescript
-import { render, screen } from '@testing-library/react';
-import { Header } from './Header';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import AppShell from './AppShell';
 
-it('renders header', () => {
-  render(<Header setShowForm={vi.fn()} signOut={vi.fn()} />);
-  expect(screen.getByText('Watstix')).toBeInTheDocument();
+vi.mock('../contexts/AuthContext', () => ({ useAuth: () => ({ signOut }) }));
+
+it('calls onNew from the New button', () => {
+  const onNew = vi.fn();
+  render(
+    <MemoryRouter>
+      <AppShell onNew={onNew}>content</AppShell>
+    </MemoryRouter>
+  );
+  fireEvent.click(screen.getByRole('button', { name: /new/i }));
+  expect(onNew).toHaveBeenCalled();
 });
 ```
 
+Shared fixtures: `makeJob()` in `src/test/fixtures.ts`.
+
 ### Storybook Tests
 
-**Configuration**: `.storybook/main.ts`
+**Configuration**: `.storybook/main.ts`, `.storybook/preview.ts`
 
-- Framework: React + Vite
-- Browser testing with Playwright
-- Addons:
-  - Vitest - Test integration
-  - A11y - Accessibility checking
-  - Docs - Auto-generated documentation
-  - Chromatic - Visual regression testing
+- Framework: React + Vite; stories run as tests in Chromium via the Vitest addon (`pnpm test --run` includes them)
+- **A11y is enforced** (`a11y.test: 'error'`): any axe violation fails the story test
+- A **Theme** toolbar global (system / light / dark) sets `data-theme`
+- Services are module-mocked with `sb.mock(...)` in `preview.ts`, so page-level stories render real views. Set return values in `beforeEach` with `mocked(jobService.getJobs).mockResolvedValue(...)`
+- `src/stories/storyProviders.tsx` provides `withAppProviders(path, initialEntry)` (router, mock auth, confirm/toast hosts); `src/stories/fixtures.ts` has sample jobs and phases
 
 **Running Storybook**:
 
@@ -690,26 +684,18 @@ pnpm storybook         # Dev mode
 pnpm build-storybook   # Build static
 ```
 
-**Stories pattern** (`src/stories/Header.stories.tsx`):
+**Stories pattern** (`src/stories/Dashboard.stories.tsx`):
 
 ```typescript
-import type { Meta, StoryObj } from '@storybook/react';
-import { Header } from '../components/Header';
-
-const meta: Meta<typeof Header> = {
-  component: Header,
-  tags: ['autodocs'],
-};
-
-export default meta;
-type Story = StoryObj<typeof Header>;
-
-export const Default: Story = {
-  args: {
-    setShowForm: () => {},
-    signOut: async () => {},
+const meta = {
+  title: 'Views/Dashboard',
+  component: Dashboard,
+  parameters: { layout: 'fullscreen' },
+  decorators: [withAppProviders('/')],
+  beforeEach: () => {
+    mocked(jobService.getJobs).mockResolvedValue(sampleJobs);
   },
-};
+} satisfies Meta<typeof Dashboard>;
 ```
 
 ---
@@ -1058,6 +1044,10 @@ pnpm storybook     # Start Storybook
 - `src/views/ResetPassword.tsx` - Password reset page
 - `src/components/AuthForm.tsx` - Sign in / sign up form
 - `src/components/ForgotPasswordModal.tsx` - Forgot password modal
+- `src/components/AppShell.tsx` - Top bar, command palette, global shortcuts
+- `src/components/JobTable.tsx` - Applications table
+- `src/hooks/useHotkeys.ts` - Keyboard shortcuts
+- `src/utils/jobFilters.ts` - Filtering, search and sorting
 - `src/store/store.ts` - Zustand state management
 - `src/lib/supabase.ts` - Supabase client
 - `src/types/types.ts` - Shared TypeScript types
@@ -1105,7 +1095,7 @@ export default function MyComponent({ prop }: { prop: string }) { }
 
 ---
 
-**Last Updated**: April 4, 2026
+**Last Updated**: October 21, 2026
 **Project Version**: 0.0.0 (as per package.json)
 
 **Recent Major Changes**:
@@ -1114,5 +1104,6 @@ export default function MyComponent({ prop }: { prop: string }) { }
 - Implemented interview phase tracking feature (January 2026)
 - Created `views/` folder structure for route components (January 2026)
 - Fully migrated to CSS Modules + CSS custom properties; removed Tailwind and DaisyUI (March–April 2026)
+- UI overhaul: dense table, command palette, shortcuts, native dialogs, toasts, light/dark themes, enforced a11y in Storybook (October 2026)
 
 **Key Principles**: Security First • Simplicity Over Complexity • Type Safety • Test Coverage

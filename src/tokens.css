@@ -3,7 +3,6 @@
 
   /* layout */
   --layout-narrow: 22rem;
-  --layout-med: 28rem;
   --layout-wide: 72rem;
   --topbar-height: 3rem;
   --row-height: 2.25rem;
@@ -72,7 +71,8 @@
   --border-strong: var(--gray-7);
   --text: var(--gray-12);
   --text-muted: var(--gray-11);
-  --text-faint: var(--gray-9);
+  /* Darker than gray-9 so small secondary text keeps 4.5:1 */
+  --text-faint: #676a73;
 
   --accent: #5b5bd6;
   --accent-hover: #5151cd;
@@ -85,6 +85,7 @@
   --primary-text: var(--gray-1);
 
   --danger: #dc3e42;
+  --danger-solid: #ce2c31;
   --danger-subtle: #feebec;
   --danger-text: #ce2c31;
   --success: #30a46c;
@@ -112,43 +113,6 @@
   --outcome-passed: var(--success);
   --outcome-failed: var(--danger);
   --outcome-cancelled: #ab6400;
-
-  /* legacy aliases — remove once every module uses the semantic tokens */
-  --color-base-100: var(--surface);
-  --color-base-200: var(--bg-subtle);
-  --color-base-300: var(--bg-hover);
-  --color-prime: var(--accent);
-  --color-prime-hover: var(--accent-hover);
-  --color-text-primary: var(--text);
-  --color-text-muted: var(--text-muted);
-  --color-bg-light: var(--bg-subtle);
-  --color-bg-muted: var(--bg-hover);
-  --color-border: var(--border);
-  --color-error: var(--danger);
-  --color-error-content: var(--danger-subtle);
-  --shadow-xl: var(--shadow-dialog);
-  --color-badge-blue-bg: var(--accent-subtle);
-  --color-badge-blue-text: var(--accent-text);
-  --color-badge-blue-border: var(--border);
-  --color-badge-yellow-bg: var(--bg-hover);
-  --color-badge-yellow-text: var(--text);
-  --color-badge-yellow-border: var(--border);
-  --color-badge-green-bg: var(--success-subtle);
-  --color-badge-green-text: var(--success-text);
-  --color-badge-green-border: var(--border);
-  --color-badge-red-bg: var(--danger-subtle);
-  --color-badge-red-text: var(--danger-text);
-  --color-badge-red-border: var(--border);
-  --color-badge-neutral-bg: var(--bg-hover);
-  --color-badge-neutral-text: var(--text);
-  --color-badge-neutral-border: var(--border);
-  --color-status-all: var(--text-muted);
-  --color-status-applied: var(--status-applied);
-  --color-status-interviewing: var(--status-interviewing);
-  --color-status-offered: var(--status-offered);
-  --color-status-rejected: var(--status-rejected);
-  --color-status-accepted: var(--status-accepted);
-  --color-status-withdrawn: var(--status-withdrawn);
 }
 
 /* Dark values, shared by the system preference and the explicit override */
@@ -168,6 +132,9 @@
     --gray-10: #777b84;
     --gray-11: #b0b4ba;
     --gray-12: #edeef0;
+
+    --text-faint: #9095a0;
+    --danger-solid: #c62a2f;
 
     --surface: var(--gray-2);
     --accent: #6e6ade;
@@ -211,6 +178,9 @@
   --gray-10: #777b84;
   --gray-11: #b0b4ba;
   --gray-12: #edeef0;
+
+  --text-faint: #9095a0;
+  --danger-solid: #c62a2f;
 
   --surface: var(--gray-2);
   --accent: #6e6ade;

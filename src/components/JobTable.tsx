@@ -127,6 +127,7 @@ export function JobTableSkeleton({ rows = 6 }: { rows?: number }) {
   return (
     <div
       className={styles.skeleton}
+      role="status"
       aria-busy="true"
       aria-label="Loading applications"
     >

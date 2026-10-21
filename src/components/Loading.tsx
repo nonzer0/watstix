@@ -2,7 +2,12 @@ import styles from './Loading.module.css';
 
 export function Loading() {
   return (
-    <div className={styles.wrapper} aria-busy="true" aria-label="Loading">
+    <div
+      className={styles.wrapper}
+      role="status"
+      aria-busy="true"
+      aria-label="Loading"
+    >
       <div className="spinner" />
     </div>
   );
