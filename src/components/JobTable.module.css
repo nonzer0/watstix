@@ -1,0 +1,236 @@
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: auto;
+  font-size: var(--font-size-sm);
+}
+
+.table th {
+  position: sticky;
+  top: var(--topbar-height);
+  z-index: 1;
+  height: 2rem;
+  padding: 0 var(--space-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-faint);
+  text-align: left;
+  white-space: nowrap;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  height: var(--row-height);
+  padding: 0 var(--space-sm);
+  border-bottom: 1px solid var(--gray-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 0;
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.sortIcon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.row {
+  cursor: pointer;
+  transition: background var(--duration-fast);
+
+  &:hover,
+  &[data-active] {
+    background: var(--bg-hover);
+  }
+
+  &[data-active] td:first-child {
+    box-shadow: inset 2px 0 0 var(--accent);
+  }
+}
+
+/* Column sizing */
+
+.statusCell {
+  width: 2.5rem;
+  padding-right: 0 !important;
+  overflow: visible !important;
+}
+
+.table td.statusCell {
+  max-width: none;
+}
+
+.roleCell {
+  width: 32%;
+}
+
+.roleLink {
+  color: var(--text);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.companyCell {
+  width: 20%;
+  color: var(--text-muted);
+}
+
+.secondaryCell {
+  width: 14%;
+  color: var(--text-muted);
+}
+
+.dateCell {
+  width: 5.5rem;
+  color: var(--text-faint);
+}
+
+.actionsCell {
+  width: 6rem;
+  padding-right: var(--space-xs) !important;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2xs);
+  opacity: 0;
+  transition: opacity var(--duration-fast);
+}
+
+.row:hover .actions,
+.row:focus-within .actions,
+.row[data-active] .actions {
+  opacity: 1;
+}
+
+@media (pointer: coarse) {
+  .actions {
+    opacity: 1;
+  }
+}
+
+.mobileMeta {
+  display: none;
+}
+
+/* Medium: drop location, salary, updated */
+@media (max-width: 1023px) {
+  .secondaryCell,
+  .wideOnly {
+    display: none;
+  }
+
+  .roleCell {
+    width: 45%;
+  }
+}
+
+/* Small: two-line rows with role over company · date */
+@media (max-width: 639px) {
+  .table thead {
+    display: none;
+  }
+
+  .companyCell,
+  .dateCell {
+    display: none;
+  }
+
+  .table td {
+    height: auto;
+    padding-top: var(--space-sm);
+    padding-bottom: var(--space-sm);
+  }
+
+  .statusCell {
+    vertical-align: top;
+  }
+
+  .roleCell {
+    width: auto;
+    white-space: normal !important;
+  }
+
+  .roleLink {
+    display: block;
+  }
+
+  .mobileMeta {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+  }
+
+  .actionsCell {
+    width: auto;
+    vertical-align: top;
+  }
+}
+
+/* Loading skeleton */
+
+.skeleton {
+  border-top: 1px solid var(--border);
+}
+
+.skeletonRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  height: var(--row-height);
+  padding: 0 var(--space-sm);
+  border-bottom: 1px solid var(--gray-3);
+}
+
+.skeletonDot,
+.skeletonBar {
+  background: var(--bg-hover);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.skeletonDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.skeletonBar {
+  height: 0.625rem;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonDot,
+  .skeletonBar {
+    animation: none;
+  }
+}
